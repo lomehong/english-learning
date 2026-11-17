@@ -52,12 +52,24 @@ const metaFiles = (
   );
 
 describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工清单）', () => {
-  it('内置五个单元（Unit 1–5），全部由 meta 数据文件自动聚合进注册表', () => {
-    expect(UNIT_IDS).toEqual(['unit1', 'unit2', 'unit3', 'unit4', 'unit5']);
-    expect(new Set(UNIT_IDS).size).toBe(5);
-    const nos = UNIT_MANIFESTS.map((m) => m.no);
-    expect(nos).toEqual([1, 2, 3, 4, 5]);
-    expect(new Set(nos).size).toBe(5);
+  it('内置十个单元（必修一 1–5 + 选择性必修一 1–5），全部由 meta 数据文件自动聚合进注册表', () => {
+    expect(UNIT_IDS).toEqual([
+      'unit1',
+      'unit2',
+      'unit3',
+      'unit4',
+      'unit5',
+      'unit6',
+      'unit7',
+      'unit8',
+      'unit9',
+      'unit10',
+    ]);
+    expect(new Set(UNIT_IDS).size).toBe(10);
+    for (const book of BOOK_IDS) {
+      const nos = unitsByBook(book).map((m) => m.no);
+      expect(new Set(nos).size, `${book} 册内单元号不重复`).toBe(nos.length);
+    }
   });
 
   it('每行 manifest 元信息齐全：id / book / no / title / theme 非空，theme 为中文', () => {
@@ -85,9 +97,12 @@ describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工�
 });
 
 describe('单元排序 · 按 no 升序（稳定）', () => {
-  it('真实注册表：no 严格递增，与 UNIT_IDS 顺序一致', () => {
-    const nos = UNIT_MANIFESTS.map((m) => m.no);
-    for (let i = 1; i < nos.length; i++) expect(nos[i], 'no 应严格递增').toBeGreaterThan(nos[i - 1]);
+  it('真实注册表：册内 no 严格递增（册别顺序分组），与 UNIT_IDS 顺序一致', () => {
+    for (const book of BOOK_IDS) {
+      const nos = unitsByBook(book).map((m) => m.no);
+      for (let i = 1; i < nos.length; i++)
+        expect(nos[i], `${book} 册内 no 应严格递增`).toBeGreaterThan(nos[i - 1]);
+    }
     expect(UNIT_IDS).toEqual(UNIT_MANIFESTS.map((m) => m.id));
   });
 
@@ -118,16 +133,14 @@ describe('册别维度 · 注册表按册分组（meta 的 book 字段驱动）'
     expect(BOOK_LABELS[DEFAULT_BOOK]).toBe('必修一');
   });
 
-  it('现有五个单元（unit1-5）全部归入必修一，其余六册为空分组（缺册降级为空数组）', () => {
-    for (const m of UNIT_MANIFESTS) {
-      expect(m.book, `${m.id} 应属必修一`).toBe('required-1');
-      expect(UNIT_META[m.id as UnitId].book).toBe('required-1');
-    }
+  it('必修一 unit1-5、选择性必修一 unit6-10 各归其册，其余五册为空分组（缺册降级为空数组）', () => {
     expect(unitIdsOfBook('required-1')).toEqual(['unit1', 'unit2', 'unit3', 'unit4', 'unit5']);
+    for (const id of unitIdsOfBook('required-1')) expect(UNIT_META[id as UnitId].book).toBe('required-1');
+    expect(unitIdsOfBook('elective-1')).toEqual(['unit6', 'unit7', 'unit8', 'unit9', 'unit10']);
+    for (const id of unitIdsOfBook('elective-1')) expect(UNIT_META[id as UnitId].book).toBe('elective-1');
     for (const book of [
       'required-2',
       'required-3',
-      'elective-1',
       'elective-2',
       'elective-3',
       'elective-4',
@@ -137,10 +150,11 @@ describe('册别维度 · 注册表按册分组（meta 的 book 字段驱动）'
       expect(firstUnitOfBook(book)).toBeNull();
     }
     expect(firstUnitOfBook('required-1')).toBe('unit1');
+    expect(firstUnitOfBook('elective-1')).toBe('unit6');
   });
 
   it('UNITS_BY_BOOK 聚合视图与 manifest 一一对应：七册之和 = 注册表总数（自动发现不变）', () => {
-    expect(UNITS_BY_BOOK[DEFAULT_BOOK].map((m) => m.id)).toEqual([...UNIT_IDS]);
+    expect(UNITS_BY_BOOK[DEFAULT_BOOK].map((m) => m.id)).toEqual([...UNIT_IDS.slice(0, 5)]);
     const total = BOOK_IDS.reduce((n, book) => n + UNITS_BY_BOOK[book].length, 0);
     expect(total).toBe(UNIT_MANIFESTS.length);
     for (const book of BOOK_IDS) {

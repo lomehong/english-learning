@@ -192,8 +192,8 @@ describe('写作页 · 全局单元联动（Unit 2）', () => {
     expect(deps.load().drafts['u2-w2']).toBeUndefined();
   });
 
-  it('?unit=2 数字写法深链：初始加载即 Unit 2 写作任务', () => {
-    history.replaceState(null, '', '/writing?unit=2');
+  it('?unit=unit2 slug 写法深链：初始加载即 Unit 2 写作任务', () => {
+    history.replaceState(null, '', '/writing?unit=unit2');
     const container = document.createElement('div');
     renderWriting(container, makeDeps());
 

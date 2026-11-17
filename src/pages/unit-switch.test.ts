@@ -46,10 +46,10 @@ describe('unitFromParam · ?unit= 参数解析', () => {
     expect(unitFromParam('unit3')).toBe('unit3');
   });
 
-  it('单元号写法：1 / 2 / 3 → 对应单元（/grammar?unit=3 深链）', () => {
-    expect(unitFromParam('1')).toBe('unit1');
-    expect(unitFromParam('2')).toBe('unit2');
-    expect(unitFromParam('3')).toBe('unit3');
+  it('单元号写法：跨册同号时解析为注册表靠后的册（选择性必修一）', () => {
+    expect(unitFromParam('1')).toBe('unit6'); // 必修一与选择性必修一均有 Unit 1，数字写法落在后注册的册
+    expect(unitFromParam('3')).toBe('unit8');
+    expect(unitFromParam('6')).toBeNull(); // 新增单元文件名为 unit6-10，册内单元号仍是 1-5，6 不是合法写法
   });
 
   it('非法值返回 null（由存储与默认值兜底），缺省也是 null', () => {
@@ -85,7 +85,7 @@ describe('全局单元 · 深链回退与优先级', () => {
   });
 
   it('存储脏数据（非法值）→ 回退 Unit 1 而不是抛异常', () => {
-    storage()?.setItem(UNIT_STORAGE_KEY, 'unit9');
+    storage()?.setItem(UNIT_STORAGE_KEY, 'unit99');
     history.replaceState(null, '', '/grammar');
     expect(storedUnit()).toBeNull();
     expect(currentUnit()).toBe('unit1');
@@ -93,7 +93,7 @@ describe('全局单元 · 深链回退与优先级', () => {
 
   it('有效 ?unit= 深链优先于存储，并被采纳回写存储（URL → 状态）', () => {
     setUnit('unit2');
-    history.replaceState(null, '', '/grammar?unit=3');
+    history.replaceState(null, '', '/grammar?unit=unit3');
     expect(currentUnit()).toBe('unit3');
     expect(storageValue()).toBe('unit3');
   });
@@ -167,7 +167,7 @@ describe('全局册 + 单元 · 深链与回退（URL → 状态）', () => {
   });
 
   it('?unit= 深链：单元优先命中，册随单元归属（unit3 → 必修一），册 + 单元双写存储', () => {
-    history.replaceState(null, '', '/grammar?unit=3');
+    history.replaceState(null, '', '/grammar?unit=unit3');
     expect(currentUnit()).toBe('unit3');
     expect(currentBook()).toBe('required-1');
     expect(storageValue()).toBe('unit3');
@@ -190,10 +190,10 @@ describe('全局册 + 单元 · 深链与回退（URL → 状态）', () => {
 
   it('仅 ?book=（空册深链）：册被采纳，单元沿用最近有效单元（缺册降级，模块不崩溃）', () => {
     setUnit('unit4');
-    history.replaceState(null, '', '/grammar?book=elective-1');
-    expect(currentBook()).toBe('elective-1');
+    history.replaceState(null, '', '/grammar?book=elective-2');
+    expect(currentBook()).toBe('elective-2');
     expect(currentUnit()).toBe('unit4'); // 空册没有单元可切，沿用最近单元
-    expect(bookStorageValue()).toBe('elective-1');
+    expect(bookStorageValue()).toBe('elective-2');
     expect(storageValue()).toBe('unit4');
   });
 

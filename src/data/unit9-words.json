@@ -1,0 +1,182 @@
+[
+  {
+    "id": "gesture",
+    "word": "gesture",
+    "phonetic": "/ˈdʒestʃə(r)/",
+    "pos": "n. & vi.",
+    "meaning": "手势；姿态；做手势",
+    "example": "A friendly gesture can open a closed door.",
+    "exampleZh": "一个友好的手势能敲开关闭的门。"
+  },
+  {
+    "id": "interpret",
+    "word": "interpret",
+    "phonetic": "/ɪnˈtɜːprɪt/",
+    "pos": "vt. & vi.",
+    "meaning": "解读；理解；口译",
+    "example": "People interpret the same gesture differently.",
+    "exampleZh": "人们对同一个手势的理解不同。"
+  },
+  {
+    "id": "approve",
+    "word": "approve",
+    "phonetic": "/əˈpruːv/",
+    "pos": "vi. & vt.",
+    "meaning": "赞成；同意；批准",
+    "example": "Not every culture approves of this habit.",
+    "exampleZh": "并非每种文化都赞成这种习惯。"
+  },
+  {
+    "id": "vary",
+    "word": "vary",
+    "phonetic": "/ˈveəri/",
+    "pos": "vi. & vt.",
+    "meaning": "变化；不同；（使）有差异",
+    "example": "Body language varies from culture to culture.",
+    "exampleZh": "身势语因文化而异。"
+  },
+  {
+    "id": "adjust",
+    "word": "adjust",
+    "phonetic": "/əˈdʒʌst/",
+    "pos": "vt. & vi.",
+    "meaning": "调整；调节；（使）适应",
+    "example": "She adjusted her tone to make him relax.",
+    "exampleZh": "她调整语气让他放松下来。"
+  },
+  {
+    "id": "appropriate",
+    "word": "appropriate",
+    "phonetic": "/əˈprəʊpriət/",
+    "pos": "adj.",
+    "meaning": "恰当的；合适的",
+    "example": "Eye contact is appropriate in most Western countries.",
+    "exampleZh": "在大多数西方国家，眼神接触是恰当的。"
+  },
+  {
+    "id": "resemble",
+    "word": "resemble",
+    "phonetic": "/rɪˈzembl/",
+    "pos": "vt.",
+    "meaning": "像；类似于",
+    "example": "The two brothers resemble each other in voice.",
+    "exampleZh": "兄弟俩说话的声音很像。"
+  },
+  {
+    "id": "barrier",
+    "word": "barrier",
+    "phonetic": "/ˈbæriə(r)/",
+    "pos": "n.",
+    "meaning": "障碍；屏障；隔阂",
+    "example": "A smile breaks down the language barrier.",
+    "exampleZh": "微笑能打破语言的障碍。"
+  },
+  {
+    "id": "fake",
+    "word": "fake",
+    "phonetic": "/feɪk/",
+    "pos": "adj. & vt.",
+    "meaning": "假的；伪造；假装",
+    "example": "He faked a smile to hide his nervousness.",
+    "exampleZh": "他假装微笑来掩饰紧张。"
+  },
+  {
+    "id": "fold",
+    "word": "fold",
+    "phonetic": "/fəʊld/",
+    "pos": "vt. & vi.",
+    "meaning": "折叠；交叠（手臂等）",
+    "example": "Don't fold your arms when talking to the teacher.",
+    "exampleZh": "和老师说话时不要抱着双臂。"
+  },
+  {
+    "id": "thumb",
+    "word": "thumb",
+    "phonetic": "/θʌm/",
+    "pos": "n.",
+    "meaning": "拇指",
+    "example": "He raised his thumb to show agreement.",
+    "exampleZh": "他竖起大拇指表示同意。"
+  },
+  {
+    "id": "chin",
+    "word": "chin",
+    "phonetic": "/tʃɪn/",
+    "pos": "n.",
+    "meaning": "下巴；颏",
+    "example": "She rested her chin on her hand, thinking.",
+    "exampleZh": "她手托着下巴思考。"
+  },
+  {
+    "id": "waist",
+    "word": "waist",
+    "phonetic": "/weɪst/",
+    "pos": "n.",
+    "meaning": "腰；腰部",
+    "example": "The old man bent at the waist to greet us.",
+    "exampleZh": "老人弯腰向我们致意。"
+  },
+  {
+    "id": "wrist",
+    "word": "wrist",
+    "phonetic": "/rɪst/",
+    "pos": "n.",
+    "meaning": "手腕；腕关节",
+    "example": "The nurse checked his pulse at the wrist.",
+    "exampleZh": "护士在他手腕上测脉搏。"
+  },
+  {
+    "id": "bend",
+    "word": "bend",
+    "phonetic": "/bend/",
+    "pos": "vt. & vi.",
+    "meaning": "（使）弯曲；俯身",
+    "example": "Branches bend in the strong wind.",
+    "exampleZh": "树枝在大风中弯曲。"
+  },
+  {
+    "id": "internal",
+    "word": "internal",
+    "phonetic": "/ɪnˈtɜːnl/",
+    "pos": "adj.",
+    "meaning": "内部的；内心的",
+    "example": "His internal struggle showed on his face.",
+    "exampleZh": "他内心的挣扎显露在脸上。"
+  },
+  {
+    "id": "slightly",
+    "word": "slightly",
+    "phonetic": "/ˈslaɪtli/",
+    "pos": "adv.",
+    "meaning": "略微；稍微",
+    "example": "She leaned forward slightly to show interest.",
+    "exampleZh": "她稍微前倾以示感兴趣。"
+  },
+  {
+    "id": "tense",
+    "word": "tense",
+    "phonetic": "/tens/",
+    "pos": "adj.",
+    "meaning": "紧张的；绷紧的",
+    "example": "The atmosphere in the room became tense.",
+    "exampleZh": "房间里的气氛变得紧张起来。"
+  },
+  {
+    "id": "uneasy",
+    "word": "uneasy",
+    "phonetic": "/ʌnˈiːzi/",
+    "pos": "adj.",
+    "meaning": "不安的；担心的",
+    "example": "The long silence made the visitor uneasy.",
+    "exampleZh": "长久的沉默让来访者不安。"
+  },
+  {
+    "id": "manner",
+    "word": "manner",
+    "phonetic": "/ˈmænə(r)/",
+    "pos": "n.",
+    "meaning": "方式；举止；（复数）礼貌",
+    "example": "Table manners differ around the world.",
+    "exampleZh": "世界各地的餐桌礼仪各不相同。"
+  }
+]

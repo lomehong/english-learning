@@ -259,8 +259,8 @@ describe('词汇页 · 全局单元联动（/vocabulary 容器）', () => {
     expect(progress.cards['teenage']).toBeUndefined();
   });
 
-  it('?unit=2 数字写法深链：初始加载即 Unit 2（标题 / 单元徽标 / 词表）', () => {
-    history.replaceState(null, '', '/vocabulary?unit=2');
+  it('?unit=unit2 slug 写法深链：初始加载即 Unit 2（标题 / 单元徽标 / 词表）', () => {
+    history.replaceState(null, '', '/vocabulary?unit=unit2');
     const container = document.createElement('div');
     renderVocabulary(container);
 
