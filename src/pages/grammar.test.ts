@@ -290,8 +290,8 @@ describe('语法页 · 全局单元联动（Unit 2 / Unit 3）', () => {
     expect(entry.module).toBe('grammar');
   });
 
-  it('?unit=2 数字写法深链等同 unit=unit2：初始加载即 Unit 2 讲解卡', () => {
-    history.replaceState(null, '', '/grammar?unit=2');
+  it('?unit=unit2 深链：初始加载即 Unit 2 讲解卡（数字写法现为跨册歧义，见 unit-switch 测试）', () => {
+    history.replaceState(null, '', '/grammar?unit=unit2');
     const container = document.createElement('div');
     renderGrammar(container, makeDeps());
 

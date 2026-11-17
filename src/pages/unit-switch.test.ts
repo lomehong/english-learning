@@ -46,10 +46,17 @@ describe('unitFromParam · ?unit= 参数解析', () => {
     expect(unitFromParam('unit3')).toBe('unit3');
   });
 
-  it('单元号写法：1 / 2 / 3 → 对应单元（/grammar?unit=3 深链）', () => {
-    expect(unitFromParam('1')).toBe('unit1');
-    expect(unitFromParam('2')).toBe('unit2');
-    expect(unitFromParam('3')).toBe('unit3');
+  it('单元号写法：数字 = 册内单元号，两册同号时后册覆盖（1 → unit6）；册一 id 全拼不受影响', () => {
+    // 数字写法来自 meta.no：必修二（unit6–unit10）在注册表后写入，覆盖同号的必修一
+    expect(unitFromParam('1')).toBe('unit6');
+    expect(unitFromParam('2')).toBe('unit7');
+    expect(unitFromParam('3')).toBe('unit8');
+    expect(unitFromParam('5')).toBe('unit10');
+    // 数字只映射册内单元号（1–5），不映射文件名编号：6 不是合法写法
+    expect(unitFromParam('6')).toBeNull();
+    // 全拼 id 写法精确命中，不受册别影响
+    expect(unitFromParam('unit1')).toBe('unit1');
+    expect(unitFromParam('unit10')).toBe('unit10');
   });
 
   it('非法值返回 null（由存储与默认值兜底），缺省也是 null', () => {
@@ -85,7 +92,7 @@ describe('全局单元 · 深链回退与优先级', () => {
   });
 
   it('存储脏数据（非法值）→ 回退 Unit 1 而不是抛异常', () => {
-    storage()?.setItem(UNIT_STORAGE_KEY, 'unit9');
+    storage()?.setItem(UNIT_STORAGE_KEY, 'unit99');
     history.replaceState(null, '', '/grammar');
     expect(storedUnit()).toBeNull();
     expect(currentUnit()).toBe('unit1');
@@ -93,7 +100,7 @@ describe('全局单元 · 深链回退与优先级', () => {
 
   it('有效 ?unit= 深链优先于存储，并被采纳回写存储（URL → 状态）', () => {
     setUnit('unit2');
-    history.replaceState(null, '', '/grammar?unit=3');
+    history.replaceState(null, '', '/grammar?unit=unit3');
     expect(currentUnit()).toBe('unit3');
     expect(storageValue()).toBe('unit3');
   });
@@ -167,7 +174,7 @@ describe('全局册 + 单元 · 深链与回退（URL → 状态）', () => {
   });
 
   it('?unit= 深链：单元优先命中，册随单元归属（unit3 → 必修一），册 + 单元双写存储', () => {
-    history.replaceState(null, '', '/grammar?unit=3');
+    history.replaceState(null, '', '/grammar?unit=unit3');
     expect(currentUnit()).toBe('unit3');
     expect(currentBook()).toBe('required-1');
     expect(storageValue()).toBe('unit3');

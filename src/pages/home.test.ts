@@ -7,7 +7,7 @@ import { renderListening } from './listening';
 import { renderWriting } from './writing';
 import { UNIT_STORAGE_KEY, BOOK_STORAGE_KEY, resetUnitState } from './unit-switch';
 import { getWordsByUnit } from '../data/words';
-import { UNIT_IDS, BOOKS, BOOK_IDS } from '../data/units';
+import { BOOKS, BOOK_IDS, unitIdsOfBook } from '../data/units';
 
 /**
  * 首页两级切换器（册 + 单元）↔ 各模块联动：
@@ -61,12 +61,12 @@ afterEach(() => {
 });
 
 describe('首页 · 全局单元切换器', () => {
-  it('渲染全部注册单元的切换按钮（自动发现，随数据文件扩展），默认 Unit 1 选中', () => {
+  it('渲染当前册（必修一）全部注册单元的切换按钮（自动发现，随数据文件扩展），默认 Unit 1 选中', () => {
     const root = document.createElement('div');
     renderHome(root);
 
     const buttons = [...root.querySelectorAll('[data-testid="unit-switcher"] button')];
-    expect(buttons.map((b) => (b as HTMLElement).dataset.unit)).toEqual([...UNIT_IDS]);
+    expect(buttons.map((b) => (b as HTMLElement).dataset.unit)).toEqual([...unitIdsOfBook('required-1')]);
     expect(root.textContent).toContain('Unit 3 · Sports and Fitness');
 
     const active = switcherButton(root, 'unit1');
@@ -76,8 +76,8 @@ describe('首页 · 全局单元切换器', () => {
     expect(root.querySelector('[data-testid="unit-hint"]')!.textContent).toContain('Teenage Life');
   });
 
-  it('?unit=3 深链首页：初始即 Unit 3 选中（URL → 状态）', () => {
-    history.replaceState(null, '', '/?unit=3');
+  it('?unit=unit3 深链首页：初始即 Unit 3 选中（URL → 状态；数字写法见 unit-switch / book2 测试）', () => {
+    history.replaceState(null, '', '/?unit=unit3');
     const root = document.createElement('div');
     renderHome(root);
 
@@ -275,7 +275,7 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(bookButton(root, 'elective-1').classList.contains('tab--active')).toBe(false);
 
     // 第二级 = 当前册（必修一）的单元：unit1-5，默认 Unit 1 选中
-    expect(unitButtons(root)).toEqual([...UNIT_IDS]);
+    expect(unitButtons(root)).toEqual([...unitIdsOfBook('required-1')]);
     expect(switcherButton(root, 'unit1').classList.contains('tab--active')).toBe(true);
   });
 
@@ -318,7 +318,7 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     click(bookButton(root, 'elective-2')); // 空册
     click(bookButton(root, 'required-1')); // 切回
 
-    expect(unitButtons(root)).toEqual([...UNIT_IDS]);
+    expect(unitButtons(root)).toEqual([...unitIdsOfBook('required-1')]);
     expect(switcherButton(root, 'unit2').classList.contains('tab--active')).toBe(true);
     expect(bookButton(root, 'required-1').classList.contains('tab--active')).toBe(true);
     const params = new URLSearchParams(location.search);
@@ -327,8 +327,8 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(storageValue()).toBe('unit2');
   });
 
-  it('?book=&unit= 深链首页：两级初始选中（URL → 状态）', () => {
-    history.replaceState(null, '', '/?book=必修一&unit=3'); // 中文册名写法 + 数字单元写法
+  it('?book=&unit= 深链首页：两级初始选中（URL → 状态；中文册名 + 规范单元 id 写法）', () => {
+    history.replaceState(null, '', '/?book=必修一&unit=unit3');
     const root = document.createElement('div');
     renderHome(root);
 

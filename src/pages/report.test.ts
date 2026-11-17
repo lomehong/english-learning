@@ -6,7 +6,7 @@ import { emptyProgress, type Progress } from '../store/progress';
 import { createCard, DAY_MS } from '../srs/sm2';
 import type { ReportDeps } from './deps';
 import type { PracticeModule } from '../types';
-import { UNIT_IDS, BOOK_IDS, type UnitId } from '../data/units';
+import { UNIT_IDS, BOOK_IDS, unitIdsOfBook, type UnitId } from '../data/units';
 
 const NOW = Date.UTC(2026, 0, 1);
 
@@ -306,14 +306,21 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(data.bookRows.map((r) => r.book)).toEqual([...BOOK_IDS]);
     const required1 = data.bookRows[0]!;
     expect(required1.label).toBe('必修一');
-    expect(required1.unitRows.map((r) => r.unit)).toEqual([...UNIT_IDS]);
+    expect(required1.unitRows.map((r) => r.unit)).toEqual([...unitIdsOfBook('required-1')]);
     expect(required1.answered).toBe(10);
     expect(required1.correct).toBe(6);
     expect(required1.accuracy).toBeCloseTo(0.6);
     expect(required1.wrongCount).toBe(5);
 
-    // 其余六册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
-    for (const row of data.bookRows.slice(1)) {
+    // 必修二：纯数据新增的五单元自动进入该册分组（未练习 → 全 0 行）
+    const required2 = data.bookRows[1]!;
+    expect(required2.label).toBe('必修二');
+    expect(required2.unitRows.map((r) => r.unit)).toEqual([...unitIdsOfBook('required-2')]);
+    expect(required2.answered).toBe(0);
+    expect(required2.accuracy).toBeNull();
+
+    // 其余五册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
+    for (const row of data.bookRows.slice(2)) {
       expect(row.unitRows).toEqual([]);
       expect(row.answered).toBe(0);
       expect(row.correct).toBe(0);
@@ -340,7 +347,13 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     const g1 = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="required-1"]')!;
     expect(g1.querySelector('[data-testid="book-summary"]')!.textContent).toContain('5 个单元');
     expect(g1.querySelector('[data-testid="book-summary"]')!.textContent).toContain('60%');
-    expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(UNIT_IDS.length);
+    expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(unitIdsOfBook('required-1').length);
+
+    // 必修二分组：册头显示 5 个单元（纯数据新增自动出现），未练习行为 0
+    const g2 = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="required-2"]')!;
+    expect(g2.querySelector('[data-testid="book-summary"]')!.textContent).toContain('5 个单元');
+    expect(g2.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(unitIdsOfBook('required-2').length);
+    expect(g2.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit6"]')!.dataset.book).toBe('required-2');
 
     // 空册：保留分组（架构占位），册头显示「暂未收录单元」，组内是降级提示而非崩溃
     const empty = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="elective-2"]')!;

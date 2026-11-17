@@ -259,18 +259,18 @@ describe('词汇页 · 全局单元联动（/vocabulary 容器）', () => {
     expect(progress.cards['teenage']).toBeUndefined();
   });
 
-  it('?unit=2 数字写法深链：初始加载即 Unit 2（标题 / 单元徽标 / 词表）', () => {
+  it('?unit=2 数字写法深链：两册同号后册覆盖 → unit7（必修二 Unit 2 · Wildlife Protection）', () => {
     history.replaceState(null, '', '/vocabulary?unit=2');
     const container = document.createElement('div');
     renderVocabulary(container);
 
     expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
-    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.querySelector('h1')!.textContent).toContain('Wildlife Protection');
     const badge = container.querySelector<HTMLElement>('[data-testid="current-unit"]')!;
-    expect(badge.dataset.unit).toBe('unit2');
-    expect(badge.textContent).toContain('Travelling Around');
+    expect(badge.dataset.unit).toBe('unit7');
+    expect(badge.textContent).toContain('Wildlife Protection');
     const counter = container.querySelector<HTMLElement>('.card-nav__counter')!;
-    expect(counter.textContent).toBe(`1 / ${getWordsByUnit('unit2').length}`);
+    expect(counter.textContent).toBe(`1 / ${getWordsByUnit('unit7').length}`);
   });
 
   it('?unit=99 非法值深链回退 Unit 1', () => {
