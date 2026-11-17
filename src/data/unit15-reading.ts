@@ -74,16 +74,16 @@ export const unit15Passages: ReadingPassage[] = [
     genre: '记叙文',
     paragraphs: [
       'During a basketball match last autumn, one of my teammates suddenly fell to the ground. His face turned pale, his pulse was weak, and an old knee injury began to bleed again. For a moment, everyone on the court stood still in panic.',
-      'Our PE teacher, Mr Wang, ran over within seconds. He pressed the wound with a clean cloth, raised the leg gently, and told the boy to breathe slowly. He never touched the injury with his bare hands; instead, he wore gloves from the first aid box to avoid infection.',
-      'The doctor in the hospital ward praised Mr Wang: every procedure had followed the basic principles. That day I realised that first aid is not only a school lesson but a life skill. Since then, I have kept a small first aid kit in my school bag.',
+      'Our PE teacher, Mr Wang, ran over within seconds. He pressed the wound with a clean cloth, raised the leg gently, and told the boy to breathe slowly. He never touched the injury with his bare hands; instead, he wore gloves from the first aid box as a precaution against infection.',
+      'The doctor in the hospital ward praised Mr Wang: every step had followed the basic guidelines. That day I realised first aid is not only a school lesson but a life skill. Since then, I have kept a small first aid kit in my school bag.',
     ],
     glossary: [
       { wordId: 'pulse', forms: ['pulse'] },
       { wordId: 'bleed', forms: ['bleed'] },
       { wordId: 'panic', forms: ['panic'] },
       { wordId: 'ward', forms: ['ward'] },
-      { wordId: 'procedure', forms: ['procedure'] },
-      { wordId: 'principle', forms: ['principles'] },
+      { wordId: 'precaution', forms: ['precaution'] },
+      { wordId: 'guideline', forms: ['guidelines'] },
     ],
     questions: [
       {

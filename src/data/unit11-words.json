@@ -135,13 +135,13 @@
     "exampleZh": "一场猛烈的暴风雨延误了研究团队的航班。"
   },
   {
-    "id": "physician",
-    "word": "physician",
-    "phonetic": "/fɪˈzɪʃn/",
+    "id": "surgeon",
+    "word": "surgeon",
+    "phonetic": "/ˈsɜːdʒən/",
     "pos": "n.",
-    "meaning": "医师；（尤指）内科医生",
-    "example": "The physician examined the patient carefully.",
-    "exampleZh": "这位内科医生仔细地为病人做了检查。"
+    "meaning": "外科医生",
+    "example": "The surgeon operated for six hours to save the boy.",
+    "exampleZh": "外科医生做了六个小时的手术来挽救这个男孩。"
   },
   {
     "id": "statistics",

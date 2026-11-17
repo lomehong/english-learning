@@ -1,0 +1,182 @@
+[
+  {
+    "id": "lifestyle",
+    "word": "lifestyle",
+    "phonetic": "/ˈlaɪfstaɪl/",
+    "pos": "n.",
+    "meaning": "生活方式",
+    "example": "A healthy lifestyle begins with good sleep.",
+    "exampleZh": "健康的生活方式始于良好的睡眠。"
+  },
+  {
+    "id": "wellbeing",
+    "word": "wellbeing",
+    "phonetic": "/ˌwelˈbiːɪŋ/",
+    "pos": "n.",
+    "meaning": "健康；幸福；康乐",
+    "example": "Morning walks improve both mood and wellbeing.",
+    "exampleZh": "晨间散步能改善心情、增进健康。"
+  },
+  {
+    "id": "obesity",
+    "word": "obesity",
+    "phonetic": "/əʊˈbiːsəti/",
+    "pos": "n.",
+    "meaning": "肥胖；肥胖症",
+    "example": "Eating too much sugar may lead to obesity.",
+    "exampleZh": "吃糖过多可能导致肥胖。"
+  },
+  {
+    "id": "anxiety",
+    "word": "anxiety",
+    "phonetic": "/æŋˈzaɪəti/",
+    "pos": "n.",
+    "meaning": "焦虑；担心；渴望",
+    "example": "Deep breathing can help reduce anxiety before exams.",
+    "exampleZh": "深呼吸有助于缓解考前焦虑。"
+  },
+  {
+    "id": "jog",
+    "word": "jog",
+    "phonetic": "/dʒɒɡ/",
+    "pos": "vi. & n.",
+    "meaning": "慢跑；轻推",
+    "example": "My father jogs around the park every morning.",
+    "exampleZh": "我父亲每天早晨绕公园慢跑。"
+  },
+  {
+    "id": "workout",
+    "word": "workout",
+    "phonetic": "/ˈwɜːkaʊt/",
+    "pos": "n.",
+    "meaning": "锻炼，训练",
+    "example": "She does a twenty-minute workout before breakfast.",
+    "exampleZh": "她早餐前进行二十分钟的锻炼。"
+  },
+  {
+    "id": "meditation",
+    "word": "meditation",
+    "phonetic": "/ˌmedɪˈteɪʃn/",
+    "pos": "n.",
+    "meaning": "冥想；沉思",
+    "example": "Ten minutes of meditation calms his busy mind.",
+    "exampleZh": "十分钟的冥想能让他纷乱的心平静下来。"
+  },
+  {
+    "id": "protein",
+    "word": "protein",
+    "phonetic": "/ˈprəʊtiːn/",
+    "pos": "n.",
+    "meaning": "蛋白质",
+    "example": "Eggs and fish are rich in protein.",
+    "exampleZh": "鸡蛋和鱼富含蛋白质。"
+  },
+  {
+    "id": "sugary",
+    "word": "sugary",
+    "phonetic": "/ˈʃʊɡəri/",
+    "pos": "adj.",
+    "meaning": "含糖的；甜的",
+    "example": "Sugary drinks harm your teeth and your sleep.",
+    "exampleZh": "含糖饮料伤害牙齿也影响睡眠。"
+  },
+  {
+    "id": "tobacco",
+    "word": "tobacco",
+    "phonetic": "/təˈbækəʊ/",
+    "pos": "n.",
+    "meaning": "烟草；烟叶",
+    "example": "The doctor told him to stay away from tobacco.",
+    "exampleZh": "医生告诉他要远离烟草。"
+  },
+  {
+    "id": "excessive",
+    "word": "excessive",
+    "phonetic": "/ɪkˈsesɪv/",
+    "pos": "adj.",
+    "meaning": "过度的；过多的",
+    "example": "Excessive use of phones causes tired eyes.",
+    "exampleZh": "过度使用手机会导致眼睛疲劳。"
+  },
+  {
+    "id": "refreshed",
+    "word": "refreshed",
+    "phonetic": "/rɪˈfreʃt/",
+    "pos": "adj.",
+    "meaning": "精神振作的；恢复精力的",
+    "example": "A cold shower made him feel refreshed.",
+    "exampleZh": "冷水澡让他感觉精神焕发。"
+  },
+  {
+    "id": "hygiene",
+    "word": "hygiene",
+    "phonetic": "/ˈhaɪdʒiːn/",
+    "pos": "n.",
+    "meaning": "卫生；卫生学",
+    "example": "Washing hands often is basic personal hygiene.",
+    "exampleZh": "勤洗手是基本的个人卫生。"
+  },
+  {
+    "id": "immune",
+    "word": "immune",
+    "phonetic": "/ɪˈmjuːn/",
+    "pos": "adj.",
+    "meaning": "免疫的；有免疫力的",
+    "example": "Vitamins help keep the immune system strong.",
+    "exampleZh": "维生素有助于保持免疫系统强健。"
+  },
+  {
+    "id": "muscle",
+    "word": "muscle",
+    "phonetic": "/ˈmʌsl/",
+    "pos": "n.",
+    "meaning": "肌肉；力量",
+    "example": "Swimming builds muscle without hurting the knees.",
+    "exampleZh": "游泳能锻炼肌肉又不伤膝盖。"
+  },
+  {
+    "id": "stressful",
+    "word": "stressful",
+    "phonetic": "/ˈstresfl/",
+    "pos": "adj.",
+    "meaning": "有压力的；紧张的",
+    "example": "Moving to a new city can be stressful for children.",
+    "exampleZh": "搬去新城市对孩子来说可能压力很大。"
+  },
+  {
+    "id": "energetic",
+    "word": "energetic",
+    "phonetic": "/ˌenəˈdʒetɪk/",
+    "pos": "adj.",
+    "meaning": "精力充沛的；积极的",
+    "example": "The energetic boy never stops asking questions.",
+    "exampleZh": "这个精力充沛的男孩总是问个不停。"
+  },
+  {
+    "id": "fibre",
+    "word": "fibre",
+    "phonetic": "/ˈfaɪbə(r)/",
+    "pos": "n.",
+    "meaning": "纤维（物质）",
+    "example": "Whole wheat bread provides healthy fibre.",
+    "exampleZh": "全麦面包提供健康的纤维。"
+  },
+  {
+    "id": "wellness",
+    "word": "wellness",
+    "phonetic": "/ˈwelnəs/",
+    "pos": "n.",
+    "meaning": "健康；身心健康",
+    "example": "The school opened a wellness centre for students.",
+    "exampleZh": "学校为学生开设了健康中心。"
+  },
+  {
+    "id": "balanced",
+    "word": "balanced",
+    "phonetic": "/ˈbælənst/",
+    "pos": "adj.",
+    "meaning": "均衡的；保持平衡的",
+    "example": "A balanced diet includes fruit, vegetables and grains.",
+    "exampleZh": "均衡的饮食包括水果、蔬菜和谷物。"
+  }
+]

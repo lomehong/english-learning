@@ -17,7 +17,6 @@ export const unit11Passages: ReadingPassage[] = [
     ],
     glossary: [
       { wordId: 'severe', forms: ['severe'] },
-      { wordId: 'physician', forms: ['physicians'] },
       { wordId: 'blame', forms: ['blame'] },
       { wordId: 'theory', forms: ['theory'] },
       { wordId: 'prove', forms: ['prove'] },

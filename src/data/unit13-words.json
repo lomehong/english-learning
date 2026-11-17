@@ -63,13 +63,13 @@
     "exampleZh": "长途步行让我们胃口大开。"
   },
   {
-    "id": "dessert",
-    "word": "dessert",
-    "phonetic": "/dɪˈzɜːt/",
+    "id": "pastry",
+    "word": "pastry",
+    "phonetic": "/ˈpeɪstri/",
     "pos": "n.",
-    "meaning": "甜点；餐后甜食",
-    "example": "What would you like for dessert?",
-    "exampleZh": "甜点你想吃什么？"
+    "meaning": "糕点；酥皮点心",
+    "example": "The bakery is famous for its freshly baked pastry.",
+    "exampleZh": "这家面包店以新鲜出炉的糕点闻名。"
   },
   {
     "id": "recipe",
@@ -171,12 +171,12 @@
     "exampleZh": "这位厨师的技艺确实非同凡响。"
   },
   {
-    "id": "spicy",
-    "word": "spicy",
-    "phonetic": "/ˈspaɪsi/",
+    "id": "crispy",
+    "word": "crispy",
+    "phonetic": "/ˈkrɪspi/",
     "pos": "adj.",
-    "meaning": "辛辣的；加香料的",
-    "example": "Many people in Sichuan love spicy food.",
-    "exampleZh": "四川很多人爱吃辛辣的食物。"
+    "meaning": "酥脆的",
+    "example": "The duck skin tastes crispy and smells wonderful.",
+    "exampleZh": "鸭皮吃起来酥脆，闻起来很香。"
   }
 ]

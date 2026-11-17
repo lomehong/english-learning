@@ -21,8 +21,6 @@ export const unit14Passages: ReadingPassage[] = [
       { wordId: 'rail', forms: ['rail'] },
       { wordId: 'carriage', forms: ['carriage'] },
       { wordId: 'highlight', forms: ['highlight'] },
-      { wordId: 'bay', forms: ['bay'] },
-      { wordId: 'wildlife', forms: ['wildlife'] },
       { wordId: 'spectacular', forms: ['spectacular'] },
       { wordId: 'dusk', forms: ['dusk'] },
       { wordId: 'photographer', forms: ['photographer'] },

@@ -18,22 +18,22 @@
     "exampleZh": "你需要一个好成绩才有资格参加这个项目。"
   },
   {
-    "id": "ambition",
-    "word": "ambition",
-    "phonetic": "/æmˈbɪʃn/",
+    "id": "perseverance",
+    "word": "perseverance",
+    "phonetic": "/ˌpɜːsɪˈvɪərəns/",
     "pos": "n.",
-    "meaning": "雄心；抱负；野心",
-    "example": "Her ambition is to become an interpreter.",
-    "exampleZh": "她的抱负是成为一名口译员。"
+    "meaning": "坚持不懈；毅力",
+    "example": "Great scientists succeed through talent and perseverance.",
+    "exampleZh": "伟大的科学家凭借天赋与坚持不懈取得成功。"
   },
   {
-    "id": "adapt",
-    "word": "adapt",
-    "phonetic": "/əˈdæpt/",
-    "pos": "v.",
-    "meaning": "（使）适应；改编",
-    "example": "It took him a month to adapt to the new school.",
-    "exampleZh": "他花了一个月才适应新学校。"
+    "id": "overseas",
+    "word": "overseas",
+    "phonetic": "/ˌəʊvəˈsiːz/",
+    "pos": "adj./adv.",
+    "meaning": "海外的；在国外",
+    "example": "Many students dream of studying overseas after graduation.",
+    "exampleZh": "许多学生梦想毕业后去海外留学。"
   },
   {
     "id": "tutor",
@@ -108,22 +108,22 @@
     "exampleZh": "这个文化节提供丰富多彩的文化活动。"
   },
   {
-    "id": "ceremony",
-    "word": "ceremony",
-    "phonetic": "/ˈserəməni/",
+    "id": "ritual",
+    "word": "ritual",
+    "phonetic": "/ˈrɪtʃuəl/",
     "pos": "n.",
-    "meaning": "典礼；仪式；礼节",
-    "example": "The opening ceremony of the festival was wonderful.",
-    "exampleZh": "艺术节的开幕式非常精彩。"
+    "meaning": "仪式；例行程序",
+    "example": "Tea making became a ritual that welcomed every guest.",
+    "exampleZh": "沏茶成了迎接每位客人的仪式。"
   },
   {
-    "id": "tradition",
-    "word": "tradition",
-    "phonetic": "/trəˈdɪʃn/",
+    "id": "folklore",
+    "word": "folklore",
+    "phonetic": "/ˈfəʊklɔː(r)/",
     "pos": "n.",
-    "meaning": "传统；惯例",
-    "example": "Making dumplings is a family tradition at Spring Festival.",
-    "exampleZh": "春节包饺子是这个家的传统。"
+    "meaning": "民俗；民间传说",
+    "example": "Local folklore explains the origin of this spring festival.",
+    "exampleZh": "当地民间传说解释了这个春节的由来。"
   },
   {
     "id": "idiom",

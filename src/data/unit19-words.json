@@ -1,0 +1,182 @@
+[
+  {
+    "id": "ancestor",
+    "word": "ancestor",
+    "phonetic": "/ˈænsestə(r)/",
+    "pos": "n.",
+    "meaning": "祖先；祖宗",
+    "example": "Every spring the family honours its ancestors at the tomb.",
+    "exampleZh": "每年春天这家人都在墓前祭奠祖先。"
+  },
+  {
+    "id": "philosophy",
+    "word": "philosophy",
+    "phonetic": "/fəˈlɒsəfi/",
+    "pos": "n.",
+    "meaning": "哲学；人生哲学",
+    "example": "Confucius built the heart of Chinese philosophy.",
+    "exampleZh": "孔子奠定了中国哲学的核心。"
+  },
+  {
+    "id": "individual",
+    "word": "individual",
+    "phonetic": "/ˌɪndɪˈvɪdʒuəl/",
+    "pos": "adj. & n.",
+    "meaning": "个人的；个别的；个人",
+    "example": "Each individual village has its own spring festival customs.",
+    "exampleZh": "每个村庄都有自己的春节习俗。"
+  },
+  {
+    "id": "footstep",
+    "word": "footstep",
+    "phonetic": "/ˈfʊtstep/",
+    "pos": "n.",
+    "meaning": "脚步（声）；足迹",
+    "example": "We walked in the footsteps of ancient traders on the old road.",
+    "exampleZh": "我们沿着古道行走在古代商人的足迹里。"
+  },
+  {
+    "id": "dynasty",
+    "word": "dynasty",
+    "phonetic": "/ˈdɪnəsti/",
+    "pos": "n.",
+    "meaning": "王朝；朝代",
+    "example": "The vase was made during the Ming Dynasty and is now priceless.",
+    "exampleZh": "这只花瓶造于明代，如今价值连城。"
+  },
+  {
+    "id": "tradition",
+    "word": "tradition",
+    "phonetic": "/trəˈdɪʃn/",
+    "pos": "n.",
+    "meaning": "传统；传统的信仰（或风俗）",
+    "example": "Making dumplings together is a tradition in her family.",
+    "exampleZh": "一起包饺子是她家的传统。"
+  },
+  {
+    "id": "custom",
+    "word": "custom",
+    "phonetic": "/ˈkʌstəm/",
+    "pos": "n.",
+    "meaning": "风俗；习俗",
+    "example": "It is a local custom to dragon-boat race on the river in June.",
+    "exampleZh": "六月在这条河上赛龙舟是当地的风俗。"
+  },
+  {
+    "id": "feast",
+    "word": "feast",
+    "phonetic": "/fiːst/",
+    "pos": "n.",
+    "meaning": "盛宴；节日",
+    "example": "The whole village enjoys a big feast at the harvest festival.",
+    "exampleZh": "丰收节时全村人共享盛宴。"
+  },
+  {
+    "id": "castle",
+    "word": "castle",
+    "phonetic": "/ˈkɑːsl/",
+    "pos": "n.",
+    "meaning": "城堡",
+    "example": "The old castle on the hill was built nine hundred years ago.",
+    "exampleZh": "山上的古堡建于九百年前。"
+  },
+  {
+    "id": "landscape",
+    "word": "landscape",
+    "phonetic": "/ˈlændskeɪp/",
+    "pos": "n.",
+    "meaning": "风景；乡村风景画",
+    "example": "Green hills and rice fields make up the landscape of the town.",
+    "exampleZh": "青山和稻田构成了这个小镇的风景。"
+  },
+  {
+    "id": "generous",
+    "word": "generous",
+    "phonetic": "/ˈdʒenərəs/",
+    "pos": "adj.",
+    "meaning": "慷慨的；大方的",
+    "example": "The generous farmer invited strangers to share his feast.",
+    "exampleZh": "慷慨的农夫邀请陌生人共享盛宴。"
+  },
+  {
+    "id": "curious",
+    "word": "curious",
+    "phonetic": "/ˈkjʊəriəs/",
+    "pos": "adj.",
+    "meaning": "好奇的；求知欲强的",
+    "example": "The curious boy asked his grandfather about every old object in the house.",
+    "exampleZh": "好奇的男孩问爷爷家里每件老物件的来历。"
+  },
+  {
+    "id": "position",
+    "word": "position",
+    "phonetic": "/pəˈzɪʃn/",
+    "pos": "n.",
+    "meaning": "位置；姿势；地位",
+    "example": "The temple was built in the position where the two rivers meet.",
+    "exampleZh": "这座庙建在两河交汇的位置。"
+  },
+  {
+    "id": "battle",
+    "word": "battle",
+    "phonetic": "/ˈbætl/",
+    "pos": "n.",
+    "meaning": "战斗；战役",
+    "example": "A famous battle took place on this plain long ago.",
+    "exampleZh": "很久以前这片平原上发生过一场著名的战役。"
+  },
+  {
+    "id": "military",
+    "word": "military",
+    "phonetic": "/ˈmɪlətri/",
+    "pos": "adj.",
+    "meaning": "军事的；军用的",
+    "example": "The museum shows maps and arms used by the military in the past.",
+    "exampleZh": "博物馆展出过去军队使用的地图和武器。"
+  },
+  {
+    "id": "kingdom",
+    "word": "kingdom",
+    "phonetic": "/ˈkɪŋdəm/",
+    "pos": "n.",
+    "meaning": "王国；领域",
+    "example": "The ancient kingdom left behind beautiful bronzes and poems.",
+    "exampleZh": "这个古代王国留下了精美的青铜器和诗歌。"
+  },
+  {
+    "id": "royal",
+    "word": "royal",
+    "phonetic": "/ˈrɔɪəl/",
+    "pos": "adj.",
+    "meaning": "王室的；皇家的",
+    "example": "The royal garden is famous for its old stone bridges.",
+    "exampleZh": "皇家园林以古老的石桥闻名。"
+  },
+  {
+    "id": "philosopher",
+    "word": "philosopher",
+    "phonetic": "/fəˈlɒsəfə(r)/",
+    "pos": "n.",
+    "meaning": "哲学家；思想家",
+    "example": "The philosopher taught his students under a big tree.",
+    "exampleZh": "这位哲学家在一棵大树下给学生讲学。"
+  },
+  {
+    "id": "poet",
+    "word": "poet",
+    "phonetic": "/ˈpəʊɪt/",
+    "pos": "n.",
+    "meaning": "诗人",
+    "example": "The poet wrote about the rivers and mountains of his home town.",
+    "exampleZh": "这位诗人写下了家乡的山水。"
+  },
+  {
+    "id": "greet",
+    "word": "greet",
+    "phonetic": "/ɡriːt/",
+    "pos": "vt.",
+    "meaning": "问候；迎接；（事物）映入眼帘",
+    "example": "Villagers greet guests with tea at the gate of the village.",
+    "exampleZh": "村民在村口用茶迎接客人。"
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "iconic",
+    "word": "iconic",
+    "phonetic": "/aɪˈkɒnɪk/",
+    "pos": "adj.",
+    "meaning": "标志性的；图标般的",
+    "example": "The Opera House is one of the most iconic buildings in the world.",
+    "exampleZh": "这座歌剧院是世界上最著名的标志性建筑之一。"
+  },
+  {
+    "id": "icon",
+    "word": "icon",
+    "phonetic": "/ˈaɪkɒn/",
+    "pos": "n.",
+    "meaning": "象征物；偶像；图标",
+    "example": "The kangaroo has become an icon of Australia.",
+    "exampleZh": "袋鼠已成为澳大利亚的象征。"
+  },
+  {
+    "id": "foundation",
+    "word": "foundation",
+    "phonetic": "/faʊnˈdeɪʃn/",
+    "pos": "n.",
+    "meaning": "基础；地基；基金会",
+    "example": "The museum was built on the foundation of an old fort.",
+    "exampleZh": "这座博物馆建在一座旧要塞的地基上。"
+  },
+  {
+    "id": "locate",
+    "word": "locate",
+    "phonetic": "/ləʊˈkeɪt/",
+    "pos": "vt.",
+    "meaning": "找出……的位置；使坐落于",
+    "example": "The park is located in the north of the city.",
+    "exampleZh": "这座公园位于城市北部。"
+  },
+  {
+    "id": "tropical",
+    "word": "tropical",
+    "phonetic": "/ˈtrɒpɪkl/",
+    "pos": "adj.",
+    "meaning": "热带的；炎热的",
+    "example": "They walked through a tropical rainforest by the coast.",
+    "exampleZh": "他们徒步穿过海岸边的热带雨林。"
+  },
+  {
+    "id": "temperate",
+    "word": "temperate",
+    "phonetic": "/ˈtemprət/",
+    "pos": "adj.",
+    "meaning": "（气候）温和的；温带的",
+    "example": "The south of the country enjoys a temperate climate.",
+    "exampleZh": "该国南部气候温和。"
+  },
+  {
+    "id": "barbecue",
+    "word": "barbecue",
+    "phonetic": "/ˈbɑːbɪkjuː/",
+    "pos": "n. & vt.",
+    "meaning": "烧烤野餐  在烤架上烤",
+    "example": "We had a barbecue on the beach at sunset.",
+    "exampleZh": "日落时我们在海滩上烧烤。"
+  },
+  {
+    "id": "butcher",
+    "word": "butcher",
+    "phonetic": "/ˈbʊtʃə(r)/",
+    "pos": "n.",
+    "meaning": "肉商；屠夫",
+    "example": "The town butcher makes the best sausages in the valley.",
+    "exampleZh": "镇上的肉商做的香肠是整个山谷最好吃的。"
+  },
+  {
+    "id": "premier",
+    "word": "premier",
+    "phonetic": "/ˈpremiə(r)/",
+    "pos": "n. & adj.",
+    "meaning": "总理；首相  首要的",
+    "example": "The premier opened the new national park last week.",
+    "exampleZh": "总理上周为新国家公园揭幕。"
+  },
+  {
+    "id": "herb",
+    "word": "herb",
+    "phonetic": "/hɜːb/",
+    "pos": "n.",
+    "meaning": "药草；香草",
+    "example": "The guide showed us herbs used by the local people.",
+    "exampleZh": "向导向我们展示了当地人使用的药草。"
+  },
+  {
+    "id": "kayak",
+    "word": "kayak",
+    "phonetic": "/ˈkaɪæk/",
+    "pos": "n. & vi.",
+    "meaning": "皮艇  划皮艇",
+    "example": "We hired a kayak to explore the quiet bay.",
+    "exampleZh": "我们租了一艘皮艇去探索安静的海湾。"
+  },
+  {
+    "id": "reptile",
+    "word": "reptile",
+    "phonetic": "/ˈreptaɪl/",
+    "pos": "n.",
+    "meaning": "爬行动物",
+    "example": "The island is famous for its ancient reptile species.",
+    "exampleZh": "这座岛以古老的爬行动物物种闻名。"
+  },
+  {
+    "id": "hatch",
+    "word": "hatch",
+    "phonetic": "/hætʃ/",
+    "pos": "vt. & vi.",
+    "meaning": "孵化；策划",
+    "example": "The baby turtles hatched on the beach at night.",
+    "exampleZh": "小海龟在夜里于沙滩上孵化出壳。"
+  },
+  {
+    "id": "migrate",
+    "word": "migrate",
+    "phonetic": "/maɪˈɡreɪt/",
+    "pos": "vi.",
+    "meaning": "迁徙；移居",
+    "example": "These birds migrate north every spring.",
+    "exampleZh": "这些鸟每年春天向北迁徙。"
+  },
+  {
+    "id": "landmark",
+    "word": "landmark",
+    "phonetic": "/ˈlændmɑːk/",
+    "pos": "n.",
+    "meaning": "地标；标志性建筑",
+    "example": "The Opera House is the most famous landmark in Sydney.",
+    "exampleZh": "歌剧院是悉尼最著名的地标建筑。"
+  },
+  {
+    "id": "dome",
+    "word": "dome",
+    "phonetic": "/dəʊm/",
+    "pos": "n.",
+    "meaning": "圆屋顶；穹顶",
+    "example": "The white dome of the concert hall shines in the sun.",
+    "exampleZh": "音乐厅的白色穹顶在阳光下闪闪发光。"
+  },
+  {
+    "id": "strait",
+    "word": "strait",
+    "phonetic": "/streɪt/",
+    "pos": "n.",
+    "meaning": "海峡",
+    "example": "The ship sailed slowly through the narrow strait.",
+    "exampleZh": "轮船缓缓驶过狭窄的海峡。"
+  },
+  {
+    "id": "equator",
+    "word": "equator",
+    "phonetic": "/ɪˈkweɪtə(r)/",
+    "pos": "n.",
+    "meaning": "赤道",
+    "example": "The island lies just south of the equator.",
+    "exampleZh": "这座岛位于赤道以南。"
+  },
+  {
+    "id": "distribution",
+    "word": "distribution",
+    "phonetic": "/ˌdɪstrɪˈbjuːʃn/",
+    "pos": "n.",
+    "meaning": "分布；分配；分发",
+    "example": "Scientists study the distribution of kangaroos across the country.",
+    "exampleZh": "科学家研究袋鼠在全国的分布情况。"
+  },
+  {
+    "id": "snorkel",
+    "word": "snorkel",
+    "phonetic": "/ˈsnɔːkl/",
+    "pos": "vi. & n.",
+    "meaning": "潜泳  （潜泳用的）呼吸管",
+    "example": "Visitors can snorkel over the colourful coral gardens.",
+    "exampleZh": "游客可以在五彩的珊瑚园上方潜泳。"
+  }
+]

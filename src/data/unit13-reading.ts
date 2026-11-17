@@ -79,7 +79,6 @@ export const unit13Passages: ReadingPassage[] = [
       'Travellers often find that trying local food is the quickest way to understand a culture. A bowl of noodles eaten at a night market can teach you more about a city than a guidebook. So next time you go abroad, be brave: taste first, and judge later.',
     ],
     glossary: [
-      { wordId: 'spicy', forms: ['spicy'] },
       { wordId: 'appetite', forms: ['appetite'] },
       { wordId: 'chew', forms: ['chew'] },
       { wordId: 'ideal', forms: ['ideal'] },

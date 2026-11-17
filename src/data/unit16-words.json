@@ -1,0 +1,182 @@
+[
+  {
+    "id": "heritage",
+    "word": "heritage",
+    "phonetic": "/ˈherɪtɪdʒ/",
+    "pos": "n.",
+    "meaning": "遗产（指国家或社会长期形成的历史、传统与文化）",
+    "example": "The Great Wall is part of the cultural heritage of China.",
+    "exampleZh": "长城是中国文化遗产的一部分。"
+  },
+  {
+    "id": "relic",
+    "word": "relic",
+    "phonetic": "/ˈrelɪk/",
+    "pos": "n.",
+    "meaning": "遗物；遗迹；遗产",
+    "example": "The museum keeps many valuable relics from the Tang Dynasty.",
+    "exampleZh": "这家博物馆收藏着许多珍贵的唐代遗物。"
+  },
+  {
+    "id": "temple",
+    "word": "temple",
+    "phonetic": "/ˈtempl/",
+    "pos": "n.",
+    "meaning": "庙宇；寺；神殿",
+    "example": "Every year thousands of visitors climb to the old temple on the mountain.",
+    "exampleZh": "每年都有成千上万的游客爬到山上的古庙。"
+  },
+  {
+    "id": "mount",
+    "word": "mount",
+    "phonetic": "/maʊnt/",
+    "pos": "n.",
+    "meaning": "山（用于山名前，常缩写为 Mt.）",
+    "example": "We took a cable car to the top of Mount Tai.",
+    "exampleZh": "我们乘缆车到了泰山山顶。"
+  },
+  {
+    "id": "former",
+    "word": "former",
+    "phonetic": "/ˈfɔːmə(r)/",
+    "pos": "adj.",
+    "meaning": "以前的；从前的",
+    "example": "The former palace is now open to the public as a museum.",
+    "exampleZh": "这座从前的宫殿如今作为博物馆向公众开放。"
+  },
+  {
+    "id": "preserve",
+    "word": "preserve",
+    "phonetic": "/prɪˈzɜːv/",
+    "pos": "vt.",
+    "meaning": "保存；保护；维持",
+    "example": "Experts use modern technology to preserve the ancient wall paintings.",
+    "exampleZh": "专家们用现代技术保护古代壁画。"
+  },
+  {
+    "id": "promote",
+    "word": "promote",
+    "phonetic": "/prəˈməʊt/",
+    "pos": "vt.",
+    "meaning": "促进；提升；推销",
+    "example": "The city promotes its traditional festivals to attract more tourists.",
+    "exampleZh": "这座城市推广它的传统节日以吸引更多游客。"
+  },
+  {
+    "id": "protest",
+    "word": "protest",
+    "phonetic": "/ˈprəʊtest/",
+    "pos": "n. & vi.",
+    "meaning": "抗议（against）",
+    "example": "Local people made a protest against the new road through the old town.",
+    "exampleZh": "当地民众抗议新公路穿过老城。"
+  },
+  {
+    "id": "establish",
+    "word": "establish",
+    "phonetic": "/ɪˈstæblɪʃ/",
+    "pos": "vt.",
+    "meaning": "建立；创立；确立",
+    "example": "The government established a committee to protect the historic site.",
+    "exampleZh": "政府成立了一个委员会来保护这处历史遗迹。"
+  },
+  {
+    "id": "prevent",
+    "word": "prevent",
+    "phonetic": "/prɪˈvent/",
+    "pos": "vt.",
+    "meaning": "阻止；防止（from）",
+    "example": "Fences were built to prevent visitors from touching the relics.",
+    "exampleZh": "修建围栏是为了防止游客触摸文物。"
+  },
+  {
+    "id": "contribute",
+    "word": "contribute",
+    "phonetic": "/kənˈtrɪbjuːt/",
+    "pos": "vi. & vt.",
+    "meaning": "捐助；贡献；促成",
+    "example": "Many citizens contribute money to the repair of the ancient bridge.",
+    "exampleZh": "许多市民为古桥的修缮捐款。"
+  },
+  {
+    "id": "donate",
+    "word": "donate",
+    "phonetic": "/dəʊˈneɪt/",
+    "pos": "vt.",
+    "meaning": "捐赠；赠予",
+    "example": "He decided to donate his collection of old books to the school library.",
+    "exampleZh": "他决定把自己的藏书捐赠给学校图书馆。"
+  },
+  {
+    "id": "investigate",
+    "word": "investigate",
+    "phonetic": "/ɪnˈvestɪɡeɪt/",
+    "pos": "vi. & vt.",
+    "meaning": "调查；研究",
+    "example": "Scientists investigate the caves to learn about early human life.",
+    "exampleZh": "科学家们考察这些洞穴以了解早期人类的生活。"
+  },
+  {
+    "id": "conduct",
+    "word": "conduct",
+    "phonetic": "/kənˈdʌkt/",
+    "pos": "vt.",
+    "meaning": "组织；实施；引导",
+    "example": "The team conducted a survey of the temples along the old trade road.",
+    "exampleZh": "团队对古道沿线的庙宇进行了一次调查。"
+  },
+  {
+    "id": "document",
+    "word": "document",
+    "phonetic": "/ˈdɒkjumənt/",
+    "pos": "n. & vt.",
+    "meaning": "文件；证件；记录，记载（动词）",
+    "example": "Researchers document every stone carving before moving it.",
+    "exampleZh": "研究人员在搬移每件石刻前都先做记录。"
+  },
+  {
+    "id": "balance",
+    "word": "balance",
+    "phonetic": "/ˈbæləns/",
+    "pos": "n. & vt.",
+    "meaning": "平衡；使保持平衡",
+    "example": "We must find a balance between tourism and the protection of relics.",
+    "exampleZh": "我们必须在旅游业与文物保护之间找到平衡。"
+  },
+  {
+    "id": "proposal",
+    "word": "proposal",
+    "phonetic": "/prəˈpəʊzl/",
+    "pos": "n.",
+    "meaning": "提议；建议；提案",
+    "example": "The committee discussed the proposal to build a museum underground.",
+    "exampleZh": "委员会讨论了地下修建博物馆的提案。"
+  },
+  {
+    "id": "committee",
+    "word": "committee",
+    "phonetic": "/kəˈmɪti/",
+    "pos": "n.",
+    "meaning": "委员会",
+    "example": "A special committee raises money for the old town each year.",
+    "exampleZh": "一个特别委员会每年为老城筹款。"
+  },
+  {
+    "id": "limit",
+    "word": "limit",
+    "phonetic": "/ˈlɪmɪt/",
+    "pos": "n. & vt.",
+    "meaning": "限度；限制；限定",
+    "example": "The number of daily visitors to the caves is limited to five hundred.",
+    "exampleZh": "洞穴每日游客数量被限定在五百人以内。"
+  },
+  {
+    "id": "professional",
+    "word": "professional",
+    "phonetic": "/prəˈfeʃənl/",
+    "pos": "adj.",
+    "meaning": "专业的；职业的",
+    "example": "Professional restorers spent three years repairing the bridge.",
+    "exampleZh": "专业修复人员花了三年时间修复这座桥。"
+  }
+]

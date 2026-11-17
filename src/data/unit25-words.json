@@ -1,0 +1,182 @@
+[
+  {
+    "id": "bet",
+    "word": "bet",
+    "phonetic": "/bet/",
+    "pos": "n.",
+    "meaning": "打赌；赌注（v. 打赌；下注）",
+    "example": "The two brothers made a bet about whether money could buy everything.",
+    "exampleZh": "两兄弟打了个赌：金钱是否能买到一切。"
+  },
+  {
+    "id": "banknote",
+    "word": "banknote",
+    "phonetic": "/ˈbæŋknəʊt/",
+    "pos": "n.",
+    "meaning": "钞票；纸币",
+    "example": "He took out a million-pound banknote and paid for the meal.",
+    "exampleZh": "他掏出一张百万英镑的钞票付了饭钱。"
+  },
+  {
+    "id": "accident",
+    "word": "accident",
+    "phonetic": "/ˈæksɪdənt/",
+    "pos": "n.",
+    "meaning": "事故；意外的事（by accident 偶然）",
+    "example": "By accident, he met his old friend in the bank.",
+    "exampleZh": "他在银行里偶然遇到了老朋友。"
+  },
+  {
+    "id": "bay",
+    "word": "bay",
+    "phonetic": "/beɪ/",
+    "pos": "n.",
+    "meaning": "（海或湖泊的）湾",
+    "example": "The rich man's sailing boat was floating on the quiet bay.",
+    "exampleZh": "那位富人的帆船漂浮在平静的海湾上。"
+  },
+  {
+    "id": "stare",
+    "word": "stare",
+    "phonetic": "/steə(r)/",
+    "pos": "vi.",
+    "meaning": "凝视；盯着看（stare at）",
+    "example": "The waiter stared at the banknote in surprise for quite a while.",
+    "exampleZh": "服务员惊讶地盯着那张钞票看了好一会儿。"
+  },
+  {
+    "id": "nightfall",
+    "word": "nightfall",
+    "phonetic": "/ˈnaɪtfɔːl/",
+    "pos": "n.",
+    "meaning": "黄昏；傍晚",
+    "example": "By nightfall, the small market by the bay was full of people.",
+    "exampleZh": "到傍晚时分，海湾边的小集市已挤满了人。"
+  },
+  {
+    "id": "unpaid",
+    "word": "unpaid",
+    "phonetic": "/ˌʌnˈpeɪd/",
+    "pos": "adj.",
+    "meaning": "未偿付的；无报酬的",
+    "example": "He worked as an unpaid helper in the soup kitchen every weekend.",
+    "exampleZh": "他每个周末在施粥厨房做无报酬的帮工。"
+  },
+  {
+    "id": "seek",
+    "word": "seek",
+    "phonetic": "/siːk/",
+    "pos": "vt.",
+    "meaning": "寻找；谋求（过去式/过去分词 sought）",
+    "example": "True happiness is not sought in a fat wallet.",
+    "exampleZh": "真正的幸福不是从鼓鼓的钱包里寻找的。"
+  },
+  {
+    "id": "budget",
+    "word": "budget",
+    "phonetic": "/ˈbʌdʒɪt/",
+    "pos": "n.",
+    "meaning": "预算",
+    "example": "Making a monthly budget helps us spend money wisely.",
+    "exampleZh": "制定每月预算有助于我们明智地花钱。"
+  },
+  {
+    "id": "permit",
+    "word": "permit",
+    "phonetic": "/pəˈmɪt/",
+    "pos": "v.",
+    "meaning": "允许；准许（n. /ˈpɜːmɪt/ 许可证）",
+    "example": "Money can buy a bed, but it cannot permit you to buy sleep.",
+    "exampleZh": "钱能买床，却买不来睡眠。"
+  },
+  {
+    "id": "businessman",
+    "word": "businessman",
+    "phonetic": "/ˈbɪznəsmæn/",
+    "pos": "n.",
+    "meaning": "商人；实业家",
+    "example": "The honest businessman never seeks profit by cheating others.",
+    "exampleZh": "这位诚实的商人从不靠欺骗他人牟利。"
+  },
+  {
+    "id": "indeed",
+    "word": "indeed",
+    "phonetic": "/ɪnˈdiːd/",
+    "pos": "adv.",
+    "meaning": "确实；实在",
+    "example": "It was indeed a strange bet, but it taught us a lot about money.",
+    "exampleZh": "这确实是个奇怪的赌约，但它让我们学到了很多关于金钱的道理。"
+  },
+  {
+    "id": "napkin",
+    "word": "napkin",
+    "phonetic": "/ˈnæpkɪn/",
+    "pos": "n.",
+    "meaning": "餐巾；餐巾纸",
+    "example": "The waiter placed a clean napkin beside each plate.",
+    "exampleZh": "服务员在每个餐盘旁放了一张干净的餐巾。"
+  },
+  {
+    "id": "rag",
+    "word": "rag",
+    "phonetic": "/ræɡ/",
+    "pos": "n.",
+    "meaning": "破布；碎布（in rags 衣衫褴褛）",
+    "example": "Nobody helped the young man when he was in rags.",
+    "exampleZh": "当年年轻人衣衫褴褛时，没有人帮助他。"
+  },
+  {
+    "id": "unbelievable",
+    "word": "unbelievable",
+    "phonetic": "/ˌʌnbɪˈliːvəbl/",
+    "pos": "adj.",
+    "meaning": "难以置信的",
+    "example": "It was unbelievable that the shop owner offered everything for free.",
+    "exampleZh": "店主愿意分文不取，令人难以置信。"
+  },
+  {
+    "id": "steak",
+    "word": "steak",
+    "phonetic": "/steɪk/",
+    "pos": "n.",
+    "meaning": "牛排；肉排",
+    "example": "He ordered a thick steak, a pineapple dessert and a cup of coffee.",
+    "exampleZh": "他点了一块厚牛排、一份菠萝甜点和一杯咖啡。"
+  },
+  {
+    "id": "pineapple",
+    "word": "pineapple",
+    "phonetic": "/ˈpaɪnæpl/",
+    "pos": "n.",
+    "meaning": "菠萝",
+    "example": "The waitress recommended the fresh pineapple juice to us.",
+    "exampleZh": "女服务员向我们推荐了新鲜菠萝汁。"
+  },
+  {
+    "id": "dessert",
+    "word": "dessert",
+    "phonetic": "/dɪˈzɜːt/",
+    "pos": "n.",
+    "meaning": "甜点；餐后甜食",
+    "example": "What would you like for dessert, ice cream or fruit salad?",
+    "exampleZh": "你甜点想吃什么，冰淇淋还是水果沙拉？"
+  },
+  {
+    "id": "amount",
+    "word": "amount",
+    "phonetic": "/əˈmaʊnt/",
+    "pos": "n.",
+    "meaning": "数量；金额（a large amount of 大量的）",
+    "example": "He spent a large amount of money on books last year.",
+    "exampleZh": "他去年花了一大笔钱买书。"
+  },
+  {
+    "id": "rude",
+    "word": "rude",
+    "phonetic": "/ruːd/",
+    "pos": "adj.",
+    "meaning": "粗鲁的；无礼的",
+    "example": "It is rude to laugh at the poor or judge people by their clothes.",
+    "exampleZh": "嘲笑穷人或以衣着取人是无礼的。"
+  }
+]

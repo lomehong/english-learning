@@ -1,12 +1,12 @@
 [
   {
-    "id": "bay",
-    "word": "bay",
-    "phonetic": "/beɪ/",
+    "id": "harbor",
+    "word": "harbor",
+    "phonetic": "/ˈhɑːbə(r)/",
     "pos": "n.",
-    "meaning": "海湾；湾区",
-    "example": "The hotel looks out over a quiet bay.",
-    "exampleZh": "这家旅馆面朝一个安静的海湾。"
+    "meaning": "海港；港口",
+    "example": "The train runs along the coast and passes a quiet harbor.",
+    "exampleZh": "列车沿着海岸行驶，经过一个安静的海港。"
   },
   {
     "id": "border",
@@ -99,13 +99,13 @@
     "exampleZh": "黄昏时我们欣赏到了壮观的群山景色。"
   },
   {
-    "id": "wildlife",
-    "word": "wildlife",
-    "phonetic": "/ˈwaɪldlaɪf/",
+    "id": "prairie",
+    "word": "prairie",
+    "phonetic": "/ˈpreəri/",
     "pos": "n.",
-    "meaning": "野生动物；野生生物",
-    "example": "You can see a lot of wildlife along the river.",
-    "exampleZh": "沿河可以看到很多野生动物。"
+    "meaning": "（北美）大草原",
+    "example": "Thousands of wild flowers turn the prairie golden in July.",
+    "exampleZh": "七月，无数野花把大草原染成金色。"
   },
   {
     "id": "maple",

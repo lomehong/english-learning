@@ -4,7 +4,7 @@ import type { GrammarExercise, GrammarPoint } from '../types';
 
 export const unit11GrammarPoints: GrammarPoint[] = [
   {
-    id: 'past-participle-attributive',
+    id: 'u11-past-participle-attributive',
     title: '过去分词（-ed 形式）作定语',
     tagline: '被动与完成：过去分词表示“被……的”，可前置修饰名词，也可用短语后置修饰名词。',
     forms: [
@@ -32,7 +32,7 @@ export const unit11GrammarPoints: GrammarPoint[] = [
     ],
   },
   {
-    id: 'past-participle-adverbial',
+    id: 'u11-past-participle-adverbial',
     title: '过去分词（-ed 形式）作状语',
     tagline: '分词短语前置或后置，说明时间、原因、条件、伴随等，其逻辑主语与主句主语一致且为被动关系。',
     forms: [
@@ -66,7 +66,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-g1',
     type: 'mcq',
-    pointId: 'past-participle-attributive',
+    pointId: 'u11-past-participle-attributive',
     stem: 'In the sentence "John Snow drew a map marked with all the deaths", the phrase "marked with all the deaths" is used to ______.',
     options: [
       'modify the noun "map"',
@@ -81,7 +81,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-g2',
     type: 'mcq',
-    pointId: 'past-participle-attributive',
+    pointId: 'u11-past-participle-attributive',
     stem: 'The ______ water was soon linked to the outbreak of the disease.',
     options: ['polluting', 'polluted', 'pollutes', 'to pollute'],
     answerIndex: 1,
@@ -91,7 +91,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-g3',
     type: 'mcq',
-    pointId: 'past-participle-adverbial',
+    pointId: 'u11-past-participle-adverbial',
     stem: '______ by the unexpected results, the young scientist repeated the whole experiment.',
     options: ['Inspiring', 'Inspired', 'To inspire', 'Inspire'],
     answerIndex: 1,
@@ -101,7 +101,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-g4',
     type: 'mcq',
-    pointId: 'past-participle-adverbial',
+    pointId: 'u11-past-participle-adverbial',
     stem: '______ more time, the research team could have proved their theory about the virus.',
     options: ['Giving', 'Given', 'To give', 'Gives'],
     answerIndex: 1,
@@ -111,7 +111,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-g5',
     type: 'mcq',
-    pointId: 'past-participle-adverbial',
+    pointId: 'u11-past-participle-adverbial',
     stem: 'The physician walked into the laboratory, ______ by two assistants.',
     options: ['following', 'followed', 'to follow', 'follow'],
     answerIndex: 1,
@@ -121,7 +121,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-g6',
     type: 'mcq',
-    pointId: 'past-participle-attributive',
+    pointId: 'u11-past-participle-attributive',
     stem: 'From the ______ look on her face, we knew the initial statistics were disappointing.',
     options: ['disappointing', 'disappointed', 'disappoint', 'disappointment'],
     answerIndex: 1,
@@ -131,7 +131,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-f1',
     type: 'fill',
-    pointId: 'past-participle-adverbial',
+    pointId: 'u11-past-participle-adverbial',
     stem: '______ in 1854, the cholera map helped doctors trace the source of the disease.（用 draw 的适当形式填空）',
     answer: 'Drawn',
     explanation:
@@ -140,7 +140,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-f2',
     type: 'fill',
-    pointId: 'past-participle-attributive',
+    pointId: 'u11-past-participle-attributive',
     stem: 'The virus ______ in the school laboratory last week belongs to a rare type.（用 isolate 的适当形式填空）',
     answer: 'isolated',
     explanation:
@@ -149,7 +149,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-f3',
     type: 'fill',
-    pointId: 'past-participle-adverbial',
+    pointId: 'u11-past-participle-adverbial',
     stem: '______ as the father of modern epidemiology, John Snow is remembered by later scientists.（用 know 的适当形式填空）',
     answer: 'Known',
     explanation:
@@ -158,7 +158,7 @@ export const unit11Exercises: GrammarExercise[] = [
   {
     id: 'u11-f4',
     type: 'fill',
-    pointId: 'past-participle-attributive',
+    pointId: 'u11-past-participle-attributive',
     stem: 'The statistics ______ by his assistant strongly supported the new theory.（用 collect 的适当形式填空）',
     answer: 'collected',
     explanation:

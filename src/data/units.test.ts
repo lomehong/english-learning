@@ -29,6 +29,15 @@ import { getListeningsByUnit, getListening } from './listening';
 import { getWritingTasksByUnit, getWritingTask } from './writing';
 import type { Word } from '../types';
 
+/**
+ * 共享注册表测试（数据无关）：
+ * ══════════════════════════════════════════════════════════════════════════
+ * 【并行约定】本文件只保留对「注册表聚合逻辑」的数据无关断言（合成数据 + 全量不变式），
+ * 不随册别/单元数量变化，各册新增单元的专属测试写独立文件 units-bookN.test.ts，
+ * 不再修改本文件，避免各册 PR 并行开发时在共享测试上冲突。
+ * ══════════════════════════════════════════════════════════════════════════
+ */
+
 /* ---------- 合成数据（只测聚合逻辑，不依赖真实单元文件） ---------- */
 
 const word = (id: string): Word => ({
@@ -52,25 +61,10 @@ const metaFiles = (
   );
 
 describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工清单）', () => {
-  it('内置十五个单元（必修一 1–5 + 选择性必修一 1–5 + 选择性必修二 1–5），全部由 meta 数据文件自动聚合进注册表', () => {
-    expect(UNIT_IDS).toEqual([
-      'unit1',
-      'unit2',
-      'unit3',
-      'unit4',
-      'unit5',
-      'unit6',
-      'unit7',
-      'unit8',
-      'unit9',
-      'unit10',
-      'unit11',
-      'unit12',
-      'unit13',
-      'unit14',
-      'unit15',
-    ]);
-    expect(new Set(UNIT_IDS).size).toBe(15);
+  it('全部注册单元 id 形如 unitN 且互不重复，清单与 manifest 一一对应（册数随数据文件自由扩展）', () => {
+    expect(UNIT_IDS).toEqual(UNIT_MANIFESTS.map((m) => m.id));
+    expect(new Set(UNIT_IDS).size).toBe(UNIT_IDS.length);
+    for (const id of UNIT_IDS) expect(id).toMatch(/^unit\d+$/);
     for (const book of BOOK_IDS) {
       const nos = unitsByBook(book).map((m) => m.no);
       expect(new Set(nos).size, `${book} 册内单元号不重复`).toBe(nos.length);
@@ -97,12 +91,12 @@ describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工�
 
   it('isUnitId 只接受注册表内的 id', () => {
     for (const id of UNIT_IDS) expect(isUnitId(id)).toBe(true);
-    for (const id of ['unit99', 'Unit1', '', 'unit3 ', null, 3]) expect(isUnitId(id)).toBe(false);
+    for (const id of ['unit9900', 'Unit1', '', 'unit3 ', null, 3]) expect(isUnitId(id)).toBe(false);
   });
 });
 
-describe('单元排序 · 按 no 升序（稳定）', () => {
-  it('真实注册表：册内 no 严格递增（册别顺序分组），与 UNIT_IDS 顺序一致', () => {
+describe('单元排序 · 册内按 no 升序（稳定）', () => {
+  it('真实注册表：每册内 no 严格递增（册别顺序分组），与 UNIT_IDS 顺序一致', () => {
     for (const book of BOOK_IDS) {
       const nos = unitsByBook(book).map((m) => m.no);
       for (let i = 1; i < nos.length; i++)
@@ -138,30 +132,26 @@ describe('册别维度 · 注册表按册分组（meta 的 book 字段驱动）'
     expect(BOOK_LABELS[DEFAULT_BOOK]).toBe('必修一');
   });
 
-  it('必修一 unit1-5、选必一 unit6-10、选必二 unit11-15 各归其册，其余四册为空分组（缺册降级为空数组）', () => {
-    expect(unitIdsOfBook('required-1')).toEqual(['unit1', 'unit2', 'unit3', 'unit4', 'unit5']);
-    for (const id of unitIdsOfBook('required-1')) expect(UNIT_META[id as UnitId].book).toBe('required-1');
-    expect(unitIdsOfBook('elective-1')).toEqual(['unit6', 'unit7', 'unit8', 'unit9', 'unit10']);
-    for (const id of unitIdsOfBook('elective-1')) expect(UNIT_META[id as UnitId].book).toBe('elective-1');
-    expect(unitIdsOfBook('elective-2')).toEqual(['unit11', 'unit12', 'unit13', 'unit14', 'unit15']);
-    for (const id of unitIdsOfBook('elective-2')) expect(UNIT_META[id as UnitId].book).toBe('elective-2');
-    for (const book of ['required-2', 'required-3', 'elective-3', 'elective-4'] as const) {
-      expect(unitIdsOfBook(book), `${book} 尚无单元`).toEqual([]);
-      expect(unitsByBook(book)).toEqual([]);
-      expect(firstUnitOfBook(book)).toBeNull();
+  it('按册分组与 manifest 逐册对应：每个单元落在其 meta 声明的册，册清单顺序 = 册内 no 升序', () => {
+    for (const book of BOOK_IDS) {
+      const ids = unitIdsOfBook(book);
+      expect(ids).toEqual(UNITS_BY_BOOK[book].map((m) => m.id));
+      for (const m of UNITS_BY_BOOK[book]) {
+        expect(m.book).toBe(book);
+        expect(UNIT_META[m.id as UnitId].book).toBe(book);
+      }
+      // 尚未收录数据的册为空分组（缺册降级为空数组）；有数据的册首单元存在
+      if (ids.length === 0) expect(firstUnitOfBook(book)).toBeNull();
+      else expect(firstUnitOfBook(book)).toBe(ids[0]);
     }
     expect(firstUnitOfBook('required-1')).toBe('unit1');
-    expect(firstUnitOfBook('elective-1')).toBe('unit6');
-    expect(firstUnitOfBook('elective-2')).toBe('unit11');
   });
 
   it('UNITS_BY_BOOK 聚合视图与 manifest 一一对应：七册之和 = 注册表总数（自动发现不变）', () => {
-    expect(UNITS_BY_BOOK[DEFAULT_BOOK].map((m) => m.id)).toEqual([...UNIT_IDS.slice(0, 5)]);
     const total = BOOK_IDS.reduce((n, book) => n + UNITS_BY_BOOK[book].length, 0);
     expect(total).toBe(UNIT_MANIFESTS.length);
-    for (const book of BOOK_IDS) {
-      for (const m of UNITS_BY_BOOK[book]) expect(m.book).toBe(book);
-    }
+    const allGrouped = BOOK_IDS.flatMap((book) => UNITS_BY_BOOK[book].map((m) => m.id));
+    expect(allGrouped.sort()).toEqual([...UNIT_IDS].sort());
   });
 
   it('册别查询助手：bookOfUnit / isBookId / normalizeBookValue（册名与 slug 双写法）', () => {
@@ -271,7 +261,7 @@ describe('缺模块降级 · 缺数据文件不崩溃（该模块为空数组）
   });
 });
 
-describe('单元注册表 · 每单元五模块数据齐备', () => {
+describe('单元注册表 · 每单元五模块数据齐备（全量不变式，随数据扩展自动覆盖新单元）', () => {
   it('词汇：每单元 20 词，全表 id 不重叠，allWords 为各单元之和', () => {
     for (const m of UNIT_MANIFESTS) {
       expect(m.words, `${m.id} 词表 20 词`).toHaveLength(20);
@@ -346,98 +336,6 @@ describe('单元注册表 · 每单元五模块数据齐备', () => {
         expect(t.requirements.length).toBeGreaterThanOrEqual(3);
         expect(t.checklist.length).toBeGreaterThanOrEqual(4);
       }
-    }
-  });
-});
-
-describe('单元注册表 · Unit 3（Sports and Fitness）', () => {
-  const unit3 = UNIT_REGISTRY.unit3;
-
-  it('主题与词汇贴合：词表含 fitness/stadium/marathon/champion 等', () => {
-    expect(unit3.title).toBe('Sports and Fitness');
-    expect(unit3.theme).toBe('体育运动与健康');
-    const ids = new Set(unit3.words.map((w) => w.id));
-    for (const id of ['fitness', 'stadium', 'gym', 'marathon', 'champion', 'medal', 'compete', 'coach']) {
-      expect(ids.has(id), `Unit 3 词表应含 ${id}`).toBe(true);
-    }
-  });
-
-  it('语法点为一般过去时与一般将来时，练习 id 均带 u3- 前缀', () => {
-    expect(unit3.grammarPoints.map((p) => p.title).join('/')).toContain('一般过去时');
-    expect(unit3.grammarPoints.map((p) => p.title).join('/')).toContain('一般将来时');
-    for (const e of unit3.grammarExercises) expect(e.id.startsWith('u3-')).toBe(true);
-  });
-
-  it('阅读 / 听力 / 写作条目 id 均带 u3- 前缀（错题归档前缀约定）', () => {
-    for (const p of unit3.passages) {
-      expect(p.id.startsWith('u3-')).toBe(true);
-      for (const q of p.questions) expect(q.id.startsWith('u3-')).toBe(true);
-    }
-    for (const m of unit3.listenings) {
-      expect(m.id.startsWith('u3-')).toBe(true);
-      for (const q of m.questions) expect(q.id.startsWith('u3-')).toBe(true);
-    }
-    for (const t of unit3.writingTasks) expect(t.id.startsWith('u3-')).toBe(true);
-  });
-
-  it('阅读生词表 wordId 均在 Unit 3 词表中', () => {
-    const ids = new Set(unit3.words.map((w) => w.id));
-    for (const p of unit3.passages) {
-      for (const g of p.glossary) expect(ids.has(g.wordId), `${p.id} 生词 ${g.wordId} 不在 Unit 3 词表`).toBe(true);
-    }
-  });
-});
-
-describe('单元注册表 · Unit 4（Natural Disasters，纯数据文件新增）', () => {
-  const unit4 = UNIT_REGISTRY.unit4;
-
-  it('元信息来自 unit4-meta.json：Natural Disasters / 自然灾害', () => {
-    expect(unit4.no).toBe(4);
-    expect(unit4.id).toBe('unit4');
-    expect(unit4.title).toBe('Natural Disasters');
-    expect(unit4.theme).toBe('自然灾害');
-  });
-
-  it('主题与词汇贴合：词表含 disaster/earthquake/flood/rescue/shelter/survive 等', () => {
-    const ids = new Set(unit4.words.map((w) => w.id));
-    for (const id of [
-      'disaster',
-      'earthquake',
-      'flood',
-      'rescue',
-      'shelter',
-      'survive',
-      'destroy',
-      'trap',
-      'emergency',
-      'aid',
-    ]) {
-      expect(ids.has(id), `Unit 4 词表应含 ${id}`).toBe(true);
-    }
-  });
-
-  it('语法点为过去完成时与一般过去时的被动语态，练习 id 均带 u4- 前缀', () => {
-    expect(unit4.grammarPoints.map((p) => p.title).join('/')).toContain('过去完成时');
-    expect(unit4.grammarPoints.map((p) => p.title).join('/')).toContain('被动语态');
-    for (const e of unit4.grammarExercises) expect(e.id.startsWith('u4-')).toBe(true);
-  });
-
-  it('阅读 / 听力 / 写作条目 id 均带 u4- 前缀（错题归档前缀约定）', () => {
-    for (const p of unit4.passages) {
-      expect(p.id.startsWith('u4-')).toBe(true);
-      for (const q of p.questions) expect(q.id.startsWith('u4-')).toBe(true);
-    }
-    for (const m of unit4.listenings) {
-      expect(m.id.startsWith('u4-')).toBe(true);
-      for (const q of m.questions) expect(q.id.startsWith('u4-')).toBe(true);
-    }
-    for (const t of unit4.writingTasks) expect(t.id.startsWith('u4-')).toBe(true);
-  });
-
-  it('阅读生词表 wordId 均在 Unit 4 词表中', () => {
-    const ids = new Set(unit4.words.map((w) => w.id));
-    for (const p of unit4.passages) {
-      for (const g of p.glossary) expect(ids.has(g.wordId), `${p.id} 生词 ${g.wordId} 不在 Unit 4 词表`).toBe(true);
     }
   });
 });

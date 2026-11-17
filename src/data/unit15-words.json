@@ -72,13 +72,13 @@
     "exampleZh": "有人立即叫了救护车。"
   },
   {
-    "id": "procedure",
-    "word": "procedure",
-    "phonetic": "/prəˈsiːdʒə(r)/",
+    "id": "precaution",
+    "word": "precaution",
+    "phonetic": "/prɪˈkɔːʃn/",
     "pos": "n.",
-    "meaning": "程序；步骤；手续",
-    "example": "Follow the correct procedure when you give first aid.",
-    "exampleZh": "实施急救时要遵循正确的步骤。"
+    "meaning": "预防措施",
+    "example": "Wearing gloves is a basic precaution when giving first aid.",
+    "exampleZh": "实施急救时戴手套是一项基本预防措施。"
   },
   {
     "id": "panic",
@@ -171,12 +171,12 @@
     "exampleZh": "她去医院病房看望了祖母。"
   },
   {
-    "id": "principle",
-    "word": "principle",
-    "phonetic": "/ˈprɪnsəpl/",
+    "id": "guideline",
+    "word": "guideline",
+    "phonetic": "/ˈɡaɪdlaɪn/",
     "pos": "n.",
-    "meaning": "原则；原理",
-    "example": "The first principle of first aid is to stay calm.",
-    "exampleZh": "急救的第一原则是保持冷静。"
+    "meaning": "指导方针；准则",
+    "example": "The class learned the basic guidelines for treating burns.",
+    "exampleZh": "同学们学习了处理烧伤的基本准则。"
   }
 ]
