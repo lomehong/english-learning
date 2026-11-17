@@ -47,8 +47,8 @@ describe('unitFromParam · ?unit= 参数解析', () => {
     expect(unitFromParam(null)).toBeNull();
     expect(unitFromParam('')).toBeNull();
     expect(unitFromParam('0')).toBeNull();
-    expect(unitFromParam('4')).toBeNull();
-    expect(unitFromParam('unit4')).toBeNull();
+    expect(unitFromParam('99')).toBeNull();
+    expect(unitFromParam('unit99')).toBeNull();
     expect(unitFromParam('Unit2')).toBeNull(); // 大小写敏感
     expect(unitFromParam('two')).toBeNull();
     expect(unitFromParam(' unit2 ')).toBeNull(); // 不做 trim

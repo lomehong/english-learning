@@ -3,7 +3,7 @@ import { buildUnitSwitcher } from './unit-switch';
 
 /** 首页：全局单元切换器（localStorage + ?unit= 双向同步）+ 模块入口 */
 
-/** 单元号列表文案：Unit 1 / 2 / 3 */
+/** 单元号列表文案：Unit 1 / 2 / …（随自动发现的注册表扩展） */
 const UNIT_NO_TEXT = UNIT_IDS.map((id) => UNIT_META[id].no).join(' / ');
 
 export function renderHome(root: HTMLElement): void {

@@ -43,7 +43,7 @@ afterEach(() => {
 });
 
 describe('首页 · 全局单元切换器', () => {
-  it('渲染全部注册单元（Unit 1 / 2 / 3）的切换按钮，默认 Unit 1 选中', () => {
+  it('渲染全部注册单元的切换按钮（自动发现，随数据文件扩展），默认 Unit 1 选中', () => {
     const root = document.createElement('div');
     renderHome(root);
 
@@ -164,6 +164,56 @@ describe('首页切换 ↔ 各模块联动（模块页读取全局单元）', ()
     renderWriting(writing);
     expect(writing.querySelector('[data-task="u2-w1"]')).toBeTruthy();
     expect(writing.querySelector('[data-task="u3-w1"]')).toBeNull();
+  });
+
+  it('纯数据文件新增的 Unit 4：自动出现在切换器，切换后各模块页渲染 Unit 4 数据', () => {
+    const home = document.createElement('div');
+    renderHome(home);
+
+    // 首页切换器：Unit 4 按钮自动出现（meta 数据文件驱动，无手工清单）
+    const button4 = switcherButton(home, 'unit4');
+    expect(button4.textContent).toContain('Unit 4');
+    expect(button4.textContent).toContain('Natural Disasters');
+    click(button4);
+
+    // 词汇：Unit 4 词表（20 词）
+    history.replaceState(null, '', '/vocabulary');
+    const vocab = document.createElement('div');
+    renderVocabulary(vocab);
+    expect(vocab.querySelector('h1')!.textContent).toContain('Natural Disasters');
+    expect(vocab.querySelector<HTMLElement>('.card-nav__counter')!.textContent).toBe(
+      `1 / ${getWordsByUnit('unit4').length}`,
+    );
+    expect(vocab.querySelector<HTMLElement>('[data-testid="current-unit"]')!.dataset.unit).toBe('unit4');
+
+    // 语法：Unit 4 讲解卡与练习
+    history.replaceState(null, '', '/grammar');
+    const grammar = document.createElement('div');
+    renderGrammar(grammar);
+    expect(grammar.querySelector('h1')!.textContent).toContain('Unit 4');
+    expect(grammar.querySelector('.exercise[data-exercise="u4-g1"]')).toBeTruthy();
+
+    // 阅读：Unit 4 两篇短文
+    history.replaceState(null, '', '/reading');
+    const reading = document.createElement('div');
+    renderReading(reading);
+    expect(reading.querySelector('h1')!.textContent).toContain('Unit 4');
+    expect(reading.querySelectorAll('.reading-passage')).toHaveLength(2);
+
+    // 听力：Unit 4 两段材料
+    history.replaceState(null, '', '/listening');
+    const listening = document.createElement('div');
+    renderListening(listening);
+    expect(listening.querySelector('h1')!.textContent).toContain('Unit 4');
+    expect(listening.querySelectorAll('.listening-material')).toHaveLength(2);
+
+    // 写作：Unit 4 两个任务
+    history.replaceState(null, '', '/writing');
+    const writing = document.createElement('div');
+    renderWriting(writing);
+    expect(writing.querySelector('h1')!.textContent).toContain('Unit 4');
+    expect(writing.querySelector('[data-task="u4-w1"]')).toBeTruthy();
+    expect(writing.querySelector('[data-task="u4-w2"]')).toBeTruthy();
   });
 });
 

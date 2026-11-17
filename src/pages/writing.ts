@@ -2,7 +2,7 @@ import { getWritingTasksByUnit, countEssayWords } from '../data/writing';
 import { UNIT_META, unitTitle } from '../data/units';
 import { putDraft, removeDraft, type WritingDrafts } from '../store/writing';
 import type { WritingTask } from '../types';
-import { defaultWritingDeps, type WritingDeps } from './deps';
+import { buildEmptyState, defaultWritingDeps, type WritingDeps } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /**
@@ -207,12 +207,18 @@ export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
   // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
   head.append(title, buildUnitBadge(unit));
 
-  const intro = document.createElement('p');
-  intro.className = 'page-intro';
-  intro.textContent =
-    `${tasks.length} 个「${UNIT_META[unit].title}」主题写作任务（${tasks.map((t) => t.genre).join(' + ')}）：先读题目要求独立完成，草稿自动保存在本机浏览器（localStorage，键 english-learning.writing.v1）；写完对照自评清单逐条检查，再展开参考范文修改润色。`;
+  page.append(head);
 
-  page.append(head, intro);
+  // 缺 unitN-writing.ts 数据时优雅降级为「暂无内容」（不渲染任务卡，也不崩溃）
+  if (tasks.length === 0) {
+    page.append(buildEmptyState('本单元写作任务暂无内容，敬请期待。'));
+  } else {
+    const intro = document.createElement('p');
+    intro.className = 'page-intro';
+    intro.textContent =
+      `${tasks.length} 个「${UNIT_META[unit].title}」主题写作任务（${tasks.map((t) => t.genre).join(' + ')}）：先读题目要求独立完成，草稿自动保存在本机浏览器（localStorage，键 english-learning.writing.v1）；写完对照自评清单逐条检查，再展开参考范文修改润色。`;
+    page.append(intro);
+  }
 
   tasks.forEach((task, index) => {
     page.append(buildTask(task, index, d.load, d.save, d.now));

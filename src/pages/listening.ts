@@ -9,7 +9,7 @@ import {
 import { recordAnswerAndSave } from '../store/stats';
 import type { ListeningMaterial, ListeningQuestion } from '../types';
 import type { SpeechEngine, PlayerState } from '../speech/tts';
-import { defaultListeningDeps, type ListeningDeps } from './deps';
+import { buildEmptyState, defaultListeningDeps, type ListeningDeps } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /**
@@ -251,11 +251,17 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
     headSpacer.className = 'page-head__spacer';
     head.append(title, buildUnitBadge(unit), headSpacer, statChip);
 
-    const intro = document.createElement('p');
-    intro.className = 'page-intro';
-    intro.textContent = `${materials.length} 段「${UNIT_META[unit].title}」主题听力材料（自编 · 浏览器本地语音合成朗读，无需外部音频）。先听音频完成每段 ${materials[0]?.questions.length ?? 0} 道理解题（答题即时判分并附解析），听不懂再点开原文对照；错题自动进入错题本。`;
+    page.append(head);
 
-    page.append(head, intro);
+    // 缺 unitN-listening.ts 数据时优雅降级为「暂无内容」（不渲染材料区，也不崩溃）
+    if (materials.length === 0) {
+      page.append(buildEmptyState('本单元听力内容暂无内容，敬请期待。'));
+    } else {
+      const intro = document.createElement('p');
+      intro.className = 'page-intro';
+      intro.textContent = `${materials.length} 段「${UNIT_META[unit].title}」主题听力材料（自编 · 浏览器本地语音合成朗读，无需外部音频）。先听音频完成每段 ${materials[0]?.questions.length ?? 0} 道理解题（答题即时判分并附解析），听不懂再点开原文对照；错题自动进入错题本。`;
+      page.append(intro);
+    }
 
     /** 答题即记统计（按当前单元计入单元维度）；答错另入错题本（错题本/学习报告页的数据源） */
     const onAnswered = (correct: boolean, question: ListeningQuestion, yourAnswer: string): void => {

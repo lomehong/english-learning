@@ -6,6 +6,7 @@ import {
   recordAnswer,
   STORAGE_KEY,
 } from './stats';
+import { UNIT_IDS } from '../data/units';
 
 // 与 wrongbook.test.ts 同款：绕过 Node≥26 实验性全局 localStorage 遮蔽，取 jsdom 实例
 function testStorage(): Storage {
@@ -20,14 +21,15 @@ describe('练习统计 localStorage 持久化', () => {
     testStorage().clear();
   });
 
-  it('无记录时返回空统计：四模块 answered/correct 均为 0，含两单元细分', () => {
+  it('无记录时返回空统计：四模块 answered/correct 均为 0，含各注册单元细分', () => {
     const stats = loadStats();
     expect(stats).toEqual(emptyStats());
     expect(Object.keys(stats.modules).sort()).toEqual(['grammar', 'listening', 'reading', 'vocab']);
     expect(stats.modules.grammar).toEqual({ answered: 0, correct: 0 });
-    expect(Object.keys(stats.units).sort()).toEqual(['unit1', 'unit2', 'unit3']);
+    expect(Object.keys(stats.units).sort()).toEqual([...UNIT_IDS].sort());
     expect(stats.units.unit1.vocab).toEqual({ answered: 0, correct: 0 });
     expect(stats.units.unit2.listening).toEqual({ answered: 0, correct: 0 });
+    expect(stats.units.unit4.listening).toEqual({ answered: 0, correct: 0 });
   });
 
   it('recordAnswer 同时累加模块总计与所属单元细分（纯函数，不改原对象）', () => {

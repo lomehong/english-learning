@@ -119,3 +119,6 @@ const materialById = new Map(unit1Listenings.map((m) => [m.id, m]));
 export function getListening(id: string): ListeningMaterial | undefined {
   return materialById.get(id);
 }
+
+/** 自动发现约定：units.ts 经 import.meta.glob('./unit*-…') 读取本 default 导出（新增单元照此约定） */
+export default unit1Listenings;

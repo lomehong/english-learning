@@ -15,6 +15,7 @@ import {
 import { recordAnswerAndSave } from '../store/stats';
 import type { FillExercise, GrammarExercise, GrammarPoint, McqExercise, WrongEntry } from '../types';
 import type { GrammarDeps } from './deps';
+import { buildEmptyState } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /** /grammar 页：单元切换 + 讲解卡 + 专项练习（即时判分/解析/错题自动入本） */
@@ -294,16 +295,18 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
   head.append(title, buildUnitBadge(unit), headSpacer, statChip);
 
-  /* 讲解卡区 */
+  /* 讲解卡区（缺 unitN-grammar.ts 数据时优雅降级为「暂无内容」） */
   const teach = document.createElement('section');
   teach.className = 'grammar-teach';
   const teachTitle = document.createElement('h2');
   teachTitle.className = 'section-title';
-  teachTitle.textContent = `讲解卡 · ${points.map((p) => p.title).join(' / ')}`;
+  teachTitle.textContent =
+    points.length > 0 ? `讲解卡 · ${points.map((p) => p.title).join(' / ')}` : '讲解卡';
   const cards = document.createElement('div');
   cards.className = 'grammar-cards';
   for (const point of points) cards.append(buildPointCard(point, unit));
   teach.append(teachTitle, cards);
+  if (points.length === 0) teach.append(buildEmptyState('本单元语法讲解暂无内容，敬请期待。'));
 
   /* 练习区 */
   const onAnswered: AnswerCallback = (correct, exercise, yourAnswer) => {
@@ -334,11 +337,15 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   drill.className = 'grammar-drill';
   const drillTitle = document.createElement('h2');
   drillTitle.className = 'section-title';
-  drillTitle.textContent = `专项练习 · ${TOTAL} 题（答题即时判分，错题自动进入错题本）`;
+  drillTitle.textContent =
+    exercises.length > 0
+      ? `专项练习 · ${TOTAL} 题（答题即时判分，错题自动进入错题本）`
+      : '专项练习';
   const list = document.createElement('ol');
   list.className = 'exercise-list';
   exercises.forEach((exercise, index) => list.append(buildExercise(exercise, index, onAnswered)));
   drill.append(drillTitle, list);
+  if (exercises.length === 0) drill.append(buildEmptyState('本单元语法练习暂无内容，敬请期待。'));
 
   /* 错题本区 */
   const wrongbook = document.createElement('section');

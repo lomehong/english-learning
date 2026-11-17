@@ -114,6 +114,15 @@ export interface FlipCard {
   isFlipped: () => boolean;
 }
 
+/** 模块空数据降级提示：该单元缺此模块数据文件时显示「暂无内容」，而不是崩溃或空白 */
+export function buildEmptyState(text: string, testId = 'module-empty'): HTMLParagraphElement {
+  const el = document.createElement('p');
+  el.className = 'empty-state';
+  el.setAttribute('data-testid', testId);
+  el.textContent = text;
+  return el;
+}
+
 /** 翻面卡片：正面=单词+音标，背面=词性/释义/例句；点击翻面 */
 export function createFlipCard(word: Word): FlipCard {
   const el = document.createElement('div');

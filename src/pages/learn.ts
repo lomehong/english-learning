@@ -2,7 +2,7 @@ import { getWordsByUnit } from '../data/words';
 import type { UnitId } from '../data/units';
 import { createCard } from '../srs/sm2';
 import type { Progress } from '../store/progress';
-import { createFlipCard, type VocabDeps } from './deps';
+import { buildEmptyState, createFlipCard, type VocabDeps } from './deps';
 
 /** 学习页：浏览指定单元词表（翻面卡），标记已学加入复习计划 */
 export function renderLearn(
@@ -12,6 +12,13 @@ export function renderLearn(
 ): void {
   const unit = options.unit ?? 'unit1';
   const words = getWordsByUnit(unit);
+
+  // 该单元缺词表数据（unitN-words.json 未提供）：优雅降级显示暂无内容，不渲染翻面卡
+  if (words.length === 0) {
+    container.replaceChildren(buildEmptyState('本单元词表暂无内容，敬请期待。'));
+    return;
+  }
+
   const progress = deps.load();
   let index = firstUnlearnedIndex(progress);
   let flipCard = createFlipCard(words[index]);
