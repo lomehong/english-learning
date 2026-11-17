@@ -35,12 +35,12 @@ const metaFiles = (entries: Array<[id: string, no: number, title?: string]>): Re
   );
 
 describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工清单）', () => {
-  it('内置四个单元（Unit 1–4），全部由 meta 数据文件自动聚合进注册表', () => {
-    expect(UNIT_IDS).toEqual(['unit1', 'unit2', 'unit3', 'unit4']);
-    expect(new Set(UNIT_IDS).size).toBe(4);
+  it('内置五个单元（Unit 1–5），全部由 meta 数据文件自动聚合进注册表', () => {
+    expect(UNIT_IDS).toEqual(['unit1', 'unit2', 'unit3', 'unit4', 'unit5']);
+    expect(new Set(UNIT_IDS).size).toBe(5);
     const nos = UNIT_MANIFESTS.map((m) => m.no);
-    expect(nos).toEqual([1, 2, 3, 4]);
-    expect(new Set(nos).size).toBe(4);
+    expect(nos).toEqual([1, 2, 3, 4, 5]);
+    expect(new Set(nos).size).toBe(5);
   });
 
   it('每行 manifest 元信息齐全：id / no / title / theme 非空，theme 为中文', () => {

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "native",
+    "word": "native",
+    "phonetic": "/ˈneɪtɪv/",
+    "pos": "adj.",
+    "meaning": "出生地的；本地的；天生的（native speaker 说母语的人）",
+    "example": "She is a native speaker of English, so we practise with her every week.",
+    "exampleZh": "她是英语母语者，所以我们每周都和她一起练习。"
+  },
+  {
+    "id": "attitude",
+    "word": "attitude",
+    "phonetic": "/ˈætɪtjuːd/",
+    "pos": "n.",
+    "meaning": "态度；看法",
+    "example": "A positive attitude helps you learn a foreign language faster.",
+    "exampleZh": "积极的态度能帮助你更快地学好一门外语。"
+  },
+  {
+    "id": "refer",
+    "word": "refer",
+    "phonetic": "/rɪˈfɜː(r)/",
+    "pos": "vi.",
+    "meaning": "提到；查阅；参考（refer to 指的是；查阅）",
+    "example": "When you meet a new word, refer to the dictionary first.",
+    "exampleZh": "遇到生词时，先查阅词典。"
+  },
+  {
+    "id": "million",
+    "word": "million",
+    "phonetic": "/ˈmɪljən/",
+    "pos": "num.",
+    "meaning": "百万（millions of 数以百万计的）",
+    "example": "Millions of people around the world are learning a second language.",
+    "exampleZh": "全世界有数百万人正在学习第二语言。"
+  },
+  {
+    "id": "polite",
+    "word": "polite",
+    "phonetic": "/pəˈlaɪt/",
+    "pos": "adj.",
+    "meaning": "有礼貌的；客气的",
+    "example": "It is polite to say “please” when you ask for help.",
+    "exampleZh": "求助时说声“请”是有礼貌的。"
+  },
+  {
+    "id": "expression",
+    "word": "expression",
+    "phonetic": "/ɪkˈspreʃn/",
+    "pos": "n.",
+    "meaning": "词语；表达；表情",
+    "example": "“Break a leg” is an English expression that means “good luck”.",
+    "exampleZh": "“Break a leg” 是一个表示“祝你好运”的英语习语。"
+  },
+  {
+    "id": "grammar",
+    "word": "grammar",
+    "phonetic": "/ˈɡræmə(r)/",
+    "pos": "n.",
+    "meaning": "语法；文法",
+    "example": "French grammar is quite different from English grammar.",
+    "exampleZh": "法语语法与英语语法大不相同。"
+  },
+  {
+    "id": "pronunciation",
+    "word": "pronunciation",
+    "phonetic": "/prəˌnʌnsiˈeɪʃn/",
+    "pos": "n.",
+    "meaning": "发音；读法",
+    "example": "Her pronunciation of the word “castle” is excellent.",
+    "exampleZh": "她读 castle 这个词的发音非常好。"
+  },
+  {
+    "id": "accent",
+    "word": "accent",
+    "phonetic": "/ˈæksent/",
+    "pos": "n.",
+    "meaning": "口音；腔调",
+    "example": "He speaks English with a strong southern accent.",
+    "exampleZh": "他说英语带有浓重的南方口音。"
+  },
+  {
+    "id": "dialect",
+    "word": "dialect",
+    "phonetic": "/ˈdaɪəlekt/",
+    "pos": "n.",
+    "meaning": "方言；土话",
+    "example": "My grandparents speak a local dialect at home.",
+    "exampleZh": "我的祖父母在家说当地方言。"
+  },
+  {
+    "id": "symbol",
+    "word": "symbol",
+    "phonetic": "/ˈsɪmbl/",
+    "pos": "n.",
+    "meaning": "符号；象征",
+    "example": "In writing, each Chinese character is a symbol with a long history.",
+    "exampleZh": "在书写中，每个汉字都是一个历史悠久的符号。"
+  },
+  {
+    "id": "character",
+    "word": "character",
+    "phonetic": "/ˈkærəktə(r)/",
+    "pos": "n.",
+    "meaning": "文字；字；角色；性格",
+    "example": "I learn five Chinese characters every morning.",
+    "exampleZh": "我每天早晨学五个汉字。"
+  },
+  {
+    "id": "meaning",
+    "word": "meaning",
+    "phonetic": "/ˈmiːnɪŋ/",
+    "pos": "n.",
+    "meaning": "意思；含义",
+    "example": "The meaning of this word has changed over time.",
+    "exampleZh": "这个词的含义随着时间的推移发生了变化。"
+  },
+  {
+    "id": "translate",
+    "word": "translate",
+    "phonetic": "/trænzˈleɪt/",
+    "pos": "v.",
+    "meaning": "翻译；转化",
+    "example": "Can you translate this sentence into Chinese for me?",
+    "exampleZh": "你能帮我把这个句子翻译成中文吗？"
+  },
+  {
+    "id": "communicate",
+    "word": "communicate",
+    "phonetic": "/kəˈmjuːnɪkeɪt/",
+    "pos": "v.",
+    "meaning": "交流；传达；沟通",
+    "example": "Music is a way to communicate feelings without words.",
+    "exampleZh": "音乐是一种不用语言就能传达情感的方式。"
+  },
+  {
+    "id": "global",
+    "word": "global",
+    "phonetic": "/ˈɡləʊbl/",
+    "pos": "adj.",
+    "meaning": "全球的；全面的",
+    "example": "English has become a global language for business and science.",
+    "exampleZh": "英语已成为商业和科学领域的全球性语言。"
+  },
+  {
+    "id": "spanish",
+    "word": "Spanish",
+    "phonetic": "/ˈspænɪʃ/",
+    "pos": "n.",
+    "meaning": "西班牙语（adj. 西班牙人的）",
+    "example": "She studies Spanish because her mother comes from Madrid.",
+    "exampleZh": "她学习西班牙语，因为她的母亲来自马德里。"
+  },
+  {
+    "id": "standard",
+    "word": "standard",
+    "phonetic": "/ˈstændəd/",
+    "pos": "adj.",
+    "meaning": "标准的（n. 标准；水准）",
+    "example": "The news programme is broadcast in standard Chinese.",
+    "exampleZh": "这档新闻节目用标准汉语（普通话）播出。"
+  },
+  {
+    "id": "majority",
+    "word": "majority",
+    "phonetic": "/məˈdʒɒrəti/",
+    "pos": "n.",
+    "meaning": "大多数；大半",
+    "example": "The majority of students in our class speak two languages.",
+    "exampleZh": "我们班大多数学生会说两种语言。"
+  },
+  {
+    "id": "struggle",
+    "word": "struggle",
+    "phonetic": "/ˈstrʌɡl/",
+    "pos": "vi.",
+    "meaning": "努力；挣扎；斗争",
+    "example": "At first I struggled with English listening, but practice helped.",
+    "exampleZh": "起初我在英语听力上很吃力，但练习帮了我。"
+  }
+]
