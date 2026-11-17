@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderReading } from './reading';
 import { emptyProgress, type Progress } from '../store/progress';
 import { createCard } from '../srs/sm2';
 import { unit1Passages, QUESTION_TYPE_LABEL } from '../data/unit1-reading';
+import { clearWrongBook, loadWrongBook } from '../store/wrongbook';
+import { emptyStats, loadStats, saveStats } from '../store/stats';
 import type { ReadingQuestion } from '../types';
 import type { ReadingDeps } from './deps';
 
@@ -172,5 +174,37 @@ describe('阅读页 · 生词收藏（与词汇模块共享 localStorage 进度�
     const span = container.querySelector<HTMLElement>('[data-testid="passage-body-p1"] .reading-word[data-word-id="freshman"]')!;
     expect(span.classList.contains('reading-word--added')).toBe(true);
     expect(container.querySelector('[data-testid="vocab-chip"]')!.textContent).toContain('词汇本 1 词');
+  });
+});
+
+describe('阅读页 · 错题与统计数据源（错题本/学习报告页消费）', () => {
+  beforeEach(() => {
+    // 页面错题/统计均写默认存储；同源重置保证用例独立
+    clearWrongBook();
+    saveStats(emptyStats());
+  });
+
+  it('答错自动写入错题本（module=reading，含题干/作答/解析），答对不入本', () => {
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    click(optionButtons(container, 'r1-1').wrong);
+    click(optionButtons(container, 'r1-2').correct);
+
+    const book = loadWrongBook();
+    expect(Object.keys(book.entries)).toEqual(['r1-1']);
+    const entry = book.entries['r1-1']!;
+    expect(entry.module).toBe('reading');
+    expect(entry.explanation).toBe(questionById('r1-1').explanation);
+  });
+
+  it('每次作答计入练习统计（stats.reading），correct 仅累计答对', () => {
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    click(optionButtons(container, 'r2-1').wrong);
+    click(optionButtons(container, 'r2-2').correct);
+
+    expect(loadStats().modules.reading).toEqual({ answered: 2, correct: 1 });
   });
 });

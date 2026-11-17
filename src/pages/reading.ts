@@ -1,6 +1,13 @@
 import { unit1Passages, countWords, QUESTION_TYPE_LABEL } from '../data/unit1-reading';
 import { getWord } from '../data/words';
 import { loadProgress, saveProgress, type Progress } from '../store/progress';
+import {
+  loadWrongBook,
+  saveWrongBook,
+  recordWrong,
+  type WrongBook,
+} from '../store/wrongbook';
+import { recordAnswerAndSave } from '../store/stats';
 import { createCard } from '../srs/sm2';
 import type { ReadingPassage, ReadingQuestion, Word } from '../types';
 import type { ReadingDeps } from './deps';
@@ -96,7 +103,7 @@ function appendResult(
 function buildQuestion(
   question: ReadingQuestion,
   index: number,
-  onAnswered: (correct: boolean) => void,
+  onAnswered: (correct: boolean, question: ReadingQuestion, yourAnswer: string) => void,
 ): HTMLLIElement {
   const item = document.createElement('li');
   item.className = 'exercise exercise--reading';
@@ -145,7 +152,7 @@ function buildQuestion(
         question.options[question.answerIndex],
         question.explanation,
       );
-      onAnswered(correct);
+      onAnswered(correct, question, question.options[i]);
     });
     body.append(button);
   });
@@ -234,10 +241,27 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
     vocabChip.textContent = `词汇本 ${Object.keys(progress.cards).length} 词`;
   }
 
-  const onAnswered = (correct: boolean): void => {
+  /** 答题即记统计；答错另入错题本（错题本/学习报告页的数据源） */
+  const onAnswered = (correct: boolean, question: ReadingQuestion, yourAnswer: string): void => {
     answered += 1;
     if (correct) correctCount += 1;
     readStat.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
+    recordAnswerAndSave('reading', correct);
+    if (!correct) {
+      const book: WrongBook = recordWrong(
+        loadWrongBook(),
+        {
+          exerciseId: question.id,
+          module: 'reading',
+          stem: question.stem,
+          yourAnswer,
+          correctAnswer: question.options[question.answerIndex],
+          explanation: question.explanation,
+        },
+        d.now(),
+      );
+      saveWrongBook(book);
+    }
   };
 
   /* 每篇：短文卡（可点击生词）+ 3 道题 */

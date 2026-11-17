@@ -1,6 +1,8 @@
-import type { Word } from '../types';
+import type { PracticeModule, Word } from '../types';
 import type { WrongBook } from '../store/wrongbook';
-import { createSpeechEngine, type SpeechEngine } from '../speech/tts';
+import type { StatsBook } from '../store/stats';
+import type { Progress } from '../store/progress';
+import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
 
 /** 词汇模块页面依赖（默认实现走真实 localStorage；测试可注入假实现） */
 export interface VocabDeps {
@@ -14,6 +16,43 @@ export interface GrammarDeps {
   load: () => WrongBook;
   save: (book: WrongBook) => void;
   now: () => number;
+}
+
+/** 错题本页 /mistakes 依赖：读写错题本存储 */
+export interface MistakesDeps {
+  load: () => WrongBook;
+  save: (book: WrongBook) => void;
+}
+
+/** 学习报告页 /report 依赖：汇总三份 localStorage 数据源 */
+export interface ReportDeps {
+  loadStats: () => StatsBook;
+  loadWrong: () => WrongBook;
+  loadProgress: () => Progress;
+  now: () => number;
+}
+
+/* ---------- 模块维度共享常量（错题本 / 学习报告页共用） ---------- */
+
+export const MODULE_LABEL: Record<PracticeModule, string> = {
+  vocab: '词汇',
+  grammar: '语法',
+  reading: '阅读',
+  listening: '听力',
+};
+
+/** 各模块「去重练」跳转目标（词汇=到期复习队列） */
+export const MODULE_RETRY_ROUTE: Record<PracticeModule, string> = {
+  vocab: '/vocabulary?tab=review',
+  grammar: '/grammar',
+  reading: '/reading',
+  listening: '/listening',
+};
+
+/** 正确率显示：null（未练习）→「—」，否则保留一位小数的百分数（50%、62.5%） */
+export function pctText(accuracy: number | null): string {
+  if (accuracy === null) return '—';
+  return `${Math.round(accuracy * 1000) / 10}%`;
 }
 
 /**
@@ -37,10 +76,12 @@ export function defaultListeningDeps(): ListeningDeps {
     'speechSynthesis' in window &&
     typeof window.SpeechSynthesisUtterance !== 'undefined';
   return {
+    // DOM 完整类型与 tts.ts 的「结构子集」接口在事件处理器签名上不兼容
+    //（如 onstart 带事件参数），此处为接缝边界的显式桥接转换，运行时结构兼容。
     createEngine: () =>
       createSpeechEngine({
-        synth: supported ? window.speechSynthesis : undefined,
-        createUtterance: (text) => new SpeechSynthesisUtterance(text),
+        synth: supported ? (window.speechSynthesis as unknown as SpeechSynthesisLike) : undefined,
+        createUtterance: (text) => new SpeechSynthesisUtterance(text) as unknown as SpeechSynthesisUtteranceLike,
       }),
   };
 }

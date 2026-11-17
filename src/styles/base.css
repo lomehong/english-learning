@@ -902,6 +902,219 @@ a {
   grid-template-columns: 1fr;
 }
 
+/* ---- 小号按钮（错题本条目操作等紧凑场景） ---- */
+.btn--sm {
+  padding: var(--space-1) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+/* ---- 模块徽标（错题本 / 学习报告共用，色彩走模块令牌） ---- */
+.module-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.module-badge--vocab {
+  background: var(--color-module-vocab-soft);
+  color: var(--color-module-vocab);
+}
+
+.module-badge--grammar {
+  background: var(--color-module-grammar-soft);
+  color: var(--color-module-grammar);
+}
+
+.module-badge--reading {
+  background: var(--color-module-reading-soft);
+  color: var(--color-module-reading);
+}
+
+.module-badge--listening {
+  background: var(--color-module-listening-soft);
+  color: var(--color-module-listening);
+}
+
+/* ---- 错题本页 ---- */
+
+/* 过滤 Tab 内的计数徽标 */
+.tab__count {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.tab--active .tab__count {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+/* 错题本页过滤 Tab（页面私有间距，不动全局 .tabs） */
+.mistake-filter {
+  margin-bottom: var(--space-4);
+}
+
+.wrong-item__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.wrong-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* ---- 学习报告页 ---- */
+.report-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-4);
+}
+
+.report-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.report-card__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.report-card__value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.report-card__link {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 总体正确率环（内联 SVG） */
+.report-donut {
+  width: 5rem;
+  height: 5rem;
+}
+
+.report-donut__track {
+  fill: none;
+  stroke: var(--color-chart-donut-track);
+  stroke-width: 10;
+}
+
+.report-donut__fill {
+  fill: none;
+  stroke: var(--color-chart-overall);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dasharray var(--transition-fast);
+}
+
+/* 各模块概览行 */
+.report-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.report-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+}
+
+.report-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.report-row__numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.report-row__numbers strong {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* 模块正确率条（纯 CSS） */
+.report-bar {
+  width: 100%;
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-chart-track);
+  overflow: hidden;
+}
+
+.report-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-fast);
+}
+
+.report-bar__fill--vocab {
+  background: var(--color-module-vocab);
+}
+
+.report-bar__fill--grammar {
+  background: var(--color-module-grammar);
+}
+
+.report-bar__fill--reading {
+  background: var(--color-module-reading);
+}
+
+.report-bar__fill--listening {
+  background: var(--color-module-listening);
+}
+
+/* 学习建议 */
+.report-advice ul {
+  margin: 0;
+  padding: var(--space-5);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.report-advice li {
+  position: relative;
+  padding-left: var(--space-5);
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+}
+
+.report-advice li::before {
+  content: '💡';
+  position: absolute;
+  left: 0;
+}
+
 @media (max-width: 40rem) {
   .exercise__options {
     grid-template-columns: 1fr;
@@ -909,5 +1122,10 @@ a {
 
   .exercise__fill {
     flex-direction: column;
+  }
+
+  .report-row {
+    grid-template-columns: 1fr;
+    justify-items: start;
   }
 }

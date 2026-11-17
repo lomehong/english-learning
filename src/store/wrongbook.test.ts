@@ -3,6 +3,7 @@ import {
   loadWrongBook,
   saveWrongBook,
   recordWrong,
+  removeEntry,
   clearWrongBook,
   emptyWrongBook,
   STORAGE_KEY,
@@ -24,11 +25,25 @@ const NOW = Date.UTC(2026, 0, 1);
 function sampleInput(overrides: Partial<WrongInput> = {}): WrongInput {
   return {
     exerciseId: 'g1',
+    module: 'grammar',
     stem: 'Listen! Someone ______ in the next room.',
     yourAnswer: 'sings',
     correctAnswer: 'is singing',
     explanation: '“Listen!” 提示动作此刻正在进行，用现在进行时。',
     ...overrides,
+  };
+}
+
+/** 旧版本（无 module 字段）的持久化条目，经 JSON 绕过类型模拟线上存量数据 */
+function legacyEntry(exerciseId: string): Record<string, unknown> {
+  return {
+    exerciseId,
+    stem: 'Listen! Someone ______ in the next room.',
+    yourAnswer: 'sings',
+    correctAnswer: 'is singing',
+    explanation: '现在进行时。',
+    wrongCount: 1,
+    lastWrongAt: NOW,
   };
 }
 
@@ -46,6 +61,7 @@ describe('错题本 localStorage 持久化', () => {
   it('保存后重新加载，条目往返一致，写入约定键', () => {
     const entry: WrongEntry = {
       exerciseId: 'g1',
+      module: 'grammar',
       stem: 'Listen! Someone ______ in the next room.',
       yourAnswer: 'sings',
       correctAnswer: 'is singing',
@@ -134,5 +150,62 @@ describe('错题本 localStorage 持久化', () => {
     const saved = recordWrong(emptyWrongBook(), sampleInput({ exerciseId: 'g9' }), NOW);
     saveWrongBook(saved, storage);
     expect(loadWrongBook(storage).entries['g9']).toBeDefined();
+  });
+});
+
+describe('错题本 · 模块维度与单条移除', () => {
+  beforeEach(() => {
+    testStorage().clear();
+  });
+
+  it('recordWrong 记录 module 字段，供错题本页按模块过滤', () => {
+    const book = recordWrong(
+      emptyWrongBook(),
+      sampleInput({ exerciseId: 'r1-1', module: 'reading' }),
+      NOW,
+    );
+    expect(book.entries['r1-1']!.module).toBe('reading');
+  });
+
+  it('旧数据缺失 module：加载时按 exerciseId 前缀推断归一化', () => {
+    testStorage().setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        entries: {
+          g1: legacyEntry('g1'),
+          'r1-1': legacyEntry('r1-1'),
+          'l1-1': legacyEntry('l1-1'),
+          'w:teenage': legacyEntry('w:teenage'),
+        },
+      }),
+    );
+    const loaded = loadWrongBook(testStorage());
+    expect(loaded.entries['g1']!.module).toBe('grammar');
+    expect(loaded.entries['r1-1']!.module).toBe('reading');
+    expect(loaded.entries['l1-1']!.module).toBe('listening');
+    expect(loaded.entries['w:teenage']!.module).toBe('vocab');
+  });
+
+  it('module 值非法的条目被丢弃（防御性归一化）', () => {
+    const broken = legacyEntry('g2');
+    broken.module = '不存在的模块';
+    testStorage().setItem(
+      STORAGE_KEY,
+      JSON.stringify({ version: 1, entries: { g2: broken } }),
+    );
+    expect(loadWrongBook(testStorage()).entries).toEqual({});
+  });
+
+  it('removeEntry 移除指定条目，为纯函数且容错未知 id', () => {
+    let book = recordWrong(emptyWrongBook(), sampleInput(), NOW);
+    book = recordWrong(book, sampleInput({ exerciseId: 'r1-1', module: 'reading' }), NOW);
+
+    const removed = removeEntry(book, 'g1');
+    expect(Object.keys(removed.entries)).toEqual(['r1-1']);
+    // 纯函数：原错题本不受影响
+    expect(Object.keys(book.entries).sort()).toEqual(['g1', 'r1-1']);
+    // 未知 id 原样返回（结构相等）
+    expect(removeEntry(removed, '不存在')).toEqual(removed);
   });
 });

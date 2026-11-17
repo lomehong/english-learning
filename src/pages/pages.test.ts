@@ -1,8 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderLearn } from './learn';
 import { renderReview } from './review';
 import { createCard, DAY_MS } from '../srs/sm2';
 import { emptyProgress, type Progress } from '../store/progress';
+import { clearWrongBook, loadWrongBook, recordWrong, saveWrongBook } from '../store/wrongbook';
+import { emptyStats, loadStats, saveStats } from '../store/stats';
+import { getWord } from '../data/words';
 import type { VocabDeps } from './deps';
 
 const NOW = Date.UTC(2026, 0, 1);
@@ -110,5 +113,79 @@ describe('复习页', () => {
     expect(savedCard.due).toBe(NOW + 10 * 60 * 1000);
     expect(savedCard.lapses).toBe(1);
     expect(savedCard.intervalDays).toBe(0);
+  });
+});
+
+describe('复习页 · 错题与统计数据源（错题本/学习报告页消费）', () => {
+  beforeEach(() => {
+    // 页面错题/统计均写默认存储；同源重置保证用例独立
+    clearWrongBook();
+    saveStats(emptyStats());
+  });
+
+  function reviewOneDue(): { container: HTMLElement; deps: ReturnType<typeof makeDeps> } {
+    const progress = emptyProgress();
+    progress.cards['teenage'] = createCard('teenage', NOW - 1);
+    const deps = makeDeps(progress);
+    const container = document.createElement('div');
+    renderReview(container, deps);
+    return { container, deps };
+  }
+
+  it('again 评分：记为词汇错题（w: 前缀，module=vocab）并计入统计', () => {
+    const { container } = reviewOneDue();
+
+    click(container.querySelector<HTMLButtonElement>('button[data-grade="again"]')!);
+
+    const entry = loadWrongBook().entries['w:teenage'];
+    expect(entry).toBeDefined();
+    expect(entry!.module).toBe('vocab');
+    expect(entry!.correctAnswer).toBe(getWord('teenage')!.meaning);
+    expect(loadStats().modules.vocab).toEqual({ answered: 1, correct: 0 });
+  });
+
+  it('good 评分：计入统计（correct+1），并移除该词已有的词汇错题（掌握即出本）', () => {
+    const progress = emptyProgress();
+    progress.cards['teenage'] = createCard('teenage', NOW - 1);
+    let clock = NOW;
+    const deps = { ...makeDeps(progress), now: () => clock };
+    const container = document.createElement('div');
+    renderReview(container, deps);
+
+    click(container.querySelector<HTMLButtonElement>('button[data-grade="again"]')!);
+    expect(loadWrongBook().entries['w:teenage']).toBeDefined();
+
+    // 10 分钟学习步长过后，单词重新进入到期队列；这次评 good = 确认掌握
+    clock = NOW + 11 * 60 * 1000;
+    renderReview(container, deps);
+    click(container.querySelector<HTMLButtonElement>('button[data-grade="good"]')!);
+
+    expect(loadWrongBook().entries['w:teenage']).toBeUndefined();
+    expect(loadStats().modules.vocab).toEqual({ answered: 2, correct: 1 });
+  });
+
+  it('非 again 评分在无词汇错题时不出本、不误删他词错题', () => {
+    const { container } = reviewOneDue();
+    // 预置一条别的词的词汇错题，确认不会被误删
+    saveWrongBook(
+      recordWrong(
+        loadWrongBook(),
+        {
+          exerciseId: 'w:volunteer',
+          module: 'vocab',
+          stem: 'volunteer',
+          yourAnswer: '记不起',
+          correctAnswer: '志愿者',
+          explanation: '-',
+        },
+        NOW,
+      ),
+    );
+
+    click(container.querySelector<HTMLButtonElement>('button[data-grade="good"]')!);
+
+    expect(loadWrongBook().entries['w:volunteer']).toBeDefined();
+    expect(loadWrongBook().entries['w:teenage']).toBeUndefined();
+    expect(loadStats().modules.vocab).toEqual({ answered: 1, correct: 1 });
   });
 });
