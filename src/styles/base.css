@@ -898,8 +898,108 @@ a {
 }
 
 /* 阅读理解选项为完整句子，单列展示 */
-.exercise--reading .exercise__options {
+.exercise--reading .exercise__options,
+.exercise--listening .exercise__options {
   grid-template-columns: 1fr;
+}
+
+/* ---- 听力模块 ---- */
+.listening-passage {
+  margin-bottom: var(--space-6);
+}
+
+.listening-player {
+  padding: var(--space-5);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* 正在朗读/暂停的段落：主色描边 */
+.listening-player--active {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.listening-player__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.listening-player__title {
+  margin: 0 var(--space-2) 0 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.listening-player__controls {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.listening-player__rate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.listening-player__rate input[type='range'] {
+  width: 8rem;
+  accent-color: var(--color-primary);
+}
+
+.listening-player__rate-value {
+  min-width: 3em;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.listening-player__hint {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* 不支持语音合成的提示条 */
+.listening-notice {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-grade-hard);
+  border-radius: var(--radius-md);
+  background: var(--color-grade-hard-soft);
+  color: var(--color-grade-hard);
+  font-size: var(--font-size-sm);
+}
+
+.listening-transcript-toggle {
+  margin-top: var(--space-4);
+}
+
+.listening-transcript {
+  margin-top: var(--space-3);
+  padding: var(--space-5);
+  background: var(--color-surface-muted);
+}
+
+.listening-transcript__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.listening-transcript__line {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-md);
+  line-height: 2;
+}
+
+.listening-transcript__line:last-child {
+  margin-bottom: 0;
 }
 
 @media (max-width: 40rem) {

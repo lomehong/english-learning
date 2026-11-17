@@ -4,12 +4,14 @@ import { renderHome } from './home';
 import { renderVocabulary } from './vocabulary';
 import { renderGrammar } from './grammar';
 import { renderReading } from './reading';
+import { renderListening } from './listening';
 
 const routes: Route[] = [
   { path: '/', render: renderHome },
   { path: '/vocabulary', render: renderVocabulary },
   { path: '/grammar', render: renderGrammar },
   { path: '/reading', render: renderReading },
+  { path: '/listening', render: renderListening },
 ];
 
 describe('路由接线', () => {
@@ -35,6 +37,9 @@ describe('路由接线', () => {
     const readingCard = root.querySelector('a.module-card[href="/reading"]');
     expect(readingCard).toBeTruthy();
     expect(readingCard!.classList.contains('module-card--disabled')).toBe(false);
+    const listeningCard = root.querySelector('a.module-card[href="/listening"]');
+    expect(listeningCard).toBeTruthy();
+    expect(listeningCard!.classList.contains('module-card--disabled')).toBe(false);
   });
 
   it('/reading 渲染阅读页（2 篇短文 + 6 题 + 可点击生词）', () => {
@@ -79,6 +84,23 @@ describe('路由接线', () => {
     reviewTab!.click();
     expect(root.textContent).toContain('暂无到期单词');
     expect(new URLSearchParams(location.search).get('tab')).toBe('review');
+  });
+
+  it('/listening 渲染听力页（2 段材料 + 播放器 + 6 题），离开时清理', () => {
+    history.pushState(null, '', '/');
+    root = document.createElement('div');
+    document.body.append(root);
+    cleanup = createRouter(root, routes).destroy;
+
+    navigate('/listening');
+    expect(root.textContent).toContain('听力 · 必修一 Unit 1');
+    expect(root.querySelectorAll('.listening-passage')).toHaveLength(2);
+    expect(root.querySelectorAll('.exercise--listening')).toHaveLength(6);
+    expect(root.querySelector('[data-testid="listen-play-l1"]')).toBeTruthy();
+
+    navigate('/'); // 离开听力页 → 触发路由清理（销毁朗读引擎）
+    expect(root.textContent).toContain('高一英语学习系统');
+    expect(root.querySelector('[data-testid="listen-play-l1"]')).toBeNull();
   });
 
   it('未知路径渲染 404 兜底', () => {

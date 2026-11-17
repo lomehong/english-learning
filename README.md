@@ -17,6 +17,10 @@
   - 内置 2 篇「Teenage Life」主题自编短文（约 120 词/篇，避免版权，`src/data/unit1-reading.ts`）
   - 每篇 3 道阅读理解单选题（细节理解 / 主旨大意 / 写作意图），逐题中文解析；答题即时判分并展示解析
   - 短文生词虚线标注，点击即加入词汇本（与词汇模块共享 localStorage 键 `english-learning.progress.v1`，进入 SM-2 复习队列），再次点击取消
+- **听力模块**（`/listening`）
+  - 内置 2 段「Teenage Life」主题自编听力材料（独白 + 对话，约 80 词/段，`src/data/unit1-listening.ts`），由浏览器本地 speechSynthesis 朗读，不依赖外部 TTS 服务
+  - 播放器支持播放 / 暂停 / 继续 / 重听，语速 0.6–1.4 档可调（朗读中调整会从本段开头以新语速重读）；浏览器不支持语音合成时给出提示，题目仍可作答
+  - 每段 3 道听力理解单选题（细节理解 / 推理判断），逐题中文解析；答完该段全部题目后可查看 / 收起听力原文
 - **统一设计令牌**：`src/styles/tokens.css` 为唯一样式变量来源，组件样式只引用 `var(--*)`
 
 ## 开发
@@ -24,7 +28,7 @@
 ```bash
 npm install
 npm run dev      # 本地开发服务器
-npm test         # 单元测试（vitest，79 例）
+npm test         # 单元测试（vitest，104 例）
 npm run build    # 生产构建（tsc 类型检查 + vite build）
 npm run preview  # 预览构建产物
 ```

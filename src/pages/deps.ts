@@ -1,6 +1,6 @@
 import type { Word } from '../types';
 import type { WrongBook } from '../store/wrongbook';
-import { createSpeechEngine, type SpeechEngine } from '../speech/tts';
+import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
 
 /** 词汇模块页面依赖（默认实现走真实 localStorage；测试可注入假实现） */
 export interface VocabDeps {
@@ -30,7 +30,9 @@ export interface ListeningDeps {
   createEngine: () => SpeechEngine;
 }
 
-/** 默认依赖：浏览器 speechSynthesis 本地朗读 */
+/** 默认依赖：浏览器 speechSynthesis 本地朗读。
+ *  DOM 类型与接缝子集仅在事件回调签名上有差异（this/ev 参数），
+ *  运行时完全兼容（引擎只用声明的子集，且以零参回调回填），在此显式桥接。 */
 export function defaultListeningDeps(): ListeningDeps {
   const supported =
     typeof window !== 'undefined' &&
@@ -39,8 +41,9 @@ export function defaultListeningDeps(): ListeningDeps {
   return {
     createEngine: () =>
       createSpeechEngine({
-        synth: supported ? window.speechSynthesis : undefined,
-        createUtterance: (text) => new SpeechSynthesisUtterance(text),
+        synth: supported ? (window.speechSynthesis as unknown as SpeechSynthesisLike) : undefined,
+        createUtterance: (text) =>
+          new SpeechSynthesisUtterance(text) as unknown as SpeechSynthesisUtteranceLike,
       }),
   };
 }

@@ -36,6 +36,8 @@
   --color-border: var(--slate-200);
   --color-text: var(--slate-900);
   --color-text-secondary: var(--slate-500);
+  /* 弱化元信息（时间戳等）：base.css 已有引用，补齐定义使令牌自洽 */
+  --color-text-muted: var(--slate-400);
   --color-primary: var(--indigo-600);
   --color-primary-hover: var(--indigo-700);
   --color-primary-soft: var(--indigo-50);

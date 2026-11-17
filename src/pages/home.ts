@@ -8,6 +8,7 @@ export function renderHome(root: HTMLElement): void {
         <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
         <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
         <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
+        <a class="btn btn--ghost" href="/listening" data-link>听力</a>
       </nav>
     </div>`;
 
@@ -33,10 +34,10 @@ export function renderHome(root: HTMLElement): void {
         <h2 class="module-card__title">📄 阅读</h2>
         <p class="module-card__desc">Unit 1 主题短文 ×2：阅读理解即时判分，生词一点收进词汇本</p>
       </a>
-      <div class="module-card module-card--disabled">
+      <a class="module-card" href="/listening" data-link>
         <h2 class="module-card__title">🎧 听力</h2>
-        <p class="module-card__desc">建设中，敬请期待</p>
-      </div>
+        <p class="module-card__desc">Unit 1 主题听力 ×2：浏览器本地朗读，语速可调，答题即时判分</p>
+      </a>
       <div class="module-card module-card--disabled">
         <h2 class="module-card__title">✍️ 写作</h2>
         <p class="module-card__desc">建设中，敬请期待</p>

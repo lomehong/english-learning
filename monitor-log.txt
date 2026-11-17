@@ -1,0 +1,9 @@
+15:06:13 round=10 head=704d07d sa(ticket-2-1794898156074955): 实现 /listening 听力模块
+  st:  M README.md |  M out.txt |  M src/main.ts |  D src/pages/Listening.tsx |  M src/pages/deps.ts |  M src/pages/home.ts |  M src/pages/router.test.ts |  M src/router.ts |  M src/styles/base.css |  M src/styles/tokens.css |  M tts-out.txt
+  files: src/pages/deps.ts=15:03:03 src/speech/tts.ts=14:56:57 README.md=15:06:00 out.txt=15:05:48 tts-out.txt=15:06:00 build.txt=GONE
+15:06:23 round=11 head=704d07d sa(ticket-2-1794898156074955): 实现 /listening 听力模块
+  st:  M README.md |  M out.txt |  M src/main.ts |  D src/pages/Listening.tsx |  M src/pages/deps.ts |  M src/pages/home.ts |  M src/pages/router.test.ts |  M src/router.ts |  M src/styles/base.css |  M src/styles/tokens.css |  M tts-out.txt | ?? monitor-log.txt
+  files: src/pages/deps.ts=15:03:03 src/speech/tts.ts=14:56:57 README.md=15:06:00 out.txt=15:05:48 tts-out.txt=15:06:00 build.txt=GONE
+15:06:33 round=12 head=704d07d sa(ticket-2-1794898156074955): 实现 /listening 听力模块
+  st:  M README.md |  M out.txt |  M src/main.ts |  D src/pages/Listening.tsx |  M src/pages/deps.ts |  M src/pages/home.ts |  M src/pages/router.test.ts |  M src/router.ts |  M src/styles/base.css |  M src/styles/tokens.css |  M tts-out.txt | ?? monitor-log.txt
+  files: src/pages/deps.ts=15:03:03 src/speech/tts.ts=14:56:57 README.md=15:06:00 out.txt=15:05:48 tts-out.txt=15:06:00 build.txt=GONE
