@@ -74,6 +74,40 @@ export interface FillExercise {
 
 export type GrammarExercise = McqExercise | FillExercise;
 
+/* -------------------- 阅读模块 -------------------- */
+
+/** 阅读理解选择题 */
+export interface ReadingQuestion {
+  id: string;
+  /** 题型：细节理解 / 主旨大意 / 推理判断 / 写作意图 */
+  type: 'detail' | 'main-idea' | 'inference' | 'purpose';
+  /** 题干 */
+  stem: string;
+  options: string[];
+  answerIndex: number;
+  explanation: string;
+}
+
+/** 短文生词表项：点击可加入词汇本（与词汇模块共享） */
+export interface ReadingGlossEntry {
+  /** 关联词表条目 id（Word.id，须存在于 unit1Words） */
+  wordId: string;
+  /** 该词在文中出现的拼写形式（用于渲染可点击生词） */
+  forms: string[];
+}
+
+/** 阅读短文（自编，避免版权） */
+export interface ReadingPassage {
+  id: string;
+  title: string;
+  /** 体裁（记叙文 / 应用文等） */
+  genre: string;
+  /** 段落原文 */
+  paragraphs: string[];
+  glossary: ReadingGlossEntry[];
+  questions: ReadingQuestion[];
+}
+
 /** 错题本条目（localStorage 持久化单元） */
 export interface WrongEntry {
   exerciseId: string;

@@ -15,6 +15,12 @@ export interface GrammarDeps {
   now: () => number;
 }
 
+/**
+ * 阅读模块页面依赖：与词汇模块共用同一进度存储（localStorage 键
+ * english-learning.progress.v1），生词收藏即「加入词汇本」。
+ */
+export type ReadingDeps = VocabDeps;
+
 export interface FlipCard {
   el: HTMLElement;
   flip: () => void;
