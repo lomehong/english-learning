@@ -1,9 +1,17 @@
 import type { Word } from '../types';
+import type { WrongBook } from '../store/wrongbook';
 
 /** 词汇模块页面依赖（默认实现走真实 localStorage；测试可注入假实现） */
 export interface VocabDeps {
   load: () => import('../store/progress').Progress;
   save: (progress: import('../store/progress').Progress) => void;
+  now: () => number;
+}
+
+/** 语法模块页面依赖（默认实现走真实 localStorage；测试可注入假实现） */
+export interface GrammarDeps {
+  load: () => WrongBook;
+  save: (book: WrongBook) => void;
   now: () => number;
 }
 

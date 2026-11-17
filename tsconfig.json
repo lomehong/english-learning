@@ -1,11 +1,4 @@
 {
-<<<<<<< HEAD
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
-=======
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -21,6 +14,8 @@
     "noEmit": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src", "vite.config.ts"]
->>>>>>> c2ccdf5 (sa(ticket-6-1794887919813735): 实现词汇模块（词表/SRS/学习与复习页）)
+  "include": ["src", "vite.config.ts"],
+  "exclude": [
+    "src/**/*.tsx"
+  ]
 }

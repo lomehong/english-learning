@@ -16,6 +16,77 @@ export interface Word {
   exampleZh: string;
 }
 
+/* -------------------- 语法模块 -------------------- */
+
+/** 语法讲解卡：构成形式行 */
+export interface GrammarForm {
+  label: string;
+  detail: string;
+}
+
+/** 语法讲解卡：例句 */
+export interface GrammarExample {
+  en: string;
+  zh: string;
+}
+
+/** 语法讲解卡（一个语法点） */
+export interface GrammarPoint {
+  id: string;
+  title: string;
+  /** 一句话定位 */
+  tagline: string;
+  /** 肯定 / 否定 / 疑问等构成形式 */
+  forms: GrammarForm[];
+  /** 用法要点 */
+  usages: string[];
+  /** 常用时间标志词 */
+  markers: string[];
+  examples: GrammarExample[];
+  /** 易错点提醒 */
+  tips: string[];
+}
+
+/** 语法练习题：单项选择 */
+export interface McqExercise {
+  id: string;
+  type: 'mcq';
+  /** 关联 GrammarPoint.id */
+  pointId: string;
+  /** 题干（含 ______ 空位） */
+  stem: string;
+  options: string[];
+  answerIndex: number;
+  explanation: string;
+}
+
+/** 语法练习题：填空（stem 括号内为所给词） */
+export interface FillExercise {
+  id: string;
+  type: 'fill';
+  pointId: string;
+  stem: string;
+  answer: string;
+  /** 等价可接受形式（如缩写的展开形式） */
+  acceptable?: string[];
+  explanation: string;
+}
+
+export type GrammarExercise = McqExercise | FillExercise;
+
+/** 错题本条目（localStorage 持久化单元） */
+export interface WrongEntry {
+  exerciseId: string;
+  stem: string;
+  yourAnswer: string;
+  correctAnswer: string;
+  explanation: string;
+  /** 累计答错次数 */
+  wrongCount: number;
+  /** 最近一次答错时间（epoch 毫秒） */
+  lastWrongAt: number;
+}
+
 /** SRS 四档评分 */
 export type Grade = 'again' | 'hard' | 'good' | 'easy';
 
