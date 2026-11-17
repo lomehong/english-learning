@@ -1,0 +1,182 @@
+[
+  {
+    "id": "fitness",
+    "word": "fitness",
+    "phonetic": "/ˈfɪtnəs/",
+    "pos": "n.",
+    "meaning": "健康；健壮；适合（保持某种体能状态）",
+    "example": "Regular exercise is the key to fitness.",
+    "exampleZh": "经常锻炼是保持健康的关键。"
+  },
+  {
+    "id": "stadium",
+    "word": "stadium",
+    "phonetic": "/ˈsteɪdiəm/",
+    "pos": "n.",
+    "meaning": "体育场；运动场",
+    "example": "The new stadium can hold eighty thousand spectators.",
+    "exampleZh": "新体育场能容纳八万名观众。"
+  },
+  {
+    "id": "gym",
+    "word": "gym",
+    "phonetic": "/dʒɪm/",
+    "pos": "n.",
+    "meaning": "健身房；体育馆；体操课",
+    "example": "He lifts weights in the gym twice a week.",
+    "exampleZh": "他每周去健身房举重两次。"
+  },
+  {
+    "id": "boxing",
+    "word": "boxing",
+    "phonetic": "/ˈbɒksɪŋ/",
+    "pos": "n.",
+    "meaning": "拳击（运动）",
+    "example": "Boxing requires both strength and speed.",
+    "exampleZh": "拳击既需要力量也需要速度。"
+  },
+  {
+    "id": "badminton",
+    "word": "badminton",
+    "phonetic": "/ˈbædmɪntən/",
+    "pos": "n.",
+    "meaning": "羽毛球运动",
+    "example": "We play badminton in the school gym after class.",
+    "exampleZh": "放学后我们在学校体育馆里打羽毛球。"
+  },
+  {
+    "id": "marathon",
+    "word": "marathon",
+    "phonetic": "/ˈmærəθən/",
+    "pos": "n.",
+    "meaning": "马拉松赛跑；耐力的考验",
+    "example": "She trained for months before running her first marathon.",
+    "exampleZh": "她训练了好几个月才跑完自己的第一个马拉松。"
+  },
+  {
+    "id": "champion",
+    "word": "champion",
+    "phonetic": "/ˈtʃæmpiən/",
+    "pos": "n.",
+    "meaning": "冠军；第一名；捍卫者",
+    "example": "The young boxer became national champion last year.",
+    "exampleZh": "这位年轻的拳击手去年成了全国冠军。"
+  },
+  {
+    "id": "championship",
+    "word": "championship",
+    "phonetic": "/ˈtʃæmpiənʃɪp/",
+    "pos": "n.",
+    "meaning": "锦标赛；冠军赛；冠军称号",
+    "example": "Our team won the school basketball championship.",
+    "exampleZh": "我们队赢得了学校篮球锦标赛的冠军。"
+  },
+  {
+    "id": "medal",
+    "word": "medal",
+    "phonetic": "/ˈmedl/",
+    "pos": "n.",
+    "meaning": "奖章；勋章",
+    "example": "He won a gold medal in the 100-metre race.",
+    "exampleZh": "他在100米赛跑中获得了一枚金牌。"
+  },
+  {
+    "id": "honour",
+    "word": "honour",
+    "phonetic": "/ˈɒnə(r)/",
+    "pos": "n.",
+    "meaning": "荣誉；尊敬；荣幸",
+    "example": "It is a great honour to compete for our school.",
+    "exampleZh": "能代表学校参赛是极大的荣誉。"
+  },
+  {
+    "id": "determination",
+    "word": "determination",
+    "phonetic": "/dɪˌtɜːmɪˈneɪʃn/",
+    "pos": "n.",
+    "meaning": "决心；毅力；决定",
+    "example": "She passed the test with courage and determination.",
+    "exampleZh": "她凭着勇气和毅力通过了测试。"
+  },
+  {
+    "id": "injure",
+    "word": "injure",
+    "phonetic": "/ˈɪndʒə(r)/",
+    "pos": "vt.",
+    "meaning": "使受伤；损害",
+    "example": "Warm up first, or you may injure your knees while running.",
+    "exampleZh": "先热身，否则跑步时可能会伤到膝盖。"
+  },
+  {
+    "id": "injury",
+    "word": "injury",
+    "phonetic": "/ˈɪndʒəri/",
+    "pos": "n.",
+    "meaning": "伤；伤害（尤指运动外伤）",
+    "example": "A knee injury kept him away from the track for a month.",
+    "exampleZh": "膝伤让他一个月没上跑道。"
+  },
+  {
+    "id": "strength",
+    "word": "strength",
+    "phonetic": "/streŋθ/",
+    "pos": "n.",
+    "meaning": "力量；体力；强度",
+    "example": "Swimming builds strength and keeps you fit.",
+    "exampleZh": "游泳能增强力量，让你保持健康。"
+  },
+  {
+    "id": "compete",
+    "word": "compete",
+    "phonetic": "/kəmˈpiːt/",
+    "pos": "vi.",
+    "meaning": "竞争；对抗；参加比赛",
+    "example": "More than two hundred athletes will compete in the marathon.",
+    "exampleZh": "两百多名运动员将参加这场马拉松比赛。"
+  },
+  {
+    "id": "competition",
+    "word": "competition",
+    "phonetic": "/ˌkɒmpəˈtɪʃn/",
+    "pos": "n.",
+    "meaning": "竞争；比赛；对手",
+    "example": "There is strong competition among the teams this year.",
+    "exampleZh": "今年各队之间的竞争非常激烈。"
+  },
+  {
+    "id": "graceful",
+    "word": "graceful",
+    "phonetic": "/ˈɡreɪsfl/",
+    "pos": "adj.",
+    "meaning": "优美的；优雅的",
+    "example": "The skater gave a graceful performance on the ice.",
+    "exampleZh": "这位滑冰运动员在冰上做了优美的表演。"
+  },
+  {
+    "id": "spectator",
+    "word": "spectator",
+    "phonetic": "/spekˈteɪtə(r)/",
+    "pos": "n.",
+    "meaning": "观众；旁观者",
+    "example": "Thousands of spectators cheered for their favourite team.",
+    "exampleZh": "数千名观众为他们最喜欢的球队欢呼。"
+  },
+  {
+    "id": "track",
+    "word": "track",
+    "phonetic": "/træk/",
+    "pos": "n.",
+    "meaning": "跑道；小路；足迹",
+    "example": "The runners warmed up on the track before the race.",
+    "exampleZh": "赛跑运动员们赛前在跑道上热身。"
+  },
+  {
+    "id": "coach",
+    "word": "coach",
+    "phonetic": "/kəʊtʃ/",
+    "pos": "n.",
+    "meaning": "教练；私人教师",
+    "example": "Our coach asks us to train hard but rest well.",
+    "exampleZh": "教练要求我们刻苦训练，同时好好休息。"
+  }
+]

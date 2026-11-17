@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { unit1Listenings } from './unit1-listening';
 import { unit2Listenings } from './unit2-listening';
+import { unit3Listenings } from './unit3-listening';
 import { countScriptWords, getListening, getListeningsByUnit, LISTENING_QUESTION_TYPE_LABEL } from './listening';
 
 /** 听力材料与题目数据完整性（两单元共用同一套约束） */
@@ -76,12 +77,41 @@ describe('听力数据 · Unit 2（Travelling Around）', () => {
   });
 });
 
+describe('听力数据 · Unit 3（Sports and Fitness）', () => {
+  expectListeningsValid(unit3Listenings, 'Unit 3');
+
+  it('Unit 3 材料/题目 id 均带 u3- 前缀，与前两单元不冲突', () => {
+    const otherIds = new Set([
+      ...unit1Listenings.map((m) => m.id),
+      ...unit1Listenings.flatMap((m) => m.questions.map((q) => q.id)),
+      ...unit2Listenings.map((m) => m.id),
+      ...unit2Listenings.flatMap((m) => m.questions.map((q) => q.id)),
+    ]);
+    for (const id of [
+      ...unit3Listenings.map((m) => m.id),
+      ...unit3Listenings.flatMap((m) => m.questions.map((q) => q.id)),
+    ]) {
+      expect(id.startsWith('u3-')).toBe(true);
+      expect(otherIds.has(id)).toBe(false);
+    }
+  });
+
+  it('材料体裁覆盖独白与对话', () => {
+    const genres = unit3Listenings.map((m) => m.genre);
+    expect(genres).toContain('独白');
+    expect(genres).toContain('对话');
+  });
+});
+
 describe('听力注册表（按单元取用）', () => {
   it('getListeningsByUnit 按单元返回；getListening 跨单元可查', () => {
     expect(getListeningsByUnit('unit1')).toBe(unit1Listenings);
     expect(getListeningsByUnit('unit2')).toBe(unit2Listenings);
+    expect(getListeningsByUnit('unit3')).toBe(unit3Listenings);
     expect(getListening('u2-l1')?.title).toBe('Getting Ready for London');
     expect(getListening('u2-l2')?.genre).toBe('对话');
+    expect(getListening('u3-l1')?.title).toBe('Preparing for the Mini-Marathon');
+    expect(getListening('u3-l2')?.genre).toBe('对话');
     expect(getListening('nope')).toBeUndefined();
   });
 });

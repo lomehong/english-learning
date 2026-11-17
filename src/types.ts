@@ -90,7 +90,7 @@ export interface ReadingQuestion {
 
 /** 短文生词表项：点击可加入词汇本（与词汇模块共享） */
 export interface ReadingGlossEntry {
-  /** 关联词表条目 id（Word.id，须存在于 unit1Words） */
+  /** 关联词表条目 id（Word.id，须存在于单元注册表词表） */
   wordId: string;
   /** 该词在文中出现的拼写形式（用于渲染可点击生词） */
   forms: string[];

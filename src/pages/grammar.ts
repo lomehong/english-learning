@@ -15,7 +15,7 @@ import {
 import { recordAnswerAndSave } from '../store/stats';
 import type { FillExercise, GrammarExercise, GrammarPoint, McqExercise, WrongEntry } from '../types';
 import type { GrammarDeps } from './deps';
-import { buildUnitSwitcher, currentUnit } from './unit-switch';
+import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /** /grammar 页：单元切换 + 讲解卡 + 专项练习（即时判分/解析/错题自动入本） */
 
@@ -291,13 +291,8 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   const headSpacer = document.createElement('span');
   headSpacer.className = 'page-head__spacer';
 
-  // 单元切换：URL 已更新后整页重渲（currentUnit 从 ?unit= 读取）
-  const unitSwitcher = buildUnitSwitcher('/grammar', () => {
-    root.replaceChildren();
-    renderGrammar(root, d);
-  });
-
-  head.append(title, unitSwitcher.el, headSpacer, statChip);
+  // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
+  head.append(title, buildUnitBadge(unit), headSpacer, statChip);
 
   /* 讲解卡区 */
   const teach = document.createElement('section');

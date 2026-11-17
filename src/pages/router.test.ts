@@ -8,6 +8,7 @@ import { renderListening } from './listening';
 import { renderWriting } from './writing';
 import { renderMistakes } from './mistakes';
 import { renderReport } from './report';
+import { resetUnitState } from './unit-switch';
 
 const routes: Route[] = [
   { path: '/', render: renderHome },
@@ -27,15 +28,18 @@ describe('路由接线', () => {
   afterEach(() => {
     cleanup?.();
     root?.remove();
+    resetUnitState(); // 各用例独立：清掉全局单元的内存态与存储
     history.pushState(null, '', '/');
   });
 
-  it('/ 渲染首页（七大模块入口与导航全部接线，无「建设中」占位）', () => {
+  it('/ 渲染首页（七大模块入口与导航全部接线，无「建设中」占位；含全局单元切换器）', () => {
     history.pushState(null, '', '/');
     root = document.createElement('div');
     document.body.append(root);
     cleanup = createRouter(root, routes).destroy;
     expect(root.querySelector('.module-grid')).toBeTruthy();
+    expect(root.querySelector('[data-testid="unit-switcher"]')).toBeTruthy();
+    expect(root.querySelectorAll('[data-testid="unit-switcher"] button')).toHaveLength(3);
     const hrefs = ['/vocabulary', '/grammar', '/reading', '/listening', '/writing', '/mistakes', '/report'];
     for (const href of hrefs) {
       const card = root.querySelector(`a.module-card[href="${href}"]`);

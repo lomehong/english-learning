@@ -1,24 +1,19 @@
 import type { ListeningMaterial, ListeningQuestion } from '../types';
-import { unit1Listenings } from './unit1-listening';
-import { unit2Listenings } from './unit2-listening';
-import { UNIT_IDS, type UnitId } from './units';
+import { UNIT_IDS, UNIT_REGISTRY, type UnitId } from './units';
 
 /**
- * 听力模块注册表：两单元材料按单元取用；
+ * 听力模块：材料按单元从注册表取用（新增单元零改动）；
  * 词数统计与题型标签为全单元共享的纯函数。
  */
 
-const listeningsByUnit: Record<UnitId, ListeningMaterial[]> = {
-  unit1: unit1Listenings,
-  unit2: unit2Listenings,
-};
-
 /** 按单元取听力材料 */
 export function getListeningsByUnit(unit: UnitId): ListeningMaterial[] {
-  return listeningsByUnit[unit];
+  return UNIT_REGISTRY[unit].listenings;
 }
 
-const materialById = new Map(UNIT_IDS.flatMap((u) => listeningsByUnit[u].map((m) => [m.id, m] as const)));
+const materialById = new Map(
+  UNIT_IDS.flatMap((u) => UNIT_REGISTRY[u].listenings.map((m) => [m.id, m] as const)),
+);
 
 /** 跨单元按 id 查听力材料 */
 export function getListening(id: string): ListeningMaterial | undefined {

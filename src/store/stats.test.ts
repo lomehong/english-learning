@@ -25,7 +25,7 @@ describe('练习统计 localStorage 持久化', () => {
     expect(stats).toEqual(emptyStats());
     expect(Object.keys(stats.modules).sort()).toEqual(['grammar', 'listening', 'reading', 'vocab']);
     expect(stats.modules.grammar).toEqual({ answered: 0, correct: 0 });
-    expect(Object.keys(stats.units).sort()).toEqual(['unit1', 'unit2']);
+    expect(Object.keys(stats.units).sort()).toEqual(['unit1', 'unit2', 'unit3']);
     expect(stats.units.unit1.vocab).toEqual({ answered: 0, correct: 0 });
     expect(stats.units.unit2.listening).toEqual({ answered: 0, correct: 0 });
   });

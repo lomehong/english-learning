@@ -7,6 +7,7 @@ import { unit2Passages } from '../data/unit2-reading';
 import { QUESTION_TYPE_LABEL } from '../data/reading';
 import { clearWrongBook, loadWrongBook } from '../store/wrongbook';
 import { emptyStats, loadStats, saveStats } from '../store/stats';
+import { setUnit, resetUnitState } from './unit-switch';
 import type { ReadingQuestion } from '../types';
 import type { ReadingDeps } from './deps';
 
@@ -212,14 +213,16 @@ describe('阅读页 · 错题与统计数据源（错题本/学习报告页消�
   });
 });
 
-describe('阅读页 · 单元切换（Unit 2）', () => {
+describe('阅读页 · 全局单元联动（Unit 2）', () => {
   beforeEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/reading?unit=unit2');
     clearWrongBook();
     saveStats(emptyStats());
   });
 
   afterEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/reading');
   });
 
@@ -284,15 +287,28 @@ describe('阅读页 · 单元切换（Unit 2）', () => {
     expect(loadWrongBook().entries[q.id]).toBeDefined();
   });
 
-  it('点击 Unit 1 切换按钮：内容重建为 Unit 1 短文', () => {
+  it('全局单元切回 Unit 1（setUnit，首页切换器同一入口）后重挂载：内容重建为 Unit 1 短文', () => {
     const container = document.createElement('div');
     renderReading(container, makeDeps());
 
-    click(container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!);
+    setUnit('unit1');
+    history.replaceState(null, '', '/reading'); // 模块页重挂载（读全局状态）
+    container.replaceChildren();
+    renderReading(container, makeDeps());
 
     expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
     expect(container.textContent).toContain("Passage 1 · A Freshman's First Term");
     expect(container.querySelector('[data-question="u2-r1-1"]')).toBeNull();
-    expect(location.search).toBe('');
+  });
+
+  it('?unit=unit3 深链渲染 Unit 3 短文与题目', () => {
+    history.replaceState(null, '', '/reading?unit=unit3');
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 3');
+    expect(container.textContent).toContain('The Girl Who Never Gave Up');
+    expect(container.querySelector('[data-question="u3-r1-1"]')).toBeTruthy();
+    expect(container.querySelector<HTMLElement>('[data-testid="current-unit"]')!.dataset.unit).toBe('unit3');
   });
 });

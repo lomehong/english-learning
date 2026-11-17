@@ -4,6 +4,7 @@ import { unit1Listenings } from '../data/unit1-listening';
 import { unit2Listenings } from '../data/unit2-listening';
 import { clearWrongBook, loadWrongBook } from '../store/wrongbook';
 import { emptyStats, loadStats, saveStats } from '../store/stats';
+import { setUnit, resetUnitState } from './unit-switch';
 import type { ListeningQuestion } from '../types';
 import type { PlayerState, SpeechEngine } from '../speech/tts';
 import type { ListeningDeps } from './deps';
@@ -291,14 +292,16 @@ describe('听力页 · 生命周期', () => {
   });
 });
 
-describe('听力页 · 单元切换（Unit 2）', () => {
+describe('听力页 · 全局单元联动（Unit 2）', () => {
   beforeEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/listening?unit=unit2');
     clearWrongBook();
     saveStats(emptyStats());
   });
 
   afterEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/listening');
   });
 
@@ -344,17 +347,30 @@ describe('听力页 · 单元切换（Unit 2）', () => {
     expect(container.querySelectorAll('.exercise--listening')).toHaveLength(TOTAL);
   });
 
-  it('点击 Unit 1 切换按钮：销毁旧引擎并重建为 Unit 1 内容，URL 保留在单元页', () => {
+  it('全局单元切回 Unit 1（setUnit，首页切换器同一入口）后重挂载：销毁旧引擎并重建 Unit 1 内容', () => {
     const engine = makeFakeEngine();
     const container = document.createElement('div');
-    renderListening(container, makeDeps(engine));
+    const cleanup = renderListening(container, makeDeps(engine));
 
-    const unit1Btn = container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!;
-    click(unit1Btn);
+    setUnit('unit1');
+    history.replaceState(null, '', '/listening'); // 模块页重挂载（读全局状态）
+    cleanup(); // 路由离开旧实例时调用的清理（停止朗读）
+    container.replaceChildren();
+    renderListening(container, makeDeps(engine));
 
     expect(engine.calls.destroy).toBe(1);
     expect(container.textContent).toContain('Material 1 · A Busy but Interesting School Life');
     expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
-    expect(location.search).toBe('');
+  });
+
+  it('?unit=unit3 深链渲染 Unit 3 听力材料（Sports and Fitness）', () => {
+    history.replaceState(null, '', '/listening?unit=unit3');
+    const container = document.createElement('div');
+    renderListening(container, makeDeps(makeFakeEngine()));
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 3');
+    expect(container.textContent).toContain('Material 1 · Preparing for the Mini-Marathon');
+    expect(container.querySelector('[data-question="u3-l1-1"]')).toBeTruthy();
+    expect(container.querySelector<HTMLElement>('[data-testid="current-unit"]')!.dataset.unit).toBe('unit3');
   });
 });

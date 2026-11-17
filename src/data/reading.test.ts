@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { unit1Passages } from './unit1-reading';
 import { unit2Passages } from './unit2-reading';
+import { unit3Passages } from './unit3-reading';
 import { countWords, getPassage, getPassagesByUnit, QUESTION_TYPE_LABEL } from './reading';
 import { getWord } from './words';
 
@@ -116,11 +117,43 @@ describe('人教2019必修一 Unit2 阅读短文（Travelling Around）', () => 
   });
 });
 
+describe('人教2019必修一 Unit3 阅读短文（Sports and Fitness）', () => {
+  expectPassagesValid(unit3Passages, 'Unit 3', [100, 140]);
+
+  it('Unit 3 短文/题目 id 均带 u3- 前缀，与前两单元不冲突', () => {
+    const otherIds = new Set([
+      ...unit1Passages.map((p) => p.id),
+      ...unit1Passages.flatMap((p) => p.questions.map((q) => q.id)),
+      ...unit2Passages.map((p) => p.id),
+      ...unit2Passages.flatMap((p) => p.questions.map((q) => q.id)),
+    ]);
+    for (const id of [
+      ...unit3Passages.map((p) => p.id),
+      ...unit3Passages.flatMap((p) => p.questions.map((q) => q.id)),
+    ]) {
+      expect(id.startsWith('u3-')).toBe(true);
+      expect(otherIds.has(id)).toBe(false);
+    }
+  });
+
+  it('Unit 3 题型覆盖：两篇共 6 题含细节理解与主旨/写作意图，体裁覆盖记叙文与应用文', () => {
+    const types = unit3Passages.flatMap((p) => p.questions.map((q) => q.type));
+    expect(types.filter((t) => t === 'detail').length).toBeGreaterThanOrEqual(4);
+    expect(types.some((t) => t === 'main-idea' || t === 'purpose')).toBe(true);
+    const genres = unit3Passages.map((p) => p.genre);
+    expect(genres).toContain('记叙文');
+    expect(genres).toContain('应用文');
+  });
+});
+
 describe('阅读注册表（按单元取用）', () => {
   it('getPassagesByUnit 按单元返回；getPassage 跨单元可查', () => {
     expect(getPassagesByUnit('unit1')).toBe(unit1Passages);
     expect(getPassagesByUnit('unit2')).toBe(unit2Passages);
+    expect(getPassagesByUnit('unit3')).toBe(unit3Passages);
     expect(getPassage('u2-p1')?.title).toBe('A Weekend in an Ancient Town');
     expect(getPassage('u2-p2')?.genre).toBe('应用文');
+    expect(getPassage('u3-p1')?.title).toBe('The Girl Who Never Gave Up');
+    expect(getPassage('u3-p2')?.genre).toBe('应用文');
   });
 });

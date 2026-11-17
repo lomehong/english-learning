@@ -4,6 +4,7 @@ import { unit1WritingTasks } from '../data/unit1-writing';
 import { unit2WritingTasks } from '../data/unit2-writing';
 import { countEssayWords } from '../data/writing';
 import { emptyWritingDrafts, putDraft, type WritingDrafts } from '../store/writing';
+import { setUnit, resetUnitState } from './unit-switch';
 import type { WritingDeps } from './deps';
 
 const NOW = Date.UTC(2026, 0, 1);
@@ -142,12 +143,14 @@ describe('写作页 · 自评清单', () => {
   });
 });
 
-describe('写作页 · 单元切换（Unit 2）', () => {
+describe('写作页 · 全局单元联动（Unit 2）', () => {
   beforeEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/writing?unit=unit2');
   });
 
   afterEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/writing');
   });
 
@@ -212,15 +215,33 @@ describe('写作页 · 单元切换（Unit 2）', () => {
     expect(container.querySelector('[data-task="u2-w1"]')).toBeNull();
   });
 
-  it('点击 Unit 1 切换按钮：内容重建为 Unit 1 任务', () => {
+  it('全局单元切回 Unit 1（setUnit，首页切换器同一入口）后重挂载：内容重建为 Unit 1 任务', () => {
     const container = document.createElement('div');
     renderWriting(container, makeDeps());
 
-    click(container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!);
+    setUnit('unit1');
+    history.replaceState(null, '', '/writing'); // 模块页重挂载（读全局状态）
+    container.replaceChildren();
+    renderWriting(container, makeDeps());
 
     expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
     expect(container.querySelector('[data-task="w1"]')).toBeTruthy();
     expect(container.querySelector('[data-task="u2-w1"]')).toBeNull();
-    expect(location.search).toBe('');
+  });
+
+  it('?unit=unit3 深链渲染 Unit 3 写作任务与范文（草稿独立保存）', () => {
+    history.replaceState(null, '', '/writing?unit=unit3');
+    const deps = makeDeps();
+    const container = document.createElement('div');
+    renderWriting(container, deps);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 3');
+    expect(container.querySelector('[data-task="u3-w1"]')).toBeTruthy();
+    expect(container.querySelector('[data-testid="draft-editor-u3-w1"]')).toBeTruthy();
+    expect(container.textContent).toContain('An Unforgettable Match');
+
+    const textarea = container.querySelector<HTMLTextAreaElement>('[data-testid="draft-editor-u3-w1"]')!;
+    type(textarea, 'Dear classmates, I love badminton.');
+    expect(deps.load().drafts['u3-w1']!.content).toContain('badminton');
   });
 });

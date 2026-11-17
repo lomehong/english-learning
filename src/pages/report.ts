@@ -19,11 +19,10 @@ const MODULE_ORDER: readonly PracticeModule[] = ['vocab', 'grammar', 'reading', 
 const DONUT_RADIUS = 52;
 const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
 
-/** 单元「去练习」入口：优先词汇（两单元都有词表可学） */
-const UNIT_RETRY_ROUTE: Record<UnitId, string> = {
-  unit1: '/vocabulary?unit=unit1',
-  unit2: '/vocabulary?unit=unit2',
-};
+/** 单元「去练习」入口：优先词汇（各单元都有词表可学） */
+const UNIT_RETRY_ROUTE: Record<UnitId, string> = Object.fromEntries(
+  UNIT_IDS.map((id) => [id, `/vocabulary?unit=${id}`]),
+) as Record<UnitId, string>;
 
 export interface ModuleRow {
   module: PracticeModule;
@@ -54,15 +53,18 @@ export interface ReportData {
   totalCorrect: number;
   overallAccuracy: number | null;
   wrongTotal: number;
-  /** 已加入复习计划的单词数（两单元合计） */
+  /** 已加入复习计划的单词数（全部单元合计） */
   srsTotal: number;
-  /** 当前到期（due <= now）应复习的单词数（两单元合计） */
+  /** 当前到期（due <= now）应复习的单词数（全部单元合计） */
   srsDue: number;
 }
 
-/** 错题条目归属单元：u2- 前缀 → Unit 2；w:词id → 按词表归属；其余（Unit 1 旧 id）→ Unit 1 */
+/** 错题条目归属单元：u{n}- 前缀按注册表单元号归档；w:词id → 按词表归属；其余（Unit 1 旧 id）→ Unit 1 */
 export function entryUnit(entry: WrongEntry): UnitId {
-  if (entry.exerciseId.startsWith('u2-')) return 'unit2';
+  for (const unit of UNIT_IDS) {
+    const no = UNIT_META[unit].no;
+    if (no > 1 && entry.exerciseId.startsWith(`u${no}-`)) return unit;
+  }
   if (entry.exerciseId.startsWith('w:')) return getWordUnit(entry.exerciseId.slice(2)) ?? 'unit1';
   return 'unit1';
 }
@@ -370,7 +372,7 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   const intro = document.createElement('p');
   intro.className = 'page-intro';
   intro.textContent =
-    '汇总词汇、语法、阅读、听力四个模块的练习次数与正确率、错题沉淀，以及词汇 SM-2 间隔复习的到期情况；支持按单元（Unit 1 / Unit 2）查看统计，并可导出 / 导入学习数据备份。';
+    '汇总词汇、语法、阅读、听力四个模块的练习次数与正确率、错题沉淀，以及词汇 SM-2 间隔复习的到期情况；支持按单元查看统计，并可导出 / 导入学习数据备份。';
 
   /* 总览卡：总练习 / 总正确率（SVG 环）/ 错题总数 / SRS 到期 */
   const cards = document.createElement('div');
@@ -414,7 +416,7 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   unitSection.setAttribute('data-testid', 'unit-stats');
   const unitTitle = document.createElement('h2');
   unitTitle.className = 'section-title';
-  unitTitle.textContent = '按单元统计（Unit 1 / Unit 2）';
+  unitTitle.textContent = `按单元统计（Unit ${UNIT_IDS.map((id) => UNIT_META[id].no).join(' / ')}）`;
   const unitNote = document.createElement('p');
   unitNote.className = 'page-intro';
   unitNote.textContent =

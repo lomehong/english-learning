@@ -3,7 +3,7 @@ import { UNIT_META, unitTitle } from '../data/units';
 import { putDraft, removeDraft, type WritingDrafts } from '../store/writing';
 import type { WritingTask } from '../types';
 import { defaultWritingDeps, type WritingDeps } from './deps';
-import { buildUnitSwitcher, currentUnit } from './unit-switch';
+import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /**
  * /writing 页：单元切换 + 主题写作任务 ×2。
@@ -204,12 +204,8 @@ export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
   title.className = 'page-head__title';
   title.textContent = `写作 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
 
-  // 单元切换：URL 已更新后整页重渲（currentUnit 从 ?unit= 读取）
-  const unitSwitcher = buildUnitSwitcher('/writing', () => {
-    root.replaceChildren();
-    renderWriting(root, d);
-  });
-  head.append(title, unitSwitcher.el);
+  // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
+  head.append(title, buildUnitBadge(unit));
 
   const intro = document.createElement('p');
   intro.className = 'page-intro';
