@@ -108,6 +108,31 @@ export interface ReadingPassage {
   questions: ReadingQuestion[];
 }
 
+/* -------------------- 听力模块 -------------------- */
+
+/** 听力理解选择题 */
+export interface ListeningQuestion {
+  id: string;
+  /** 题型：细节理解 / 推理判断 */
+  type: 'detail' | 'inference';
+  /** 题干 */
+  stem: string;
+  options: string[];
+  answerIndex: number;
+  explanation: string;
+}
+
+/** 听力材料（自编，避免版权；由浏览器 speechSynthesis 朗读） */
+export interface ListeningMaterial {
+  id: string;
+  title: string;
+  /** 体裁：独白 / 对话 */
+  genre: string;
+  /** 朗读原文（对话体按行含说话人标签，纯英文供 TTS 朗读） */
+  script: string[];
+  questions: ListeningQuestion[];
+}
+
 /** 错题本条目（localStorage 持久化单元） */
 export interface WrongEntry {
   exerciseId: string;
