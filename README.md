@@ -4,7 +4,7 @@
 
 ## 功能
 
-覆盖 **必修一 Unit 1（Teenage Life）/ Unit 2（Travelling Around）/ Unit 3（Sports and Fitness）** 三个单元：单元维度由**数据驱动注册表**（`src/data/units.ts` 的 `UNIT_MANIFESTS`）统一管理，词汇 / 语法 / 阅读 / 听力 / 写作各模块按「当前全局单元」取数；首页提供**全局单元切换器**（选择存 localStorage 键 `english-learning.unit.v1`，并与 URL `?unit=unit1|unit2|unit3` 双向同步，非法与缺省回退 Unit 1）。**新增单元 = 新建一套 `unit{n}-*` 数据文件 + 注册表追加一行**，无需改动任何页面代码。
+覆盖 **必修一 Unit 1（Teenage Life）/ Unit 2（Travelling Around）/ Unit 3（Sports and Fitness）/ Unit 4（Natural Disasters）/ Unit 5（Languages Around the World）** 五个单元，单元维度由**数据驱动注册表**（`src/data/units.ts` 的 `UNIT_MANIFESTS`）统一管理，并按**册别维度**（`book` 字段：必修一 / 必修二 / 必修三 / 选择性必修一 ~ 四，共 7 册）分组聚合（`UNITS_BY_BOOK`）；词汇 / 语法 / 阅读 / 听力 / 写作各模块按「当前册 + 当前全局单元」取数。首页提供**两级切换器**：第一级选册（7 册），第二级选该册单元（选择存 localStorage 键 `english-learning.book.v1` / `english-learning.unit.v1`，并与 URL `?book=&unit=` 双向同步，非法与缺省回退必修一 Unit 1；尚未收录单元的册显示空态、模块沿用最近单元）。**新增单元 = 新建一套 `unit{n}-*` 数据文件（meta 的 `book` 写目标册名即可归册，缺省归必修一）**，无需改动任何页面代码。
 
 - **词汇模块**（`/vocabulary`）
   - 内置人教2019必修一词表：Unit 1 / Unit 2 / Unit 3 各 20 词，含音标 / 词性 / 中文释义 / 例句（`src/data/unit{n}-words.json`）
@@ -33,7 +33,7 @@
   - 每条错题可「去重练」跳回对应模块（词汇跳转到期复习队列）；词汇重练后评非「重来」即自动出本
 - **学习报告**（`/report`）
   - 各模块练习次数 / 正确率 / 错题数 + 词汇 SM-2 到期数（练习统计键 `english-learning.stats.v1`，随语法 / 阅读 / 词汇复习每次作答自动累积）
-  - **按单元统计维度**：Unit 1 / 2 / 3 各自的练习次数 / 正确率 / 错题数与词表复习进度（作答按单元计入 `stats.units`；错题按 `u2-` / `u3-` 题号前缀与词汇归属单元归档）
+  - **按册 + 单元统计维度**：七册固定分组（含暂未收录单元的册的降级占位），每册汇总该册单元的练习次数 / 正确率 / 错题数与词表复习进度（作答按单元计入 `stats.units`；错题按 `u2-` / `u3-` 题号前缀与词汇归属单元归档）
   - **数据导出 / 导入**：一键导出 JSON 备份（词汇进度 / 错题本 / 写作草稿 / 练习统计四份数据）；导入时与本地数据**合并去重**（词汇卡取复习次数更多者、错题取次数最大且时间最近、草稿取更新时间较新者、统计取更完整一方，不覆盖不双算）
   - 图表全部为纯 CSS（模块/单元正确率条）+ 内联 SVG（总体正确率环），零第三方图表库
   - 依据数据生成学习建议：到期提醒、短板模块、错题消化、模块均衡与正向反馈
@@ -49,7 +49,7 @@ npm run build    # 生产构建（tsc 类型检查 + vite build）
 npm run preview  # 预览构建产物
 ```
 
-路由为 SPA：`/vocabulary` `/grammar` `/reading` `/listening` `/writing` `/mistakes` `/report` 均可深链直达（dev / preview 服务器带 SPA fallback 回退 index.html）。单元维度为**全局状态**：首页切换器写入 localStorage 并同步 `?unit=unit1|unit2|unit3`（如 `/grammar?unit=unit3` 或数字写法 `/grammar?unit=3`）；带参深链优先并被记住，之后无参地址沿用最近选择，非法值回退 Unit 1。
+路由为 SPA：`/vocabulary` `/grammar` `/reading` `/listening` `/writing` `/mistakes` `/report` 均可深链直达（dev / preview 服务器带 SPA fallback 回退 index.html）。册 + 单元维度为**全局状态**：首页两级切换器写入 localStorage 并同步 `?book=&unit=`（如 `/grammar?unit=unit3`、`/?book=必修二`，册参数亦可用 slug 写法 `required-1` ~ `elective-4`，单元参数支持 `unit3` 或数字写法 `3`）；带参深链优先并被记住（`?unit=` 与 `?book=` 冲突时以单元为准、册随单元归属），之后无参地址沿用最近选择，非法值回退必修一 Unit 1，空册沿用最近有效单元不崩溃。
 
 ## License
 

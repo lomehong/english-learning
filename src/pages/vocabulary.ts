@@ -1,4 +1,4 @@
-import { UNIT_META, unitTitle } from '../data/units';
+import { BOOK_LABELS, UNIT_META, unitTitle } from '../data/units';
 import { loadProgress, saveProgress } from '../store/progress';
 import { renderLearn } from './learn';
 import { renderReview } from './review';
@@ -70,7 +70,7 @@ export function renderVocabulary(root: HTMLElement): void {
 
   function syncTitle(): void {
     const meta = UNIT_META[unit];
-    title.textContent = `词汇 · 必修一 ${unitTitle(unit)}（${meta.titleZh}）`;
+    title.textContent = `词汇 · ${BOOK_LABELS[meta.book]} ${unitTitle(unit)}（${meta.titleZh}）`;
   }
 
   function tabUrl(tab: Tab): string {

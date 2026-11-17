@@ -4,7 +4,7 @@ import {
   getGrammarPoint,
   checkFillAnswer,
 } from '../data/grammar';
-import { UNIT_META, unitTitle, type UnitId } from '../data/units';
+import { BOOK_LABELS, UNIT_META, unitTitle, type UnitId } from '../data/units';
 import {
   loadWrongBook,
   saveWrongBook,
@@ -288,7 +288,7 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   head.className = 'page-head';
   const title = document.createElement('h1');
   title.className = 'page-head__title';
-  title.textContent = `语法 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
+  title.textContent = `语法 · ${BOOK_LABELS[UNIT_META[unit].book]} ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
   const headSpacer = document.createElement('span');
   headSpacer.className = 'page-head__spacer';
 
