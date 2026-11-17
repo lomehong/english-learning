@@ -323,6 +323,27 @@ describe('听力页 · 单元切换（Unit 2）', () => {
     expect(loadStats().units.unit1.listening).toEqual({ answered: 0, correct: 0 });
   });
 
+  it('?unit=2 数字写法深链：初始加载即 Unit 2 听力材料', () => {
+    history.replaceState(null, '', '/listening?unit=2');
+    const container = document.createElement('div');
+    renderListening(container, makeDeps(makeFakeEngine()));
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.textContent).toContain('Material 1 · Getting Ready for London');
+    expect(container.querySelectorAll('.exercise--listening')).toHaveLength(TOTAL_U2);
+  });
+
+  it('?unit=oops 非法值深链回退 Unit 1 听力材料', () => {
+    history.replaceState(null, '', '/listening?unit=oops');
+    const container = document.createElement('div');
+    renderListening(container, makeDeps(makeFakeEngine()));
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.textContent).toContain('A Busy but Interesting School Life');
+    expect(container.querySelectorAll('.exercise--listening')).toHaveLength(TOTAL);
+  });
+
   it('点击 Unit 1 切换按钮：销毁旧引擎并重建为 Unit 1 内容，URL 保留在单元页', () => {
     const engine = makeFakeEngine();
     const container = document.createElement('div');
