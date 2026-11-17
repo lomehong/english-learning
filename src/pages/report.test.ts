@@ -321,8 +321,23 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(elective1.accuracy).toBeNull();
     expect(elective1.wrongCount).toBe(0);
 
-    // 其余五册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
-    for (const row of [...data.bookRows.slice(1, 3), ...data.bookRows.slice(4)]) {
+    // 选择性必修二：unit11-15 纯数据新增自动入组（未练习全 0）
+    const elective2 = data.bookRows[4]!;
+    expect(elective2.label).toBe('选择性必修二');
+    expect(elective2.unitRows.map((r) => r.unit)).toEqual([
+      'unit11',
+      'unit12',
+      'unit13',
+      'unit14',
+      'unit15',
+    ]);
+    expect(elective2.answered).toBe(0);
+    expect(elective2.correct).toBe(0);
+    expect(elective2.accuracy).toBeNull();
+    expect(elective2.wrongCount).toBe(0);
+
+    // 其余四册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
+    for (const row of [...data.bookRows.slice(1, 3), ...data.bookRows.slice(5)]) {
       expect(row.unitRows).toEqual([]);
       expect(row.answered).toBe(0);
       expect(row.correct).toBe(0);
@@ -352,9 +367,9 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(unitIdsOfBook('required-1').length);
 
     // 空册：保留分组（架构占位），册头显示「暂未收录单元」，组内是降级提示而非崩溃
-    const empty = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="elective-2"]')!;
+    const empty = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="elective-3"]')!;
     expect(empty.querySelector('[data-testid="book-summary"]')!.textContent).toContain('暂未收录单元');
-    expect(empty.querySelector('[data-testid="book-empty"]')!.textContent).toContain('选择性必修二');
+    expect(empty.querySelector('[data-testid="book-empty"]')!.textContent).toContain('选择性必修三');
     expect(empty.querySelector('[data-testid="unit-row"]')).toBeNull();
 
     // 单元行携带册别维度（册 + 单元两级归属）
