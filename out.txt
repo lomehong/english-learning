@@ -1,0 +1,167 @@
+
+ RUN  v3.2.7 C:/Users/hz0704027/supper-agent-worktrees/ticket-2-1794898156074955
+
+ ❯ src/pages/listening.test.ts (11 tests | 11 failed) 6ms
+   × 听力页 · 渲染 > 渲染 2 段材料（体裁/词数/播放器）与每段 3 道题，进度徽标从 0 开始 3ms
+     → (0 , renderListening) is not a function
+   × 听力页 · 渲染 > 题目展示题型标签；听力原文默认隐藏且查看按钮禁用 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · speechSynthesis 播放器 > 点击播放：以拼接原文 + 当前语速调用引擎；随引擎状态切换 播放/暂停/继续 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · speechSynthesis 播放器 > 重听：从头再放一遍（再次以原文+当前语速调用引擎） 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · speechSynthesis 播放器 > 播放中切换材料：新的一段从头播放（互不打架） 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · speechSynthesis 播放器 > 语速可调：滑杆更新读数；朗读中调整会以新语速从头重读本段 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · 即时判分与原文 > 答对：判定正确、展示解析、锁定选项、更新进度徽标 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · 即时判分与原文 > 答错：判定错误、给出正确答案与解析；每题只判一次 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · 即时判分与原文 > 答完该段全部题目后可查看/收起听力原文 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · 兜底与清理 > 浏览器不支持语音合成：控件禁用并给出提示，仍可作答 0ms
+     → (0 , renderListening) is not a function
+   × 听力页 · 兜底与清理 > 页面清理（路由离开）：销毁引擎停止朗读 0ms
+     → (0 , renderListening) is not a function
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 渲染 > 渲染 2 段材料（体裁/词数/播放器）与每段 3 道题，进度徽标从 0 开始
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:101:5
+     99|     const { deps } = makeFakeEngine();
+    100|     const container = document.createElement('div');
+    101|     renderListening(container, deps);
+       |     ^
+    102| 
+    103|     const passages = container.querySelectorAll('.listening-passage');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 渲染 > 题目展示题型标签；听力原文默认隐藏且查看按钮禁用
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:117:5
+    115|     const { deps } = makeFakeEngine();
+    116|     const container = document.createElement('div');
+    117|     renderListening(container, deps);
+       |     ^
+    118| 
+    119|     const q1 = container.querySelector('[data-question="l1-3"]')!;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · speechSynthesis 播放器 > 点击播放：以拼接原文 + 当前语速调用引擎；随引擎状态切换 播放/暂停/继续
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:133:5
+    131|     const { deps, calls } = makeFakeEngine();
+    132|     const container = document.createElement('div');
+    133|     renderListening(container, deps);
+       |     ^
+    134| 
+    135|     const play = container.querySelector<HTMLButtonElement>('[data-tes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · speechSynthesis 播放器 > 重听：从头再放一遍（再次以原文+当前语速调用引擎）
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:157:5
+    155|     const { deps, calls } = makeFakeEngine();
+    156|     const container = document.createElement('div');
+    157|     renderListening(container, deps);
+       |     ^
+    158| 
+    159|     click(container.querySelector('[data-testid="listen-play-l2"]')!);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · speechSynthesis 播放器 > 播放中切换材料：新的一段从头播放（互不打架）
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:168:5
+    166|     const { deps, calls } = makeFakeEngine();
+    167|     const container = document.createElement('div');
+    168|     renderListening(container, deps);
+       |     ^
+    169| 
+    170|     click(container.querySelector('[data-testid="listen-play-l1"]')!);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · speechSynthesis 播放器 > 语速可调：滑杆更新读数；朗读中调整会以新语速从头重读本段
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:182:5
+    180|     const { deps, calls } = makeFakeEngine();
+    181|     const container = document.createElement('div');
+    182|     renderListening(container, deps);
+       |     ^
+    183| 
+    184|     const rate = container.querySelector<HTMLInputElement>('[data-test…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 即时判分与原文 > 答对：判定正确、展示解析、锁定选项、更新进度徽标
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:204:5
+    202|     const { deps } = makeFakeEngine();
+    203|     const container = document.createElement('div');
+    204|     renderListening(container, deps);
+       |     ^
+    205| 
+    206|     const item = container.querySelector('[data-question="l1-1"]')!;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 即时判分与原文 > 答错：判定错误、给出正确答案与解析；每题只判一次
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:220:5
+    218|     const { deps } = makeFakeEngine();
+    219|     const container = document.createElement('div');
+    220|     renderListening(container, deps);
+       |     ^
+    221| 
+    222|     const item = container.querySelector('[data-question="l2-1"]')!;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 即时判分与原文 > 答完该段全部题目后可查看/收起听力原文
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:240:5
+    238|     const { deps } = makeFakeEngine();
+    239|     const container = document.createElement('div');
+    240|     renderListening(container, deps);
+       |     ^
+    241| 
+    242|     const toggle = container.querySelector<HTMLButtonElement>('[data-t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 兜底与清理 > 浏览器不支持语音合成：控件禁用并给出提示，仍可作答
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:263:5
+    261|     const { deps } = makeFakeEngine(false);
+    262|     const container = document.createElement('div');
+    263|     renderListening(container, deps);
+       |     ^
+    264| 
+    265|     expect(container.textContent).toContain('不支持语音合成');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  src/pages/listening.test.ts > 听力页 · 兜底与清理 > 页面清理（路由离开）：销毁引擎停止朗读
+TypeError: (0 , renderListening) is not a function
+ ❯ src/pages/listening.test.ts:277:21
+    275|     const { deps, calls } = makeFakeEngine();
+    276|     const container = document.createElement('div');
+    277|     const dispose = renderListening(container, deps);
+       |                     ^
+    278| 
+    279|     click(container.querySelector('[data-testid="listen-play-l1"]')!);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  11 failed (11)
+   Start at  15:00:19
+   Duration  1.15s (transform 41ms, setup 0ms, collect 50ms, tests 6ms, environment 523ms, prepare 89ms)
+
