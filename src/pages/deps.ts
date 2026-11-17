@@ -2,7 +2,9 @@ import type { PracticeModule, Word } from '../types';
 import type { WrongBook } from '../store/wrongbook';
 import type { StatsBook } from '../store/stats';
 import type { Progress } from '../store/progress';
+import type { WritingDrafts } from '../store/writing';
 import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
+import { loadWritingDrafts, saveWritingDrafts } from '../store/writing';
 
 /** 词汇模块页面依赖（默认实现走真实 localStorage；测试可注入假实现） */
 export interface VocabDeps {
@@ -67,6 +69,25 @@ export type ReadingDeps = VocabDeps;
  */
 export interface ListeningDeps {
   createEngine: () => SpeechEngine;
+}
+
+/**
+ * 写作模块页面依赖：草稿读写走 localStorage
+ * （键 english-learning.writing.v1）；测试可注入假实现。
+ */
+export interface WritingDeps {
+  load: () => WritingDrafts;
+  save: (drafts: WritingDrafts) => void;
+  now: () => number;
+}
+
+/** 写作模块默认依赖 */
+export function defaultWritingDeps(): WritingDeps {
+  return {
+    load: () => loadWritingDrafts(),
+    save: (drafts) => saveWritingDrafts(drafts),
+    now: () => Date.now(),
+  };
 }
 
 /** 默认依赖：浏览器 speechSynthesis 本地朗读 */

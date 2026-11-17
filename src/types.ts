@@ -133,6 +133,26 @@ export interface ListeningMaterial {
   questions: ListeningQuestion[];
 }
 
+/* -------------------- 写作模块 -------------------- */
+
+/** 写作任务（自编，含范文与自评清单） */
+export interface WritingTask {
+  id: string;
+  title: string;
+  /** 体裁（应用文 · 邀请信 / 记叙文 · 栏目投稿） */
+  genre: string;
+  /** 词数要求（如「词数 80 左右」） */
+  wordHint: string;
+  /** 题目情境与要求（中文） */
+  prompt: string;
+  /** 内容要点（中文） */
+  requirements: string[];
+  /** 参考范文（按行/段） */
+  modelEssay: string[];
+  /** 自评清单（中文，逐条勾选） */
+  checklist: string[];
+}
+
 /** 练习模块标识（错题与统计共用的维度） */
 export type PracticeModule = 'vocab' | 'grammar' | 'reading' | 'listening';
 

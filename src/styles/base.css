@@ -62,6 +62,8 @@ a {
 .site-header__nav {
   margin-left: auto;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: var(--space-2);
 }
 
@@ -900,6 +902,192 @@ a {
 /* 阅读理解选项为完整句子，单列展示 */
 .exercise--reading .exercise__options {
   grid-template-columns: 1fr;
+}
+
+/* ---- 听力模块 ---- */
+.listening-material {
+  margin-bottom: var(--space-6);
+}
+
+.listening-card {
+  padding: var(--space-5);
+}
+
+.listening-player {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.listening-player__rate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.listening-player__rate select {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.listening-script__toggle {
+  margin-top: var(--space-4);
+}
+
+/* 听力原文：默认隐藏（听后对照），展开为浅底引用块 */
+.listening-script {
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.listening-script[hidden] {
+  display: none;
+}
+
+.listening-script__list {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.listening-script__line {
+  font-size: var(--font-size-md);
+  line-height: 1.9;
+}
+
+/* 听力选项为完整句子，单列展示 */
+.exercise--listening .exercise__options {
+  grid-template-columns: 1fr;
+}
+
+/* ---- 写作模块 ---- */
+.writing-task {
+  margin-bottom: var(--space-6);
+}
+
+.writing-prompt,
+.writing-editor,
+.writing-checklist,
+.writing-model {
+  padding: var(--space-5);
+}
+
+.writing-prompt__text {
+  margin: var(--space-3) 0;
+  line-height: 1.9;
+}
+
+.writing-card__sub {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.writing-requirements {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.writing-requirements li {
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+}
+
+.writing-editor__area {
+  display: block;
+  width: 100%;
+  min-height: 14rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  line-height: 1.8;
+  color: var(--color-text);
+  resize: vertical;
+}
+
+.writing-editor__area:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.writing-editor__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.writing-editor__status {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.writing-checklist__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.writing-checklist__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+  cursor: pointer;
+}
+
+.writing-checklist__item input {
+  flex: none;
+  accent-color: var(--color-primary);
+}
+
+.writing-checklist .stat-chip {
+  margin-top: var(--space-3);
+}
+
+.writing-model__summary {
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.writing-model__body {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.writing-model__para {
+  margin: 0;
+  line-height: 1.9;
 }
 
 /* ---- 小号按钮（错题本条目操作等紧凑场景） ---- */

@@ -5,7 +5,8 @@
 
 export interface Route {
   path: string;
-  render: (root: HTMLElement) => void;
+  /** 渲染页面；可返回清理函数，路由离开 / 重复渲染前由 router 调用（如停止朗读） */
+  render: (root: HTMLElement) => void | (() => void);
 }
 
 function normalizePath(pathname: string): string {
@@ -34,7 +35,7 @@ export function createRouter(root: HTMLElement, routes: Route[]): { destroy: () 
     currentCleanup = null;
     root.innerHTML = '';
     if (route) {
-      route.render(root);
+      currentCleanup = route.render(root) ?? null;
     } else {
       root.innerHTML = `
         <main class="page">

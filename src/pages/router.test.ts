@@ -4,6 +4,8 @@ import { renderHome } from './home';
 import { renderVocabulary } from './vocabulary';
 import { renderGrammar } from './grammar';
 import { renderReading } from './reading';
+import { renderListening } from './listening';
+import { renderWriting } from './writing';
 import { renderMistakes } from './mistakes';
 import { renderReport } from './report';
 
@@ -12,6 +14,8 @@ const routes: Route[] = [
   { path: '/vocabulary', render: renderVocabulary },
   { path: '/grammar', render: renderGrammar },
   { path: '/reading', render: renderReading },
+  { path: '/listening', render: renderListening },
+  { path: '/writing', render: renderWriting },
   { path: '/mistakes', render: renderMistakes },
   { path: '/report', render: renderReport },
 ];
@@ -26,21 +30,20 @@ describe('路由接线', () => {
     history.pushState(null, '', '/');
   });
 
-  it('/ 渲染首页（模块入口含词汇 / 语法 / 阅读，导航含错题本 / 学习报告）', () => {
+  it('/ 渲染首页（七大模块入口与导航全部接线，无「建设中」占位）', () => {
     history.pushState(null, '', '/');
     root = document.createElement('div');
     document.body.append(root);
     cleanup = createRouter(root, routes).destroy;
     expect(root.querySelector('.module-grid')).toBeTruthy();
-    expect(root.querySelector('a.module-card[href="/vocabulary"]')).toBeTruthy();
-    const grammarCard = root.querySelector('a.module-card[href="/grammar"]');
-    expect(grammarCard).toBeTruthy();
-    expect(grammarCard!.classList.contains('module-card--disabled')).toBe(false);
-    const readingCard = root.querySelector('a.module-card[href="/reading"]');
-    expect(readingCard).toBeTruthy();
-    expect(readingCard!.classList.contains('module-card--disabled')).toBe(false);
-    expect(root.querySelector('a[href="/mistakes"]')).toBeTruthy();
-    expect(root.querySelector('a[href="/report"]')).toBeTruthy();
+    const hrefs = ['/vocabulary', '/grammar', '/reading', '/listening', '/writing', '/mistakes', '/report'];
+    for (const href of hrefs) {
+      const card = root.querySelector(`a.module-card[href="${href}"]`);
+      expect(card, `首页卡片 ${href}`).toBeTruthy();
+      expect(card!.classList.contains('module-card--disabled')).toBe(false);
+      expect(root.querySelector(`nav a[href="${href}"]`), `顶部导航 ${href}`).toBeTruthy();
+    }
+    expect(root.textContent).not.toContain('建设中');
   });
 
   it('/reading 渲染阅读页（2 篇短文 + 6 题 + 可点击生词）', () => {
@@ -85,6 +88,59 @@ describe('路由接线', () => {
     reviewTab!.click();
     expect(root.textContent).toContain('暂无到期单词');
     expect(new URLSearchParams(location.search).get('tab')).toBe('review');
+  });
+
+  it('/listening 渲染听力页（2 段材料 + 播放器 + 6 题 + 原文折叠）', () => {
+    history.pushState(null, '', '/');
+    root = document.createElement('div');
+    document.body.append(root);
+    cleanup = createRouter(root, routes).destroy;
+
+    navigate('/listening');
+    expect(root.textContent).toContain('听力 · 必修一 Unit 1');
+    expect(root.querySelectorAll('.listening-material')).toHaveLength(2);
+    expect(root.querySelectorAll('.exercise--listening')).toHaveLength(6);
+    expect(root.querySelector('[data-testid="play-l1"]')).toBeTruthy();
+    expect(root.querySelector<HTMLElement>('[data-testid="script-l1"]')!.hidden).toBe(true);
+  });
+
+  it('/writing 渲染写作页（2 个任务 + 编辑器 + 自评清单 + 范文）', () => {
+    history.pushState(null, '', '/');
+    root = document.createElement('div');
+    document.body.append(root);
+    cleanup = createRouter(root, routes).destroy;
+
+    navigate('/writing');
+    expect(root.textContent).toContain('写作 · 必修一 Unit 1');
+    expect(root.querySelectorAll('.writing-task')).toHaveLength(2);
+    expect(root.querySelector('[data-testid="draft-editor-w1"]')).toBeTruthy();
+    expect(root.querySelectorAll('.writing-checklist__item')).toHaveLength(10);
+    expect(root.querySelector('details.writing-model')).toBeTruthy();
+  });
+
+  it('路由离开时调用页面返回的清理函数（如停止听力朗读）', () => {
+    history.pushState(null, '', '/');
+    root = document.createElement('div');
+    document.body.append(root);
+    const cleanups: string[] = [];
+    cleanup = createRouter(root, [
+      ...routes,
+      {
+        path: '/with-cleanup',
+        render: (mount) => {
+          mount.textContent = 'with-cleanup';
+          return () => {
+            cleanups.push('destroyed');
+          };
+        },
+      },
+    ]).destroy;
+
+    navigate('/with-cleanup');
+    expect(root.textContent).toContain('with-cleanup');
+    navigate('/');
+    expect(cleanups).toEqual(['destroyed']);
+    expect(root.textContent).not.toContain('with-cleanup');
   });
 
   it('未知路径渲染 404 兜底', () => {

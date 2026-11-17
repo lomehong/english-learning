@@ -5,6 +5,8 @@ import { renderHome } from './pages/home';
 import { renderVocabulary } from './pages/vocabulary';
 import { renderGrammar } from './pages/grammar';
 import { renderReading } from './pages/reading';
+import { renderListening } from './pages/listening';
+import { renderWriting } from './pages/writing';
 import { renderMistakes } from './pages/mistakes';
 import { renderReport } from './pages/report';
 
@@ -16,6 +18,8 @@ createRouter(app, [
   { path: '/vocabulary', render: renderVocabulary },
   { path: '/grammar', render: renderGrammar },
   { path: '/reading', render: renderReading },
+  { path: '/listening', render: renderListening },
+  { path: '/writing', render: renderWriting },
   { path: '/mistakes', render: renderMistakes },
   { path: '/report', render: renderReport },
 ]);
