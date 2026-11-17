@@ -1,6 +1,7 @@
 {
   "name": "english-learning",
   "private": true,
+<<<<<<< HEAD
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -19,5 +20,21 @@
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.9.0",
     "vite": "^7.0.0"
+=======
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "jsdom": "^28.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.4"
+>>>>>>> c2ccdf5 (sa(ticket-6-1794887919813735): 实现词汇模块（词表/SRS/学习与复习页）)
   }
 }
