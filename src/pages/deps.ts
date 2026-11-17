@@ -1,5 +1,6 @@
 import type { Word } from '../types';
 import type { WrongBook } from '../store/wrongbook';
+import { createSpeechEngine, type SpeechEngine } from '../speech/tts';
 
 /** 词汇模块页面依赖（默认实现走真实 localStorage；测试可注入假实现） */
 export interface VocabDeps {
@@ -20,6 +21,29 @@ export interface GrammarDeps {
  * english-learning.progress.v1），生词收藏即「加入词汇本」。
  */
 export type ReadingDeps = VocabDeps;
+
+/**
+ * 听力模块页面依赖：speechSynthesis 引擎注入点。
+ * 默认实现用浏览器本地 Web Speech API 朗读（不依赖外部 TTS）；测试注入假引擎。
+ */
+export interface ListeningDeps {
+  createEngine: () => SpeechEngine;
+}
+
+/** 默认依赖：浏览器 speechSynthesis 本地朗读 */
+export function defaultListeningDeps(): ListeningDeps {
+  const supported =
+    typeof window !== 'undefined' &&
+    'speechSynthesis' in window &&
+    typeof window.SpeechSynthesisUtterance !== 'undefined';
+  return {
+    createEngine: () =>
+      createSpeechEngine({
+        synth: supported ? window.speechSynthesis : undefined,
+        createUtterance: (text) => new SpeechSynthesisUtterance(text),
+      }),
+  };
+}
 
 export interface FlipCard {
   el: HTMLElement;
