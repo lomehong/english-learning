@@ -321,13 +321,25 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(elective1.accuracy).toBeNull();
     expect(elective1.wrongCount).toBe(0);
 
-    // 其余五册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
-    for (const row of [...data.bookRows.slice(1, 3), ...data.bookRows.slice(4)]) {
-      expect(row.unitRows).toEqual([]);
-      expect(row.answered).toBe(0);
-      expect(row.correct).toBe(0);
-      expect(row.accuracy).toBeNull();
-      expect(row.wrongCount).toBe(0);
+    // 必修二：纯数据新增的五单元自动进入该册分组（未练习 → 全 0 行）
+    const required2 = data.bookRows[1]!;
+    expect(required2.label).toBe('必修二');
+    expect(required2.unitRows.map((r) => r.unit)).toEqual([...unitIdsOfBook('required-2')]);
+    expect(required2.answered).toBe(0);
+    expect(required2.accuracy).toBeNull();
+
+    // 数据无关写法：每册单元行与注册表逐册对齐；尚未收录数据的册合计为 0 且正确率 null
+    for (const row of data.bookRows) {
+      const ids = unitIdsOfBook(row.book);
+      if (ids.length === 0) {
+        expect(row.unitRows).toEqual([]);
+        expect(row.answered).toBe(0);
+        expect(row.correct).toBe(0);
+        expect(row.accuracy).toBeNull();
+        expect(row.wrongCount).toBe(0);
+      } else {
+        expect(row.unitRows.map((r) => r.unit)).toEqual([...ids]);
+      }
     }
 
     // 册分组与单元行同源：合计对齐、展开顺序一致
@@ -352,10 +364,14 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(unitIdsOfBook('required-1').length);
 
     // 空册：保留分组（架构占位），册头显示「暂未收录单元」，组内是降级提示而非崩溃
-    const empty = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="elective-2"]')!;
-    expect(empty.querySelector('[data-testid="book-summary"]')!.textContent).toContain('暂未收录单元');
-    expect(empty.querySelector('[data-testid="book-empty"]')!.textContent).toContain('选择性必修二');
-    expect(empty.querySelector('[data-testid="unit-row"]')).toBeNull();
+    //（数据无关写法：七册全齐后无空册，该降级分支自动跳过）
+    const emptyBookId = BOOK_IDS.find((b) => unitIdsOfBook(b).length === 0);
+    if (emptyBookId) {
+      const empty = container.querySelector<HTMLElement>(`[data-testid="book-group"][data-book="${emptyBookId}"]`)!;
+      expect(empty.querySelector('[data-testid="book-summary"]')!.textContent).toContain('暂未收录单元');
+      expect(empty.querySelector('[data-testid="book-empty"]')!.textContent).toBeTruthy();
+      expect(empty.querySelector('[data-testid="unit-row"]')).toBeNull();
+    }
 
     // 单元行携带册别维度（册 + 单元两级归属）
     const unit2 = container.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit2"]')!;

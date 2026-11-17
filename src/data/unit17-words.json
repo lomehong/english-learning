@@ -1,0 +1,182 @@
+[
+  {
+    "id": "wildlife",
+    "word": "wildlife",
+    "phonetic": "/ˈwaɪldlaɪf/",
+    "pos": "n.",
+    "meaning": "野生动植物（总称）",
+    "example": "The reserve was set up to protect local wildlife.",
+    "exampleZh": "这个保护区是为保护当地野生动物而建立的。"
+  },
+  {
+    "id": "protection",
+    "word": "protection",
+    "phonetic": "/prəˈtekʃn/",
+    "pos": "n.",
+    "meaning": "保护；防护",
+    "example": "The law gives strict protection to rare animals.",
+    "exampleZh": "这项法律对珍稀动物给予严格保护。"
+  },
+  {
+    "id": "wild",
+    "word": "wild",
+    "phonetic": "/waɪld/",
+    "pos": "adj.",
+    "meaning": "野生的；野的",
+    "example": "You can watch wild horses running on the grassland.",
+    "exampleZh": "你可以看到野马在草原上奔跑。"
+  },
+  {
+    "id": "endanger",
+    "word": "endanger",
+    "phonetic": "/ɪnˈdeɪndʒə(r)/",
+    "pos": "vt.",
+    "meaning": "使遭受危险；危及",
+    "example": "Water pollution endangers the fish in the river.",
+    "exampleZh": "水污染危及河里的鱼类。"
+  },
+  {
+    "id": "species",
+    "word": "species",
+    "phonetic": "/ˈspiːʃiːz/",
+    "pos": "n.",
+    "meaning": "物种（单复数同形）",
+    "example": "About three hundred species of birds live in this forest.",
+    "exampleZh": "这片森林里生活着大约三百种鸟类。"
+  },
+  {
+    "id": "habitat",
+    "word": "habitat",
+    "phonetic": "/ˈhæbɪtæt/",
+    "pos": "n.",
+    "meaning": "（动植物的）栖息地",
+    "example": "Wetlands are an important habitat for water birds.",
+    "exampleZh": "湿地是水鸟重要的栖息地。"
+  },
+  {
+    "id": "extinct",
+    "word": "extinct",
+    "phonetic": "/ɪkˈstɪŋkt/",
+    "pos": "adj.",
+    "meaning": "灭绝的；绝种的",
+    "example": "Dinosaurs have been extinct for millions of years.",
+    "exampleZh": "恐龙已经灭绝数百万年了。"
+  },
+  {
+    "id": "extinction",
+    "word": "extinction",
+    "phonetic": "/ɪkˈstɪŋkʃn/",
+    "pos": "n.",
+    "meaning": "灭绝；绝种",
+    "example": "Scientists are trying to save the animals in danger of extinction.",
+    "exampleZh": "科学家们正努力拯救濒临灭绝的动物。"
+  },
+  {
+    "id": "reserve",
+    "word": "reserve",
+    "phonetic": "/rɪˈzɜːv/",
+    "pos": "n.",
+    "meaning": "（动植物）保护区；储备",
+    "example": "Rangers patrol the nature reserve day and night.",
+    "exampleZh": "护林员日夜在自然保护区巡逻。"
+  },
+  {
+    "id": "hunter",
+    "word": "hunter",
+    "phonetic": "/ˈhʌntə(r)/",
+    "pos": "n.",
+    "meaning": "猎人；搜寻者",
+    "example": "In the past, hunters killed antelopes for their fur.",
+    "exampleZh": "过去，猎人为获取毛皮而猎杀羚羊。"
+  },
+  {
+    "id": "shoot",
+    "word": "shoot",
+    "phonetic": "/ʃuːt/",
+    "pos": "vt. & vi.",
+    "meaning": "射杀；射击（shot, shot）",
+    "example": "It is illegal to shoot wild birds in this area.",
+    "exampleZh": "在该地区射杀野生鸟类是违法的。"
+  },
+  {
+    "id": "fur",
+    "word": "fur",
+    "phonetic": "/fɜː(r)/",
+    "pos": "n.",
+    "meaning": "（动物的）毛皮；皮子",
+    "example": "The coat made of tiger fur was stopped at the airport.",
+    "exampleZh": "那件虎皮大衣在机场被截住了。"
+  },
+  {
+    "id": "population",
+    "word": "population",
+    "phonetic": "/ˌpɒpjuˈleɪʃn/",
+    "pos": "n.",
+    "meaning": "种群数量；（某地的）人口",
+    "example": "The population of pandas has slowly increased in recent years.",
+    "exampleZh": "近年来大熊猫的种群数量缓慢增长。"
+  },
+  {
+    "id": "concern",
+    "word": "concern",
+    "phonetic": "/kənˈsɜːn/",
+    "pos": "n. & vt.",
+    "meaning": "担忧；关心；涉及",
+    "example": "The falling number of frogs is a matter of great concern.",
+    "exampleZh": "青蛙数量下降是令人深感担忧的问题。"
+  },
+  {
+    "id": "adapt",
+    "word": "adapt",
+    "phonetic": "/əˈdæpt/",
+    "pos": "vi.",
+    "meaning": "适应（to）；改编",
+    "example": "These animals can adapt to the cold weather of the high mountains.",
+    "exampleZh": "这些动物能适应高山的寒冷气候。"
+  },
+  {
+    "id": "measure",
+    "word": "measure",
+    "phonetic": "/ˈmeʒə(r)/",
+    "pos": "n. & vt.",
+    "meaning": "措施；办法；测量",
+    "example": "The government has taken strong measures to stop poaching.",
+    "exampleZh": "政府已采取有力措施制止偷猎。"
+  },
+  {
+    "id": "effect",
+    "word": "effect",
+    "phonetic": "/ɪˈfekt/",
+    "pos": "n.",
+    "meaning": "效果；影响（have an effect on）",
+    "example": "Climate change has a serious effect on polar bears.",
+    "exampleZh": "气候变化对北极熊有严重影响。"
+  },
+  {
+    "id": "effective",
+    "word": "effective",
+    "phonetic": "/ɪˈfektɪv/",
+    "pos": "adj.",
+    "meaning": "有效的；产生预期效果的",
+    "example": "The new rules proved effective in protecting the forest.",
+    "exampleZh": "事实证明新规定在保护森林方面是有效的。"
+  },
+  {
+    "id": "recover",
+    "word": "recover",
+    "phonetic": "/rɪˈkʌvə(r)/",
+    "pos": "vi. & vt.",
+    "meaning": "恢复；康复；找回",
+    "example": "The injured crane recovered and flew back to the wild.",
+    "exampleZh": "受伤的鹤康复后飞回了野外。"
+  },
+  {
+    "id": "observe",
+    "word": "observe",
+    "phonetic": "/əbˈzɜːv/",
+    "pos": "vt.",
+    "meaning": "观察；观测；遵守",
+    "example": "Every morning the volunteers observe the birds and write down what they see.",
+    "exampleZh": "每天早晨志愿者们都观察鸟类并记录所见。"
+  }
+]

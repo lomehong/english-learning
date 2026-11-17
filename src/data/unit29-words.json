@@ -1,0 +1,182 @@
+[
+  {
+    "id": "adversity",
+    "word": "adversity",
+    "phonetic": "/ədˈvɜːsəti/",
+    "pos": "n.",
+    "meaning": "逆境；不幸",
+    "example": "A true friend stays with you in adversity.",
+    "exampleZh": "真正的朋友在逆境中依然陪伴你。"
+  },
+  {
+    "id": "courage",
+    "word": "courage",
+    "phonetic": "/ˈkʌrɪdʒ/",
+    "pos": "n.",
+    "meaning": "勇气；胆量",
+    "example": "It takes courage to admit your mistakes.",
+    "exampleZh": "承认错误需要勇气。"
+  },
+  {
+    "id": "hardship",
+    "word": "hardship",
+    "phonetic": "/ˈhɑːdʃɪp/",
+    "pos": "n.",
+    "meaning": "艰难；困苦",
+    "example": "His grandfather endured great hardship during the war.",
+    "exampleZh": "他的祖父在战争年代忍受了巨大的艰难。"
+  },
+  {
+    "id": "setback",
+    "word": "setback",
+    "phonetic": "/ˈsetbæk/",
+    "pos": "n.",
+    "meaning": "挫折；阻碍",
+    "example": "Don't let a small setback stop your dream.",
+    "exampleZh": "不要让小小的挫折挡住你的梦想。"
+  },
+  {
+    "id": "despair",
+    "word": "despair",
+    "phonetic": "/dɪˈspeə(r)/",
+    "pos": "n. & vi.",
+    "meaning": "绝望；丧失信心",
+    "example": "They never gave in to despair in the storm.",
+    "exampleZh": "风暴中他们从未陷入绝望。"
+  },
+  {
+    "id": "resilient",
+    "word": "resilient",
+    "phonetic": "/rɪˈzɪliənt/",
+    "pos": "adj.",
+    "meaning": "有韧性的；能快速恢复的",
+    "example": "Children are often amazingly resilient.",
+    "exampleZh": "孩子们往往有着惊人的恢复力。"
+  },
+  {
+    "id": "persistence",
+    "word": "persistence",
+    "phonetic": "/pəˈsɪstəns/",
+    "pos": "n.",
+    "meaning": "坚持；毅力",
+    "example": "Her persistence finally paid off.",
+    "exampleZh": "她的坚持终于得到了回报。"
+  },
+  {
+    "id": "obstacle",
+    "word": "obstacle",
+    "phonetic": "/ˈɒbstəkl/",
+    "pos": "n.",
+    "meaning": "障碍（物）；阻碍",
+    "example": "Fear is often the biggest obstacle to success.",
+    "exampleZh": "恐惧常常是成功最大的障碍。"
+  },
+  {
+    "id": "frustration",
+    "word": "frustration",
+    "phonetic": "/frʌˈstreɪʃn/",
+    "pos": "n.",
+    "meaning": "挫败感；沮丧",
+    "example": "He felt deep frustration after failing the test.",
+    "exampleZh": "考试失利后他感到深深的沮丧。"
+  },
+  {
+    "id": "endurance",
+    "word": "endurance",
+    "phonetic": "/ɪnˈdjʊərəns/",
+    "pos": "n.",
+    "meaning": "忍耐力；耐久力",
+    "example": "Long-distance running builds endurance.",
+    "exampleZh": "长跑能锻炼耐力。"
+  },
+  {
+    "id": "hopeful",
+    "word": "hopeful",
+    "phonetic": "/ˈhəʊpfl/",
+    "pos": "adj.",
+    "meaning": "充满希望的；有希望的",
+    "example": "The doctors are hopeful about her recovery.",
+    "exampleZh": "医生们对她的康复充满希望。"
+  },
+  {
+    "id": "fearless",
+    "word": "fearless",
+    "phonetic": "/ˈfɪələs/",
+    "pos": "adj.",
+    "meaning": "无畏的；不怕的",
+    "example": "The fearless climbers went on in the snow.",
+    "exampleZh": "无畏的登山者们在雪中继续前进。"
+  },
+  {
+    "id": "misfortune",
+    "word": "misfortune",
+    "phonetic": "/ˌmɪsˈfɔːtʃuːn/",
+    "pos": "n.",
+    "meaning": "不幸；厄运",
+    "example": "He faced his misfortune with a smile.",
+    "exampleZh": "他笑着面对自己的不幸。"
+  },
+  {
+    "id": "overcome",
+    "word": "overcome",
+    "phonetic": "/ˌəʊvəˈkʌm/",
+    "pos": "vt.",
+    "meaning": "克服；战胜",
+    "example": "She overcame her fear of speaking in public.",
+    "exampleZh": "她克服了当众讲话的恐惧。"
+  },
+  {
+    "id": "ordeal",
+    "word": "ordeal",
+    "phonetic": "/ɔːˈdiːl/",
+    "pos": "n.",
+    "meaning": "磨难；严峻考验",
+    "example": "The long journey through the desert was an ordeal.",
+    "exampleZh": "穿越沙漠的漫长旅程是一场磨难。"
+  },
+  {
+    "id": "abandon",
+    "word": "abandon",
+    "phonetic": "/əˈbændən/",
+    "pos": "vt.",
+    "meaning": "放弃；抛弃",
+    "example": "They had to abandon the ship in the storm.",
+    "exampleZh": "风暴中他们不得不弃船。"
+  },
+  {
+    "id": "survival",
+    "word": "survival",
+    "phonetic": "/səˈvaɪvl/",
+    "pos": "n.",
+    "meaning": "生存；幸存",
+    "example": "Water and warmth are basic needs for survival.",
+    "exampleZh": "水和温暖是生存的基本需求。"
+  },
+  {
+    "id": "collapse",
+    "word": "collapse",
+    "phonetic": "/kəˈlæps/",
+    "pos": "vi. & n.",
+    "meaning": "倒塌；崩溃",
+    "example": "The old bridge might collapse under heavy snow.",
+    "exampleZh": "大雪之下那座旧桥可能会坍塌。"
+  },
+  {
+    "id": "tremble",
+    "word": "tremble",
+    "phonetic": "/ˈtrembl/",
+    "pos": "vi.",
+    "meaning": "颤抖；哆嗦",
+    "example": "Her hands trembled as she opened the letter.",
+    "exampleZh": "她拆信时双手颤抖。"
+  },
+  {
+    "id": "resolve",
+    "word": "resolve",
+    "phonetic": "/rɪˈzɒlv/",
+    "pos": "n. & vt.",
+    "meaning": "决心；决定",
+    "example": "Nothing could shake his resolve to reach the top.",
+    "exampleZh": "没有什么能动摇他登顶的决心。"
+  }
+]

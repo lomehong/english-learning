@@ -1,0 +1,182 @@
+[
+  {
+    "id": "multicultural",
+    "word": "multicultural",
+    "phonetic": "/ˌmʌltiˈkʌltʃərəl/",
+    "pos": "adj.",
+    "meaning": "多元文化的；多种文化融合的",
+    "example": "San Francisco is a multicultural city with food from every continent.",
+    "exampleZh": "旧金山是一座多元文化城市，汇聚了各大洲的美食。"
+  },
+  {
+    "id": "diversity",
+    "word": "diversity",
+    "phonetic": "/daɪˈvɜːsəti/",
+    "pos": "n.",
+    "meaning": "多样性；差异",
+    "example": "Cultural diversity makes our world more colourful.",
+    "exampleZh": "文化多样性让我们的世界更加多彩。"
+  },
+  {
+    "id": "ethnic",
+    "word": "ethnic",
+    "phonetic": "/ˈeθnɪk/",
+    "pos": "adj.",
+    "meaning": "民族的；种族的",
+    "example": "The park holds shows of ethnic music and dance every spring.",
+    "exampleZh": "这个公园每年春天举办民族歌舞表演。"
+  },
+  {
+    "id": "minority",
+    "word": "minority",
+    "phonetic": "/maɪˈnɒrəti/",
+    "pos": "n.",
+    "meaning": "少数民族；少数群体",
+    "example": "The museum tells the stories of ethnic minority groups in the mountains.",
+    "exampleZh": "这座博物馆讲述山区少数民族的故事。"
+  },
+  {
+    "id": "immigrant",
+    "word": "immigrant",
+    "phonetic": "/ˈɪmɪɡrənt/",
+    "pos": "n.",
+    "meaning": "（外来）移民；侨民",
+    "example": "Her grandparents were early immigrants who settled in this port city.",
+    "exampleZh": "她的祖辈是早期移民，定居在这座港口城市。"
+  },
+  {
+    "id": "immigration",
+    "word": "immigration",
+    "phonetic": "/ˌɪmɪˈɡreɪʃn/",
+    "pos": "n.",
+    "meaning": "移民（入境）",
+    "example": "The film shows the history of immigration in the last century.",
+    "exampleZh": "这部电影展现了上世纪的移民历史。"
+  },
+  {
+    "id": "fortune",
+    "word": "fortune",
+    "phonetic": "/ˈfɔːtʃuːn/",
+    "pos": "n.",
+    "meaning": "机会；运气；大笔财富（fortune cookie 幸运饼干）",
+    "example": "Each of us opened a fortune cookie after the meal.",
+    "exampleZh": "饭后我们每人掰开了一块幸运饼干。"
+  },
+  {
+    "id": "spicy",
+    "word": "spicy",
+    "phonetic": "/ˈspaɪsi/",
+    "pos": "adj.",
+    "meaning": "辛辣的；加香料的",
+    "example": "Sichuan hotpot is too spicy for some foreign visitors.",
+    "exampleZh": "四川火锅对一些外国游客来说太辣了。"
+  },
+  {
+    "id": "cheese",
+    "word": "cheese",
+    "phonetic": "/tʃiːz/",
+    "pos": "n.",
+    "meaning": "干酪；奶酪",
+    "example": "The nachos with cheese are a popular snack in the cafe.",
+    "exampleZh": "芝士玉米片是这家咖啡馆里很受欢迎的小吃。"
+  },
+  {
+    "id": "chip",
+    "word": "chip",
+    "phonetic": "/tʃɪp/",
+    "pos": "n.",
+    "meaning": "炸薯条；碎片（chips 薯片）",
+    "example": "Fish and chips is a traditional dish in England.",
+    "exampleZh": "炸鱼薯条是英格兰的传统菜肴。"
+  },
+  {
+    "id": "fusion",
+    "word": "fusion",
+    "phonetic": "/ˈfjuːʒn/",
+    "pos": "n.",
+    "meaning": "融合；（文化、音乐等的）混合",
+    "example": "The restaurant serves fusion food that mixes Chinese and Western tastes.",
+    "exampleZh": "这家餐厅供应中西口味融合的创意菜。"
+  },
+  {
+    "id": "downtown",
+    "word": "downtown",
+    "phonetic": "/ˌdaʊnˈtaʊn/",
+    "pos": "adv.",
+    "meaning": "在市中心；往市中心（adj. 市中心的）",
+    "example": "We went downtown to visit the newly opened culture museum.",
+    "exampleZh": "我们去市中心参观了新开的文化博物馆。"
+  },
+  {
+    "id": "district",
+    "word": "district",
+    "phonetic": "/ˈdɪstrɪkt/",
+    "pos": "n.",
+    "meaning": "地区；区域",
+    "example": "The old district is full of restaurants run by families from different countries.",
+    "exampleZh": "老城区遍布由来自不同国家的家庭经营的餐馆。"
+  },
+  {
+    "id": "historical",
+    "word": "historical",
+    "phonetic": "/hɪˈstɒrɪkl/",
+    "pos": "adj.",
+    "meaning": "历史的；与历史有关的",
+    "example": "The guide told us many historical stories about the bridge.",
+    "exampleZh": "导游给我们讲了许多关于这座桥的历史故事。"
+  },
+  {
+    "id": "adventure",
+    "word": "adventure",
+    "phonetic": "/ədˈventʃə(r)/",
+    "pos": "n.",
+    "meaning": "冒险；奇遇",
+    "example": "Exploring the food street was the best adventure of our trip.",
+    "exampleZh": "逛美食街是我们旅途中最棒的奇遇。"
+  },
+  {
+    "id": "journal",
+    "word": "journal",
+    "phonetic": "/ˈdʒɜːnl/",
+    "pos": "n.",
+    "meaning": "日记；日志；期刊",
+    "example": "The traveller wrote about the diverse street foods in her journal.",
+    "exampleZh": "这位旅行者在日记里写下了各种街头美食。"
+  },
+  {
+    "id": "settle",
+    "word": "settle",
+    "phonetic": "/ˈsetl/",
+    "pos": "v.",
+    "meaning": "定居；安顿；解决",
+    "example": "Many families from overseas settled in this city a century ago.",
+    "exampleZh": "一个世纪前，许多海外家庭在这座城市定居下来。"
+  },
+  {
+    "id": "construct",
+    "word": "construct",
+    "phonetic": "/kənˈstrʌkt/",
+    "pos": "vt.",
+    "meaning": "建造；修建",
+    "example": "The first settlers constructed the stone church in 1850.",
+    "exampleZh": "早期移民于1850年建造了这座石头教堂。"
+  },
+  {
+    "id": "mild",
+    "word": "mild",
+    "phonetic": "/maɪld/",
+    "pos": "adj.",
+    "meaning": "温和的；柔和的；（味道）清淡的",
+    "example": "The soup has a mild taste that almost everyone enjoys.",
+    "exampleZh": "这道汤味道清淡，几乎人人都喜欢。"
+  },
+  {
+    "id": "clothing",
+    "word": "clothing",
+    "phonetic": "/ˈkləʊðɪŋ/",
+    "pos": "n.",
+    "meaning": "衣服（总称）",
+    "example": "The shop sells traditional clothing from different cultures.",
+    "exampleZh": "这家店出售不同文化的传统服饰。"
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "charity",
+    "word": "charity",
+    "phonetic": "/ˈtʃærəti/",
+    "pos": "n.",
+    "meaning": "慈善机构；慈善事业",
+    "example": "She spends her weekends working for a children charity.",
+    "exampleZh": "她把周末时间用于一家儿童慈善机构的志愿服务。"
+  },
+  {
+    "id": "donation",
+    "word": "donation",
+    "phonetic": "/dəʊˈneɪʃn/",
+    "pos": "n.",
+    "meaning": "捐赠；捐款",
+    "example": "All donations will go to the mountain school.",
+    "exampleZh": "所有捐款将捐给这所山区学校。"
+  },
+  {
+    "id": "distribute",
+    "word": "distribute",
+    "phonetic": "/dɪˈstrɪbjuːt/",
+    "pos": "vt.",
+    "meaning": "分发；分配；分销",
+    "example": "Volunteers distribute food to the families in need.",
+    "exampleZh": "志愿者向困难家庭分发食品。"
+  },
+  {
+    "id": "finance",
+    "word": "finance",
+    "phonetic": "/ˈfaɪnæns/",
+    "pos": "n. & vt.",
+    "meaning": "财政；金融  为……提供资金",
+    "example": "The group finances small projects in poor areas.",
+    "exampleZh": "这个团体为贫困地区的小项目提供资金。"
+  },
+  {
+    "id": "financial",
+    "word": "financial",
+    "phonetic": "/faɪˈnænʃl/",
+    "pos": "adj.",
+    "meaning": "财政的；金融的",
+    "example": "The project needs more financial support.",
+    "exampleZh": "这个项目需要更多资金支持。"
+  },
+  {
+    "id": "security",
+    "word": "security",
+    "phonetic": "/sɪˈkjʊərəti/",
+    "pos": "n.",
+    "meaning": "安全；保障；抵押品",
+    "example": "The new well gave the village water security.",
+    "exampleZh": "新水井给了村庄用水保障。"
+  },
+  {
+    "id": "operate",
+    "word": "operate",
+    "phonetic": "/ˈɒpəreɪt/",
+    "pos": "vt. & vi.",
+    "meaning": "操作；运转；做手术",
+    "example": "The doctors operate on patients in a small clinic.",
+    "exampleZh": "医生们在一间小诊所里为病人做手术。"
+  },
+  {
+    "id": "clinic",
+    "word": "clinic",
+    "phonetic": "/ˈklɪnɪk/",
+    "pos": "n.",
+    "meaning": "诊所；门诊部",
+    "example": "A mobile clinic visits the island every month.",
+    "exampleZh": "流动诊所每月登岛一次。"
+  },
+  {
+    "id": "remote",
+    "word": "remote",
+    "phonetic": "/rɪˈməʊt/",
+    "pos": "adj.",
+    "meaning": "遥远的；偏远的；久远的",
+    "example": "She teaches in a remote mountain village.",
+    "exampleZh": "她在一个偏远的山村教书。"
+  },
+  {
+    "id": "tailor",
+    "word": "tailor",
+    "phonetic": "/ˈteɪlə(r)/",
+    "pos": "n. & vt.",
+    "meaning": "裁缝  剪裁；使适合",
+    "example": "The old tailor made school uniforms for the children.",
+    "exampleZh": "老裁缝为孩子们缝制校服。"
+  },
+  {
+    "id": "trunk",
+    "word": "trunk",
+    "phonetic": "/trʌŋk/",
+    "pos": "n.",
+    "meaning": "树干；行李箱；（象的）长鼻",
+    "example": "They sat on a fallen trunk to rest.",
+    "exampleZh": "他们坐在一根倒下的树干上休息。"
+  },
+  {
+    "id": "muddy",
+    "word": "muddy",
+    "phonetic": "/ˈmʌdi/",
+    "pos": "adj.",
+    "meaning": "泥泞的；浑浊的",
+    "example": "The road to the school becomes muddy after rain.",
+    "exampleZh": "雨后通往学校的路变得泥泞不堪。"
+  },
+  {
+    "id": "weed",
+    "word": "weed",
+    "phonetic": "/wiːd/",
+    "pos": "n. & vt.",
+    "meaning": "杂草  除草",
+    "example": "The students helped weed the school garden.",
+    "exampleZh": "学生们帮忙给学校菜园除草。"
+  },
+  {
+    "id": "ripe",
+    "word": "ripe",
+    "phonetic": "/raɪp/",
+    "pos": "adj.",
+    "meaning": "成熟的；时机成熟的",
+    "example": "The tomatoes in the garden are ripe.",
+    "exampleZh": "菜园里的西红柿熟了。"
+  },
+  {
+    "id": "housing",
+    "word": "housing",
+    "phonetic": "/ˈhaʊzɪŋ/",
+    "pos": "n.",
+    "meaning": "住房；住宅；住房供给",
+    "example": "The charity builds housing for homeless families.",
+    "exampleZh": "这家慈善机构为无家可归的家庭建造住房。"
+  },
+  {
+    "id": "stability",
+    "word": "stability",
+    "phonetic": "/stəˈbɪləti/",
+    "pos": "n.",
+    "meaning": "稳定（性）；稳固",
+    "example": "Regular meals give the children health and stability.",
+    "exampleZh": "规律的饮食让孩子们健康、安稳。"
+  },
+  {
+    "id": "paperwork",
+    "word": "paperwork",
+    "phonetic": "/ˈpeɪpəwɜːk/",
+    "pos": "n.",
+    "meaning": "文书工作",
+    "example": "She spent the evening doing paperwork for the project.",
+    "exampleZh": "她用一晚上处理项目的文书工作。"
+  },
+  {
+    "id": "weekly",
+    "word": "weekly",
+    "phonetic": "/ˈwiːkli/",
+    "pos": "adj., adv. & n.",
+    "meaning": "每周的（地）；周刊",
+    "example": "The team holds a weekly meeting in the library.",
+    "exampleZh": "团队每周在图书馆开一次会。"
+  },
+  {
+    "id": "toast",
+    "word": "toast",
+    "phonetic": "/təʊst/",
+    "pos": "n. & vt.",
+    "meaning": "烤面包片；祝酒（词）  为……祝酒",
+    "example": "We drank a toast to the health of the volunteers.",
+    "exampleZh": "我们举杯祝志愿者们健康。"
+  },
+  {
+    "id": "comb",
+    "word": "comb",
+    "phonetic": "/kəʊm/",
+    "pos": "n. & vt.",
+    "meaning": "梳子  梳理；搜寻",
+    "example": "She combed the little girl's hair before school.",
+    "exampleZh": "上学前她给小女孩梳好了头发。"
+  }
+]

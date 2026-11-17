@@ -1,0 +1,182 @@
+[
+  {
+    "id": "click",
+    "word": "click",
+    "phonetic": "/klɪk/",
+    "pos": "vt. & vi.",
+    "meaning": "点击；单击",
+    "example": "Click this button to start the online lesson.",
+    "exampleZh": "点击这个按钮开始上网课。"
+  },
+  {
+    "id": "download",
+    "word": "download",
+    "phonetic": "/ˌdaʊnˈləʊd/",
+    "pos": "vt.",
+    "meaning": "下载",
+    "example": "You can download the app for free from the official website.",
+    "exampleZh": "你可以在官方网站免费下载这个应用。"
+  },
+  {
+    "id": "upload",
+    "word": "upload",
+    "phonetic": "/ˌʌpˈləʊd/",
+    "pos": "vt.",
+    "meaning": "上传",
+    "example": "Remember to upload your homework before nine o'clock.",
+    "exampleZh": "记得在九点前上传你的作业。"
+  },
+  {
+    "id": "stream",
+    "word": "stream",
+    "phonetic": "/striːm/",
+    "pos": "vt. & n.",
+    "meaning": "流播，在线收听（看）；小河",
+    "example": "Grandpa learned to stream operas on his phone.",
+    "exampleZh": "爷爷学会了用手机在线看戏。"
+  },
+  {
+    "id": "update",
+    "word": "update",
+    "phonetic": "/ˌʌpˈdeɪt/",
+    "pos": "vt. & n.",
+    "meaning": "更新；使最新",
+    "example": "The school website is updated with news every Friday.",
+    "exampleZh": "学校网站每周五更新新闻。"
+  },
+  {
+    "id": "surf",
+    "word": "surf",
+    "phonetic": "/sɜːf/",
+    "pos": "vt. & vi.",
+    "meaning": "（在网上）浏览；冲浪",
+    "example": "He often surfs the Internet for science news after supper.",
+    "exampleZh": "晚饭后他常上网浏览科学新闻。"
+  },
+  {
+    "id": "chat",
+    "word": "chat",
+    "phonetic": "/tʃæt/",
+    "pos": "vi. & n.",
+    "meaning": "聊天；闲聊",
+    "example": "The students chat with their teacher in an online study group.",
+    "exampleZh": "学生们在网上学习小组里和老师聊天讨论。"
+  },
+  {
+    "id": "blog",
+    "word": "blog",
+    "phonetic": "/blɒɡ/",
+    "pos": "n.",
+    "meaning": "博客；网络日志",
+    "example": "She keeps a blog about her life in the countryside.",
+    "exampleZh": "她写博客记录自己的乡村生活。"
+  },
+  {
+    "id": "identity",
+    "word": "identity",
+    "phonetic": "/aɪˈdentəti/",
+    "pos": "n.",
+    "meaning": "身份；特性",
+    "example": "Never tell strangers your real identity on the Internet.",
+    "exampleZh": "在网上绝不要告诉陌生人你的真实身份。"
+  },
+  {
+    "id": "password",
+    "word": "password",
+    "phonetic": "/ˈpɑːswɜːd/",
+    "pos": "n.",
+    "meaning": "密码；口令",
+    "example": "Use a long password to keep your account safe.",
+    "exampleZh": "使用长密码以保证账户安全。"
+  },
+  {
+    "id": "username",
+    "word": "username",
+    "phonetic": "/ˈjuːzəneɪm/",
+    "pos": "n.",
+    "meaning": "用户名",
+    "example": "Your username appears at the top of the page when you log in.",
+    "exampleZh": "登录后你的用户名显示在页面顶部。"
+  },
+  {
+    "id": "database",
+    "word": "database",
+    "phonetic": "/ˈdeɪtəbeɪs/",
+    "pos": "n.",
+    "meaning": "数据库；资料库",
+    "example": "The library database lists every book in the building.",
+    "exampleZh": "图书馆数据库列出了馆内的每一本书。"
+  },
+  {
+    "id": "network",
+    "word": "network",
+    "phonetic": "/ˈnetwɜːk/",
+    "pos": "n.",
+    "meaning": "网络；网状系统",
+    "example": "The classrooms are all connected to the school network.",
+    "exampleZh": "所有教室都连入了校园网。"
+  },
+  {
+    "id": "software",
+    "word": "software",
+    "phonetic": "/ˈsɒftweə(r)/",
+    "pos": "n.",
+    "meaning": "软件",
+    "example": "The new software helps farmers check the weather easily.",
+    "exampleZh": "这款新软件帮助农民轻松查询天气。"
+  },
+  {
+    "id": "wireless",
+    "word": "wireless",
+    "phonetic": "/ˈwaɪələs/",
+    "pos": "adj.",
+    "meaning": "无线的",
+    "example": "The new library offers free wireless Internet access to every student.",
+    "exampleZh": "新图书馆为每位学生提供免费无线网络接入。"
+  },
+  {
+    "id": "target",
+    "word": "target",
+    "phonetic": "/ˈtɑːɡɪt/",
+    "pos": "n.",
+    "meaning": "目标；（攻击的）对象",
+    "example": "Old people are often the target of online cheating.",
+    "exampleZh": "老年人常常成为网络诈骗的目标。"
+  },
+  {
+    "id": "guide",
+    "word": "guide",
+    "phonetic": "/ɡaɪd/",
+    "pos": "n. & vt.",
+    "meaning": "指南；导游；引导",
+    "example": "The website offers a guide for safe shopping online.",
+    "exampleZh": "该网站提供安全网购指南。"
+  },
+  {
+    "id": "convenient",
+    "word": "convenient",
+    "phonetic": "/kənˈviːniənt/",
+    "pos": "adj.",
+    "meaning": "方便的；便利的",
+    "example": "It is convenient to pay for things with a phone now.",
+    "exampleZh": "现在用手机付款很方便。"
+  },
+  {
+    "id": "bandwidth",
+    "word": "bandwidth",
+    "phonetic": "/ˈbændwɪdθ/",
+    "pos": "n.",
+    "meaning": "带宽；（网络的）传输能力",
+    "example": "A video call needs much more bandwidth than a simple text message.",
+    "exampleZh": "视频通话需要的带宽远多于一条文字消息。"
+  },
+  {
+    "id": "distance",
+    "word": "distance",
+    "phonetic": "/ˈdɪstəns/",
+    "pos": "n.",
+    "meaning": "距离；远处",
+    "example": "The Internet brings doctors to patients across a long distance.",
+    "exampleZh": "互联网让医生能够远程为病人诊疗。"
+  }
+]

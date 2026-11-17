@@ -1,0 +1,182 @@
+[
+  {
+    "id": "solid",
+    "word": "solid",
+    "phonetic": "/ˈsɒlɪd/",
+    "pos": "adj.",
+    "meaning": "固体的；结实的；可靠的",
+    "example": "The scientist built her theory on solid evidence.",
+    "exampleZh": "这位科学家在可靠的证据之上建立了她的理论。"
+  },
+  {
+    "id": "theory",
+    "word": "theory",
+    "phonetic": "/ˈθɪəri/",
+    "pos": "n.",
+    "meaning": "理论；学说；推测",
+    "example": "His theory about the disease was finally accepted.",
+    "exampleZh": "他关于这种疾病的理论最终被接受了。"
+  },
+  {
+    "id": "prove",
+    "word": "prove",
+    "phonetic": "/pruːv/",
+    "pos": "vt.",
+    "meaning": "证明；证实；证明是",
+    "example": "The experiment proved that the theory was correct.",
+    "exampleZh": "这个实验证明该理论是正确的。"
+  },
+  {
+    "id": "initial",
+    "word": "initial",
+    "phonetic": "/ɪˈnɪʃl/",
+    "pos": "adj.",
+    "meaning": "最初的；开始的；最初的",
+    "example": "The initial results of the test surprised everyone.",
+    "exampleZh": "测试的最初结果让每个人都感到惊讶。"
+  },
+  {
+    "id": "vaccine",
+    "word": "vaccine",
+    "phonetic": "/ˈvæksiːn/",
+    "pos": "n.",
+    "meaning": "疫苗；菌苗",
+    "example": "The new vaccine protects people against the flu virus.",
+    "exampleZh": "新疫苗能保护人们抵御流感病毒。"
+  },
+  {
+    "id": "virus",
+    "word": "virus",
+    "phonetic": "/ˈvaɪrəs/",
+    "pos": "n.",
+    "meaning": "病毒；病毒性疾病",
+    "example": "This virus spreads quickly in crowded classrooms.",
+    "exampleZh": "这种病毒在拥挤的教室里传播很快。"
+  },
+  {
+    "id": "laboratory",
+    "word": "laboratory",
+    "phonetic": "/ləˈbɒrətri/",
+    "pos": "n.",
+    "meaning": "实验室；实验大楼",
+    "example": "The students carried out the experiment in the school laboratory.",
+    "exampleZh": "学生们在学校实验室里做了这个实验。"
+  },
+  {
+    "id": "microscope",
+    "word": "microscope",
+    "phonetic": "/ˈmaɪkrəskəʊp/",
+    "pos": "n.",
+    "meaning": "显微镜",
+    "example": "We watched the tiny cells move under the microscope.",
+    "exampleZh": "我们透过显微镜观察微小的细胞移动。"
+  },
+  {
+    "id": "trace",
+    "word": "trace",
+    "phonetic": "/treɪs/",
+    "pos": "vt.",
+    "meaning": "追溯；查出；追踪 n. 痕迹",
+    "example": "Doctors tried to trace the source of the infection.",
+    "exampleZh": "医生们试图查出感染的来源。"
+  },
+  {
+    "id": "suspect",
+    "word": "suspect",
+    "phonetic": "/ˈsʌspekt/",
+    "pos": "n./vt.",
+    "meaning": "嫌疑犯；疑似患病者；怀疑",
+    "example": "Police suspected him of hiding the truth about the case.",
+    "exampleZh": "警方怀疑他隐瞒了案件的真相。"
+  },
+  {
+    "id": "blame",
+    "word": "blame",
+    "phonetic": "/bleɪm/",
+    "pos": "vt.",
+    "meaning": "责备；把……归咎于 n. 责任",
+    "example": "Don't blame yourself for the failure of the experiment.",
+    "exampleZh": "不要为实验的失败而责备你自己。"
+  },
+  {
+    "id": "handle",
+    "word": "handle",
+    "phonetic": "/ˈhændl/",
+    "pos": "vt.",
+    "meaning": "处理；应付；触碰 n. 柄",
+    "example": "She handled the difficult problem with great patience.",
+    "exampleZh": "她以极大的耐心处理了这个难题。"
+  },
+  {
+    "id": "link",
+    "word": "link",
+    "phonetic": "/lɪŋk/",
+    "pos": "vt.",
+    "meaning": "把……联系起来；连接 n. 联系",
+    "example": "The study linked the disease to polluted water.",
+    "exampleZh": "这项研究把该疾病与受污染的水联系了起来。"
+  },
+  {
+    "id": "decrease",
+    "word": "decrease",
+    "phonetic": "/dɪˈkriːs/",
+    "pos": "v.",
+    "meaning": "（使）减少；降低 n. 减少",
+    "example": "The number of new cases decreased after the pump was closed.",
+    "exampleZh": "水泵被关闭后，新增病例数减少了。"
+  },
+  {
+    "id": "severe",
+    "word": "severe",
+    "phonetic": "/sɪˈvɪə(r)/",
+    "pos": "adj.",
+    "meaning": "严重的；剧烈的；严厉的",
+    "example": "A severe storm delayed the research team's flight.",
+    "exampleZh": "一场猛烈的暴风雨延误了研究团队的航班。"
+  },
+  {
+    "id": "surgeon",
+    "word": "surgeon",
+    "phonetic": "/ˈsɜːdʒən/",
+    "pos": "n.",
+    "meaning": "外科医生",
+    "example": "The surgeon operated for six hours to save the boy.",
+    "exampleZh": "外科医生做了六个小时的手术来挽救这个男孩。"
+  },
+  {
+    "id": "statistics",
+    "word": "statistics",
+    "phonetic": "/stəˈtɪstɪks/",
+    "pos": "n.",
+    "meaning": "统计数字；统计学",
+    "example": "The statistics show that the new treatment works well.",
+    "exampleZh": "统计数字表明新疗法效果很好。"
+  },
+  {
+    "id": "defend",
+    "word": "defend",
+    "phonetic": "/dɪˈfend/",
+    "pos": "vt.",
+    "meaning": "保卫；防御；为……辩护",
+    "example": "Vaccines defend the body against many diseases.",
+    "exampleZh": "疫苗能保护人体抵御多种疾病。"
+  },
+  {
+    "id": "assistant",
+    "word": "assistant",
+    "phonetic": "/əˈsɪstənt/",
+    "pos": "n.",
+    "meaning": "助手；助理；助教",
+    "example": "The professor's assistant recorded all the data.",
+    "exampleZh": "教授的助手记录了全部数据。"
+  },
+  {
+    "id": "brilliant",
+    "word": "brilliant",
+    "phonetic": "/ˈbrɪliənt/",
+    "pos": "adj.",
+    "meaning": "聪颖的；才华横溢的；明亮的",
+    "example": "The brilliant young scientist won a national prize.",
+    "exampleZh": "这位才华横溢的年轻科学家获得了全国大奖。"
+  }
+]

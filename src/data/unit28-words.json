@@ -1,0 +1,182 @@
+[
+  {
+    "id": "recycle",
+    "word": "recycle",
+    "phonetic": "/ˌriːˈsaɪkl/",
+    "pos": "vt. & vi.",
+    "meaning": "回收利用；再利用",
+    "example": "We recycle used bottles instead of throwing them away.",
+    "exampleZh": "我们回收旧瓶子而不是扔掉。"
+  },
+  {
+    "id": "pollution",
+    "word": "pollution",
+    "phonetic": "/pəˈluːʃn/",
+    "pos": "n.",
+    "meaning": "污染；污染物",
+    "example": "Air pollution in the city has become serious.",
+    "exampleZh": "这座城市的空气污染已经变得严重。"
+  },
+  {
+    "id": "emission",
+    "word": "emission",
+    "phonetic": "/ɪˈmɪʃn/",
+    "pos": "n.",
+    "meaning": "排放（物）；散发",
+    "example": "The factory plans to cut its carbon emissions.",
+    "exampleZh": "这家工厂计划削减碳排放。"
+  },
+  {
+    "id": "renewable",
+    "word": "renewable",
+    "phonetic": "/rɪˈnjuːəbl/",
+    "pos": "adj.",
+    "meaning": "可再生的；可续期的",
+    "example": "Wind and sunlight are renewable energy sources.",
+    "exampleZh": "风和阳光是可再生能源。"
+  },
+  {
+    "id": "conservation",
+    "word": "conservation",
+    "phonetic": "/ˌkɒnsəˈveɪʃn/",
+    "pos": "n.",
+    "meaning": "保护；保存",
+    "example": "The group works for the conservation of wild birds.",
+    "exampleZh": "该组织致力于野生鸟类的保护。"
+  },
+  {
+    "id": "deforestation",
+    "word": "deforestation",
+    "phonetic": "/ˌdiːˌfɒrɪˈsteɪʃn/",
+    "pos": "n.",
+    "meaning": "毁林；滥伐森林",
+    "example": "Deforestation destroys the homes of many animals.",
+    "exampleZh": "滥伐森林毁掉了许多动物的家园。"
+  },
+  {
+    "id": "disposable",
+    "word": "disposable",
+    "phonetic": "/dɪˈspəʊzəbl/",
+    "pos": "adj.",
+    "meaning": "一次性的；用后即丢弃的",
+    "example": "Bring your own cup instead of disposable ones.",
+    "exampleZh": "自带水杯，别用一次性杯子。"
+  },
+  {
+    "id": "carbon",
+    "word": "carbon",
+    "phonetic": "/ˈkɑːbən/",
+    "pos": "n.",
+    "meaning": "碳",
+    "example": "Burning coal releases too much carbon into the air.",
+    "exampleZh": "烧煤会向空气中释放过多的碳。"
+  },
+  {
+    "id": "ecosystem",
+    "word": "ecosystem",
+    "phonetic": "/ˈiːkəʊsɪstəm/",
+    "pos": "n.",
+    "meaning": "生态系统",
+    "example": "Every plant matters in a forest ecosystem.",
+    "exampleZh": "在森林生态系统中每种植物都很重要。"
+  },
+  {
+    "id": "landfill",
+    "word": "landfill",
+    "phonetic": "/ˈlændfɪl/",
+    "pos": "n.",
+    "meaning": "垃圾填埋场；填埋",
+    "example": "Most household waste ends up in the landfill.",
+    "exampleZh": "大部分生活垃圾最终进了填埋场。"
+  },
+  {
+    "id": "deteriorate",
+    "word": "deteriorate",
+    "phonetic": "/dɪˈtɪəriəreɪt/",
+    "pos": "vi.",
+    "meaning": "恶化；变坏",
+    "example": "The river will deteriorate if waste keeps flowing in.",
+    "exampleZh": "如果污水持续流入，这条河会继续恶化。"
+  },
+  {
+    "id": "restore",
+    "word": "restore",
+    "phonetic": "/rɪˈstɔː(r)/",
+    "pos": "vt.",
+    "meaning": "恢复；修复；归还",
+    "example": "Volunteers helped restore the old wetland.",
+    "exampleZh": "志愿者帮助恢复了那片古老的湿地。"
+  },
+  {
+    "id": "awareness",
+    "word": "awareness",
+    "phonetic": "/əˈweənəs/",
+    "pos": "n.",
+    "meaning": "意识；知道",
+    "example": "The film raised public awareness of sea pollution.",
+    "exampleZh": "这部电影提高了公众的海洋污染意识。"
+  },
+  {
+    "id": "vegetation",
+    "word": "vegetation",
+    "phonetic": "/ˌvedʒəˈteɪʃn/",
+    "pos": "n.",
+    "meaning": "植被；（总称）植物",
+    "example": "Green vegetation covers the hills after the rain.",
+    "exampleZh": "雨后青山被绿色植被覆盖。"
+  },
+  {
+    "id": "wasteful",
+    "word": "wasteful",
+    "phonetic": "/ˈweɪstfl/",
+    "pos": "adj.",
+    "meaning": "浪费的；挥霍的",
+    "example": "Leaving lights on is a wasteful habit.",
+    "exampleZh": "不关灯是一种浪费的习惯。"
+  },
+  {
+    "id": "discard",
+    "word": "discard",
+    "phonetic": "/dɪˈskɑːd/",
+    "pos": "vt.",
+    "meaning": "丢弃；抛弃",
+    "example": "Please do not discard plastic bags in the park.",
+    "exampleZh": "请不要在公园里丢弃塑料袋。"
+  },
+  {
+    "id": "footprint",
+    "word": "footprint",
+    "phonetic": "/ˈfʊtprɪnt/",
+    "pos": "n.",
+    "meaning": "足迹；脚印",
+    "example": "We should reduce our carbon footprint at home.",
+    "exampleZh": "我们应该在日常生活中减少碳足迹。"
+  },
+  {
+    "id": "climate",
+    "word": "climate",
+    "phonetic": "/ˈklaɪmət/",
+    "pos": "n.",
+    "meaning": "气候；风气",
+    "example": "The climate here is mild all year round.",
+    "exampleZh": "这里气候终年温和。"
+  },
+  {
+    "id": "contamination",
+    "word": "contamination",
+    "phonetic": "/kənˌtæmɪˈneɪʃn/",
+    "pos": "n.",
+    "meaning": "污染；玷污",
+    "example": "Chemicals caused the contamination of the soil.",
+    "exampleZh": "化学品造成了土壤污染。"
+  },
+  {
+    "id": "rechargeable",
+    "word": "rechargeable",
+    "phonetic": "/ˌriːˈtʃɑːdʒəbl/",
+    "pos": "adj.",
+    "meaning": "可充电的",
+    "example": "Rechargeable batteries save money and reduce waste.",
+    "exampleZh": "可充电电池省钱又减少垃圾。"
+  }
+]

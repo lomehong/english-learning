@@ -7,13 +7,20 @@ import { renderListening } from './listening';
 import { renderWriting } from './writing';
 import { UNIT_STORAGE_KEY, BOOK_STORAGE_KEY, resetUnitState } from './unit-switch';
 import { getWordsByUnit } from '../data/words';
-import { BOOKS, BOOK_IDS, unitIdsOfBook } from '../data/units';
+import { BOOKS, BOOK_IDS, BOOK_LABELS, unitIdsOfBook, type BookId } from '../data/units';
 
 /**
  * 首页两级切换器（册 + 单元）↔ 各模块联动：
  * 首页选册 → 第二级单元列表重建为该册单元 → 点选单元 → localStorage + ?book=&unit= 同步
  * → 各模块页挂载读取全局「册 + 单元」渲染对应数据。
  */
+
+/** 当前尚未收录单元数据的第一个册（数据无关写法：册全齐后为 null，空册用例自动跳过） */
+const EMPTY_BOOK: BookId | null = BOOK_IDS.find((b) => unitIdsOfBook(b).length === 0) ?? null;
+const emptyBookIt = (name: string, fn: () => void): void => {
+  if (EMPTY_BOOK) it(name, fn);
+  else it.skip(name, fn);
+};
 
 function click(el: Element): void {
   el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -279,26 +286,26 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(switcherButton(root, 'unit1').classList.contains('tab--active')).toBe(true);
   });
 
-  it('点击空册（选择性必修二）：第二级降级为空态提示，URL 只带 ?book=，模块沿用最近单元（缺册降级）', () => {
+  emptyBookIt('点击空册：第二级降级为空态提示，URL 只带 ?book=，模块沿用最近单元（缺册降级）', () => {
     const root = document.createElement('div');
     renderHome(root);
     click(switcherButton(root, 'unit3')); // 先在必修一选中 Unit 3
-    click(bookButton(root, 'elective-2'));
+    click(bookButton(root, EMPTY_BOOK!));
 
     // 第二级：该册无单元 → 空态提示，不再渲染单元按钮
-    expect(root.querySelector('[data-testid="unit-empty"]')!.textContent).toContain('选择性必修二');
+    expect(root.querySelector('[data-testid="unit-empty"]')!.textContent).toContain(BOOK_LABELS[EMPTY_BOOK!]);
     expect(root.querySelector('[data-testid="unit-empty"]')!.textContent).toContain('暂未收录单元');
     expect(root.querySelector('[data-testid="unit-switcher"] button')).toBeNull();
 
     // 存储与 URL：册写入、单元沿用（不写误导性的 ?unit=）
-    expect(bookStorageValue()).toBe('elective-2');
+    expect(bookStorageValue()).toBe(EMPTY_BOOK!);
     expect(storageValue()).toBe('unit3');
-    expect(new URLSearchParams(location.search).get('book')).toBe('elective-2');
+    expect(new URLSearchParams(location.search).get('book')).toBe(EMPTY_BOOK!);
     expect(new URLSearchParams(location.search).get('unit')).toBeNull();
 
     // 提示文案：空册降级说明 + 沿用单元
     const hint = root.querySelector('[data-testid="unit-hint"]')!.textContent!;
-    expect(hint).toContain('选择性必修二');
+    expect(hint).toContain(BOOK_LABELS[EMPTY_BOOK!]);
     expect(hint).toContain('Unit 3');
 
     // 模块页联动降级：仍渲染最近单元（Unit 3）不崩溃，徽标显示沿用单元及其所属册
@@ -311,11 +318,11 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(badge.textContent).toContain('必修一'); // 徽标带册别维度
   });
 
-  it('两级联动：空册切回必修一 → 单元列表恢复为该册单元并选中册内最近选择', () => {
+  emptyBookIt('两级联动：空册切回必修一 → 单元列表恢复为该册单元并选中册内最近选择', () => {
     const root = document.createElement('div');
     renderHome(root);
     click(switcherButton(root, 'unit2'));
-    click(bookButton(root, 'elective-2')); // 空册
+    click(bookButton(root, EMPTY_BOOK!)); // 空册
     click(bookButton(root, 'required-1')); // 切回
 
     expect(unitButtons(root)).toEqual([...unitIdsOfBook('required-1')]);
@@ -338,14 +345,14 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(bookStorageValue()).toBe('required-1');
   });
 
-  it('?book=elective-3 深链首页（空册）：册选中 + 单元空态，单元回退 Unit 1', () => {
-    history.replaceState(null, '', '/?book=elective-3');
+  emptyBookIt('?book= 深链首页（空册）：册选中 + 单元空态，单元回退 Unit 1', () => {
+    history.replaceState(null, '', `/?book=${EMPTY_BOOK!}`);
     const root = document.createElement('div');
     renderHome(root);
 
-    expect(bookButton(root, 'elective-3').classList.contains('tab--active')).toBe(true);
+    expect(bookButton(root, EMPTY_BOOK!).classList.contains('tab--active')).toBe(true);
     expect(root.querySelector('[data-testid="unit-empty"]')).toBeTruthy();
     expect(storageValue()).toBe('unit1'); // 空册深链的单元回退落存储
-    expect(bookStorageValue()).toBe('elective-3');
+    expect(bookStorageValue()).toBe(EMPTY_BOOK!);
   });
 });

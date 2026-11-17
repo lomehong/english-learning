@@ -1,0 +1,182 @@
+[
+  {
+    "id": "poetry",
+    "word": "poetry",
+    "phonetic": "/ˈpəʊətri/",
+    "pos": "n.",
+    "meaning": "诗歌（总称）；诗意",
+    "example": "She has loved poetry since primary school.",
+    "exampleZh": "她从小学起就热爱诗歌。"
+  },
+  {
+    "id": "poem",
+    "word": "poem",
+    "phonetic": "/ˈpəʊɪm/",
+    "pos": "n.",
+    "meaning": "诗；韵文",
+    "example": "He wrote a short poem about the sea.",
+    "exampleZh": "他写了一首关于大海的短诗。"
+  },
+  {
+    "id": "verse",
+    "word": "verse",
+    "phonetic": "/vɜːs/",
+    "pos": "n.",
+    "meaning": "诗节；诗篇",
+    "example": "The poem has four short verses.",
+    "exampleZh": "这首诗有四个短小的诗节。"
+  },
+  {
+    "id": "rhyme",
+    "word": "rhyme",
+    "phonetic": "/raɪm/",
+    "pos": "n. & vi.",
+    "meaning": "韵；押韵",
+    "example": "The children love the rhyme of the old song.",
+    "exampleZh": "孩子们喜欢这首老歌的韵律。"
+  },
+  {
+    "id": "stanza",
+    "word": "stanza",
+    "phonetic": "/ˈstænzə/",
+    "pos": "n.",
+    "meaning": "（诗的）节，段",
+    "example": "Each stanza of the poem paints one season.",
+    "exampleZh": "这首诗的每一节描绘一个季节。"
+  },
+  {
+    "id": "metaphor",
+    "word": "metaphor",
+    "phonetic": "/ˈmetəfə(r)/",
+    "pos": "n.",
+    "meaning": "隐喻；暗喻",
+    "example": "The poet uses a metaphor of light for hope.",
+    "exampleZh": "诗人用光来隐喻希望。"
+  },
+  {
+    "id": "imagery",
+    "word": "imagery",
+    "phonetic": "/ˈɪmɪdʒəri/",
+    "pos": "n.",
+    "meaning": "意象；形象化描述",
+    "example": "The imagery of the moon runs through the poem.",
+    "exampleZh": "月亮的意象贯穿全诗。"
+  },
+  {
+    "id": "recite",
+    "word": "recite",
+    "phonetic": "/rɪˈsaɪt/",
+    "pos": "vt.",
+    "meaning": "背诵；朗诵",
+    "example": "The little girl can recite twenty ancient poems.",
+    "exampleZh": "小女孩能背诵二十首古诗。"
+  },
+  {
+    "id": "emotion",
+    "word": "emotion",
+    "phonetic": "/ɪˈməʊʃn/",
+    "pos": "n.",
+    "meaning": "情感；情绪",
+    "example": "The poem is full of warm emotion.",
+    "exampleZh": "这首诗充满温暖的情感。"
+  },
+  {
+    "id": "sorrow",
+    "word": "sorrow",
+    "phonetic": "/ˈsɒrəʊ/",
+    "pos": "n.",
+    "meaning": "悲伤；伤心事",
+    "example": "The verse tells of the poet's sorrow in autumn.",
+    "exampleZh": "这一诗节讲述了诗人秋日的忧伤。"
+  },
+  {
+    "id": "literature",
+    "word": "literature",
+    "phonetic": "/ˈlɪtrətʃə(r)/",
+    "pos": "n.",
+    "meaning": "文学；文献",
+    "example": "He teaches modern literature at the college.",
+    "exampleZh": "他在大学教现代文学。"
+  },
+  {
+    "id": "syllable",
+    "word": "syllable",
+    "phonetic": "/ˈsɪləbl/",
+    "pos": "n.",
+    "meaning": "音节",
+    "example": "Each line of the haiku has a fixed number of syllables.",
+    "exampleZh": "俳句每一行的音节数都是固定的。"
+  },
+  {
+    "id": "figurative",
+    "word": "figurative",
+    "phonetic": "/ˈfɪɡərətɪv/",
+    "pos": "adj.",
+    "meaning": "比喻的；象征的",
+    "example": "Poets often use figurative language.",
+    "exampleZh": "诗人常使用比喻性的语言。"
+  },
+  {
+    "id": "metre",
+    "word": "metre",
+    "phonetic": "/ˈmiːtə(r)/",
+    "pos": "n.",
+    "meaning": "格律；韵律；米",
+    "example": "The metre gives the old poem its music.",
+    "exampleZh": "格律赋予这首古诗音乐性。"
+  },
+  {
+    "id": "nursery",
+    "word": "nursery",
+    "phonetic": "/ˈnɜːsəri/",
+    "pos": "adj. & n.",
+    "meaning": "幼儿教育的；托儿所",
+    "example": "Every child learns some nursery rhymes.",
+    "exampleZh": "每个孩子都会学些童谣。"
+  },
+  {
+    "id": "convey",
+    "word": "convey",
+    "phonetic": "/kənˈveɪ/",
+    "pos": "vt.",
+    "meaning": "传达；传递；运送",
+    "example": "Words can convey deep feelings.",
+    "exampleZh": "文字能传达深沉的情感。"
+  },
+  {
+    "id": "symbolism",
+    "word": "symbolism",
+    "phonetic": "/ˈsɪmbəlɪzəm/",
+    "pos": "n.",
+    "meaning": "象征主义；象征手法",
+    "example": "The poet is famous for his use of symbolism.",
+    "exampleZh": "这位诗人以运用象征手法而闻名。"
+  },
+  {
+    "id": "moonlight",
+    "word": "moonlight",
+    "phonetic": "/ˈmuːnlaɪt/",
+    "pos": "n.",
+    "meaning": "月光",
+    "example": "The lake turned silver in the moonlight.",
+    "exampleZh": "月光下湖面变成了银色。"
+  },
+  {
+    "id": "heartfelt",
+    "word": "heartfelt",
+    "phonetic": "/ˈhɑːtfelt/",
+    "pos": "adj.",
+    "meaning": "衷心的；真诚的",
+    "example": "She sent a heartfelt letter of thanks.",
+    "exampleZh": "她寄去了一封衷心的感谢信。"
+  },
+  {
+    "id": "dawn",
+    "word": "dawn",
+    "phonetic": "/dɔːn/",
+    "pos": "n.",
+    "meaning": "黎明；开端",
+    "example": "The birds begin to sing at dawn.",
+    "exampleZh": "鸟儿在黎明时开始鸣叫。"
+  }
+]

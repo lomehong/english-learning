@@ -1,0 +1,182 @@
+[
+  {
+    "id": "marine",
+    "word": "marine",
+    "phonetic": "/məˈriːn/",
+    "pos": "adj.",
+    "meaning": "海洋的；海生的",
+    "example": "The station studies marine life in the Pacific.",
+    "exampleZh": "这个研究站研究太平洋的海洋生物。"
+  },
+  {
+    "id": "expedition",
+    "word": "expedition",
+    "phonetic": "/ˌekspəˈdɪʃn/",
+    "pos": "n.",
+    "meaning": "远征；探险（队）",
+    "example": "The expedition sailed south with three ships.",
+    "exampleZh": "这支探险队乘三艘船向南航行。"
+  },
+  {
+    "id": "fleet",
+    "word": "fleet",
+    "phonetic": "/fliːt/",
+    "pos": "n.",
+    "meaning": "舰队；船队；车队",
+    "example": "The ancient fleet carried silk and tea to the west.",
+    "exampleZh": "古老的船队把丝绸和茶叶运往西方。"
+  },
+  {
+    "id": "voyage",
+    "word": "voyage",
+    "phonetic": "/ˈvɔɪɪdʒ/",
+    "pos": "n. & vi.",
+    "meaning": "航海；航行；旅行",
+    "example": "The voyage across the ocean took five months.",
+    "exampleZh": "这次横渡大洋的航行历时五个月。"
+  },
+  {
+    "id": "extend",
+    "word": "extend",
+    "phonetic": "/ɪkˈstend/",
+    "pos": "vt. & vi.",
+    "meaning": "扩展；延伸；给予",
+    "example": "The new canal extends trade routes to the north.",
+    "exampleZh": "新运河把贸易路线延伸到北方。"
+  },
+  {
+    "id": "mixture",
+    "word": "mixture",
+    "phonetic": "/ˈmɪkstʃə(r)/",
+    "pos": "n.",
+    "meaning": "混合物；混合",
+    "example": "The diver felt a mixture of fear and wonder.",
+    "exampleZh": "潜水员感到既害怕又惊奇。"
+  },
+  {
+    "id": "applaud",
+    "word": "applaud",
+    "phonetic": "/əˈplɔːd/",
+    "pos": "vt. & vi.",
+    "meaning": "鼓掌；称赞，赞赏",
+    "example": "The whole class applauded the young scientist's report.",
+    "exampleZh": "全班为这位年轻科学家的报告鼓掌。"
+  },
+  {
+    "id": "negotiation",
+    "word": "negotiation",
+    "phonetic": "/nɪˌɡəʊʃiˈeɪʃn/",
+    "pos": "n.",
+    "meaning": "谈判；协商",
+    "example": "After long negotiations, the two ports agreed to share the route.",
+    "exampleZh": "经过长期谈判，两个港口同意共享这条航线。"
+  },
+  {
+    "id": "merciful",
+    "word": "merciful",
+    "phonetic": "/ˈmɜːsɪfl/",
+    "pos": "adj.",
+    "meaning": "仁慈的；宽容的",
+    "example": "The merciful captain set the trapped dolphin free.",
+    "exampleZh": "仁慈的船长放走了被困的海豚。"
+  },
+  {
+    "id": "possess",
+    "word": "possess",
+    "phonetic": "/pəˈzes/",
+    "pos": "vt.",
+    "meaning": "拥有；具有；支配",
+    "example": "The old ship still possesses its original wooden wheel.",
+    "exampleZh": "这艘旧船仍保留着原来的木舵轮。"
+  },
+  {
+    "id": "withdraw",
+    "word": "withdraw",
+    "phonetic": "/wɪðˈdrɔː/",
+    "pos": "vt. & vi.",
+    "meaning": "撤回；退出；取（款）",
+    "example": "The company withdrew its ships from the stormy sea.",
+    "exampleZh": "公司把船只从风暴海域撤回。"
+  },
+  {
+    "id": "arrest",
+    "word": "arrest",
+    "phonetic": "/əˈrest/",
+    "pos": "vt. & n.",
+    "meaning": "逮捕；阻止；吸引（注意力）",
+    "example": "The view of the coral reef arrested every eye on board.",
+    "exampleZh": "珊瑚礁的景色吸引了船上每个人的目光。"
+  },
+  {
+    "id": "coverage",
+    "word": "coverage",
+    "phonetic": "/ˈkʌvərɪdʒ/",
+    "pos": "n.",
+    "meaning": "覆盖范围；新闻报道",
+    "example": "The ship's radar improves the coverage of the search area.",
+    "exampleZh": "船载雷达扩大了搜索区域的覆盖范围。"
+  },
+  {
+    "id": "league",
+    "word": "league",
+    "phonetic": "/liːɡ/",
+    "pos": "n.",
+    "meaning": "联盟；等级；水平",
+    "example": "These ancient ships were in a league of their own.",
+    "exampleZh": "这些古船在当时独领风骚。"
+  },
+  {
+    "id": "behold",
+    "word": "behold",
+    "phonetic": "/bɪˈhəʊld/",
+    "pos": "vt.",
+    "meaning": "看；注视（多用于文学语境）",
+    "example": "The rising sun over the sea was a sight to behold.",
+    "exampleZh": "海上日出的景象壮观得令人叹为观止。"
+  },
+  {
+    "id": "coral",
+    "word": "coral",
+    "phonetic": "/ˈkɒrəl/",
+    "pos": "n.",
+    "meaning": "珊瑚",
+    "example": "The coral reef is home to thousands of fish.",
+    "exampleZh": "珊瑚礁是数千种鱼的家园。"
+  },
+  {
+    "id": "merchant",
+    "word": "merchant",
+    "phonetic": "/ˈmɜːtʃənt/",
+    "pos": "n.",
+    "meaning": "商人；（某行业的）批发商",
+    "example": "Merchants once sailed this route to sell silk and tea.",
+    "exampleZh": "商人们曾沿这条航线航行，贩卖丝绸和茶叶。"
+  },
+  {
+    "id": "bond",
+    "word": "bond",
+    "phonetic": "/bɒnd/",
+    "pos": "n.",
+    "meaning": "纽带；联系；债券",
+    "example": "The sea creates a strong bond between the two ports.",
+    "exampleZh": "大海在这两个港口之间建立起牢固的纽带。"
+  },
+  {
+    "id": "depth",
+    "word": "depth",
+    "phonetic": "/depθ/",
+    "pos": "n.",
+    "meaning": "深度；深处；深奥",
+    "example": "The submarine dived to a depth of 500 metres.",
+    "exampleZh": "潜艇下潜到 500 米的深度。"
+  },
+  {
+    "id": "log",
+    "word": "log",
+    "phonetic": "/lɒɡ/",
+    "pos": "n. & vt.",
+    "meaning": "航海（或飞行）日志；原木  记录",
+    "example": "The captain logged the position of the ship every day.",
+    "exampleZh": "船长每天记录船的方位。"
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "cuisine",
+    "word": "cuisine",
+    "phonetic": "/kwɪˈziːn/",
+    "pos": "n.",
+    "meaning": "菜肴；烹饪风格",
+    "example": "Sichuan cuisine is famous for its hot taste.",
+    "exampleZh": "川菜以辣味闻名。"
+  },
+  {
+    "id": "quantity",
+    "word": "quantity",
+    "phonetic": "/ˈkwɒntəti/",
+    "pos": "n.",
+    "meaning": "数量；量（in quantity 大量）",
+    "example": "Don't eat large quantities of fried food.",
+    "exampleZh": "不要大量食用油炸食品。"
+  },
+  {
+    "id": "moderate",
+    "word": "moderate",
+    "phonetic": "/ˈmɒdərət/",
+    "pos": "adj.",
+    "meaning": "适度的；温和的；中等的",
+    "example": "Moderate exercise is good for your health.",
+    "exampleZh": "适度的运动有益健康。"
+  },
+  {
+    "id": "ideal",
+    "word": "ideal",
+    "phonetic": "/aɪˈdɪəl/",
+    "pos": "adj.",
+    "meaning": "理想的；完美的 n. 理想",
+    "example": "An ideal breakfast includes eggs, milk and fruit.",
+    "exampleZh": "理想的早餐包括鸡蛋、牛奶和水果。"
+  },
+  {
+    "id": "fundamental",
+    "word": "fundamental",
+    "phonetic": "/ˌfʌndəˈmentl/",
+    "pos": "adj.",
+    "meaning": "基本的；根本的；十分重要的",
+    "example": "Fresh ingredients are fundamental to good cooking.",
+    "exampleZh": "新鲜的原料是做好菜的根本。"
+  },
+  {
+    "id": "chew",
+    "word": "chew",
+    "phonetic": "/tʃuː/",
+    "pos": "v.",
+    "meaning": "咀嚼；咬",
+    "example": "Chew your food slowly before you swallow it.",
+    "exampleZh": "咽下食物之前要慢慢咀嚼。"
+  },
+  {
+    "id": "appetite",
+    "word": "appetite",
+    "phonetic": "/ˈæpɪtaɪt/",
+    "pos": "n.",
+    "meaning": "胃口；食欲；欲望",
+    "example": "The long walk gave us a good appetite.",
+    "exampleZh": "长途步行让我们胃口大开。"
+  },
+  {
+    "id": "pastry",
+    "word": "pastry",
+    "phonetic": "/ˈpeɪstri/",
+    "pos": "n.",
+    "meaning": "糕点；酥皮点心",
+    "example": "The bakery is famous for its freshly baked pastry.",
+    "exampleZh": "这家面包店以新鲜出炉的糕点闻名。"
+  },
+  {
+    "id": "recipe",
+    "word": "recipe",
+    "phonetic": "/ˈresəpi/",
+    "pos": "n.",
+    "meaning": "食谱；配方；方法",
+    "example": "Grandmother passed the recipe down to my mother.",
+    "exampleZh": "外婆把这份食谱传给了我母亲。"
+  },
+  {
+    "id": "ingredient",
+    "word": "ingredient",
+    "phonetic": "/ɪnˈɡriːdiənt/",
+    "pos": "n.",
+    "meaning": "（烹饪的）原料；成分",
+    "example": "Buy all the ingredients before you start cooking.",
+    "exampleZh": "开始做饭之前先买齐所有原料。"
+  },
+  {
+    "id": "slice",
+    "word": "slice",
+    "phonetic": "/slaɪs/",
+    "pos": "vt.",
+    "meaning": "把……切成薄片 n. 薄片",
+    "example": "Please slice the tomatoes thinly.",
+    "exampleZh": "请把西红柿切成薄片。"
+  },
+  {
+    "id": "steam",
+    "word": "steam",
+    "phonetic": "/stiːm/",
+    "pos": "vt./vi.",
+    "meaning": "蒸 n. 蒸汽",
+    "example": "We steamed the fish for eight minutes.",
+    "exampleZh": "我们把鱼蒸了八分钟。"
+  },
+  {
+    "id": "fry",
+    "word": "fry",
+    "phonetic": "/fraɪ/",
+    "pos": "vt./vi.",
+    "meaning": "油煎；油炸；油炒",
+    "example": "Mother fried two eggs for my breakfast.",
+    "exampleZh": "母亲为我的早餐煎了两个鸡蛋。"
+  },
+  {
+    "id": "flavour",
+    "word": "flavour",
+    "phonetic": "/ˈfleɪvə(r)/",
+    "pos": "n.",
+    "meaning": "味道；风味 vt. 给……调味",
+    "example": "The soup has a rich flavour of mushroom.",
+    "exampleZh": "这汤有浓郁的蘑菇味。"
+  },
+  {
+    "id": "vitamin",
+    "word": "vitamin",
+    "phonetic": "/ˈvɪtəmɪn/",
+    "pos": "n.",
+    "meaning": "维生素；维他命",
+    "example": "Oranges are rich in vitamin C.",
+    "exampleZh": "橙子富含维生素C。"
+  },
+  {
+    "id": "association",
+    "word": "association",
+    "phonetic": "/əˌsəʊʃiˈeɪʃn/",
+    "pos": "n.",
+    "meaning": "关联；联想；协会",
+    "example": "There is a close association between food and memory.",
+    "exampleZh": "食物与记忆之间有着紧密的关联。"
+  },
+  {
+    "id": "prior",
+    "word": "prior",
+    "phonetic": "/ˈpraɪə(r)/",
+    "pos": "adj.",
+    "meaning": "在先的；优先的（prior to 在……之前）",
+    "example": "She had no prior experience of cooking.",
+    "exampleZh": "她此前没有烹饪经验。"
+  },
+  {
+    "id": "consist",
+    "word": "consist",
+    "phonetic": "/kəˈsɪst/",
+    "pos": "vi.",
+    "meaning": "由……组成（consist of）",
+    "example": "A healthy diet consists of many kinds of food.",
+    "exampleZh": "健康的饮食由多种食物组成。"
+  },
+  {
+    "id": "exceptional",
+    "word": "exceptional",
+    "phonetic": "/ɪkˈsepʃənl/",
+    "pos": "adj.",
+    "meaning": "杰出的；非凡的；异常的",
+    "example": "The chef's skills are truly exceptional.",
+    "exampleZh": "这位厨师的技艺确实非同凡响。"
+  },
+  {
+    "id": "crispy",
+    "word": "crispy",
+    "phonetic": "/ˈkrɪspi/",
+    "pos": "adj.",
+    "meaning": "酥脆的",
+    "example": "The duck skin tastes crispy and smells wonderful.",
+    "exampleZh": "鸭皮吃起来酥脆，闻起来很香。"
+  }
+]

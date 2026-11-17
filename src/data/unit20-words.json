@@ -1,0 +1,182 @@
+[
+  {
+    "id": "perform",
+    "word": "perform",
+    "phonetic": "/pəˈfɔːm/",
+    "pos": "vt. & vi.",
+    "meaning": "表演；演出；执行",
+    "example": "The students will perform a short play at the art festival.",
+    "exampleZh": "学生们将在艺术节上表演一部短剧。"
+  },
+  {
+    "id": "performance",
+    "word": "performance",
+    "phonetic": "/pəˈfɔːməns/",
+    "pos": "n.",
+    "meaning": "表演；演出；表现",
+    "example": "The band gave a wonderful performance in the school hall.",
+    "exampleZh": "乐队在学校礼堂进行了一场精彩的演出。"
+  },
+  {
+    "id": "compose",
+    "word": "compose",
+    "phonetic": "/kəmˈpəʊz/",
+    "pos": "vt.",
+    "meaning": "创作（乐曲、诗歌）；组成",
+    "example": "The young musician composed her first song at the age of ten.",
+    "exampleZh": "这位年轻的音乐人十岁时创作了第一首歌。"
+  },
+  {
+    "id": "composer",
+    "word": "composer",
+    "phonetic": "/kəmˈpəʊzə(r)/",
+    "pos": "n.",
+    "meaning": "作曲家；创作者",
+    "example": "The composer wrote operas that are still loved today.",
+    "exampleZh": "这位作曲家创作的歌剧至今仍受人喜爱。"
+  },
+  {
+    "id": "instrument",
+    "word": "instrument",
+    "phonetic": "/ˈɪnstrəmənt/",
+    "pos": "n.",
+    "meaning": "乐器；工具；仪器",
+    "example": "The guzheng is a traditional Chinese instrument with twenty-one strings.",
+    "exampleZh": "古筝是一种有二十一根弦的中国传统乐器。"
+  },
+  {
+    "id": "melody",
+    "word": "melody",
+    "phonetic": "/ˈmelədi/",
+    "pos": "n.",
+    "meaning": "旋律；曲调",
+    "example": "The sweet melody of the flute stayed in my mind for days.",
+    "exampleZh": "笛子甜美的旋律在我脑海中回荡了好几天。"
+  },
+  {
+    "id": "rhythm",
+    "word": "rhythm",
+    "phonetic": "/ˈrɪðəm/",
+    "pos": "n.",
+    "meaning": "节奏；韵律",
+    "example": "Drummers played a strong rhythm that made everyone dance.",
+    "exampleZh": "鼓手敲出强劲的节奏，让大家都跳起舞来。"
+  },
+  {
+    "id": "choir",
+    "word": "choir",
+    "phonetic": "/ˈkwaɪə(r)/",
+    "pos": "n.",
+    "meaning": "合唱团；唱诗班",
+    "example": "Our school choir won first prize in the city competition.",
+    "exampleZh": "我们学校合唱团在市级比赛中获得了一等奖。"
+  },
+  {
+    "id": "orchestra",
+    "word": "orchestra",
+    "phonetic": "/ˈɔːkɪstrə/",
+    "pos": "n.",
+    "meaning": "管弦乐队",
+    "example": "The whole orchestra stood up after the last note of the symphony.",
+    "exampleZh": "交响曲最后一个音符落下后，整个管弦乐队起立致意。"
+  },
+  {
+    "id": "conductor",
+    "word": "conductor",
+    "phonetic": "/kənˈdʌktə(r)/",
+    "pos": "n.",
+    "meaning": "（乐队）指挥；售票员",
+    "example": "The conductor raised his baton and the music began.",
+    "exampleZh": "指挥举起指挥棒，音乐开始了。"
+  },
+  {
+    "id": "classical",
+    "word": "classical",
+    "phonetic": "/ˈklæsɪkl/",
+    "pos": "adj.",
+    "meaning": "古典的；传统的",
+    "example": "My grandfather enjoys classical music more than pop songs.",
+    "exampleZh": "我祖父喜欢古典音乐胜过流行歌曲。"
+  },
+  {
+    "id": "folk",
+    "word": "folk",
+    "phonetic": "/fəʊk/",
+    "pos": "adj.",
+    "meaning": "民间的；民俗的",
+    "example": "The old man sings folk songs that he learned as a child.",
+    "exampleZh": "老人唱着他小时候学会的民歌。"
+  },
+  {
+    "id": "jazz",
+    "word": "jazz",
+    "phonetic": "/dʒæz/",
+    "pos": "n.",
+    "meaning": "爵士乐",
+    "example": "The club plays jazz every Saturday evening.",
+    "exampleZh": "这家俱乐部每周六晚上演奏爵士乐。"
+  },
+  {
+    "id": "band",
+    "word": "band",
+    "phonetic": "/bænd/",
+    "pos": "n.",
+    "meaning": "乐队；带子",
+    "example": "He plays the guitar in a band formed by his classmates.",
+    "exampleZh": "他在同学组建的乐队里弹吉他。"
+  },
+  {
+    "id": "album",
+    "word": "album",
+    "phonetic": "/ˈælbəm/",
+    "pos": "n.",
+    "meaning": "专辑；相册",
+    "example": "Their first album sold two million copies.",
+    "exampleZh": "他们的第一张专辑卖出了两百万张。"
+  },
+  {
+    "id": "studio",
+    "word": "studio",
+    "phonetic": "/ˈstjuːdiəʊ/",
+    "pos": "n.",
+    "meaning": "录音室；工作室",
+    "example": "The singers recorded the song in a small studio near the school.",
+    "exampleZh": "歌手们在学校附近的一间小录音室录下了这首歌。"
+  },
+  {
+    "id": "award",
+    "word": "award",
+    "phonetic": "/əˈwɔːd/",
+    "pos": "n. & vt.",
+    "meaning": "奖；奖金；授予",
+    "example": "The pianist received a big award for her performance.",
+    "exampleZh": "这位钢琴家因演出获得大奖。"
+  },
+  {
+    "id": "stage",
+    "word": "stage",
+    "phonetic": "/steɪdʒ/",
+    "pos": "n.",
+    "meaning": "舞台；阶段",
+    "example": "Nervously, she walked onto the stage and bowed to the audience.",
+    "exampleZh": "她紧张地走上舞台，向观众鞠躬。"
+  },
+  {
+    "id": "audience",
+    "word": "audience",
+    "phonetic": "/ˈɔːdiəns/",
+    "pos": "n.",
+    "meaning": "观众；听众",
+    "example": "The audience clapped for five minutes after the concert.",
+    "exampleZh": "音乐会结束后观众鼓掌长达五分钟。"
+  },
+  {
+    "id": "inspire",
+    "word": "inspire",
+    "phonetic": "/ɪnˈspaɪə(r)/",
+    "pos": "vt.",
+    "meaning": "鼓舞；激励；启发灵感",
+    "example": "Music from his home town inspired him to write many songs.",
+    "exampleZh": "家乡的音乐启发他创作了许多歌曲。"
+  }
+]

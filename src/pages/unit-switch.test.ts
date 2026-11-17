@@ -12,9 +12,16 @@ import {
   setBook,
   resetUnitState,
 } from './unit-switch';
-import { UNIT_IDS, DEFAULT_BOOK } from '../data/units';
+import { UNIT_IDS, DEFAULT_BOOK, BOOK_IDS, unitIdsOfBook, type BookId } from '../data/units';
 
 /** 全局「册 + 单元」两级状态：URL ?book=&unit= ↔ localStorage 双向同步（首页两级切换器驱动） */
+
+/** 当前尚未收录单元数据的第一个册（数据无关写法：册全齐后为 null，空册用例自动跳过） */
+const EMPTY_BOOK: BookId | null = BOOK_IDS.find((b) => unitIdsOfBook(b).length === 0) ?? null;
+const emptyBookIt = (name: string, fn: () => void): void => {
+  if (EMPTY_BOOK) it(name, fn);
+  else it.skip(name, fn);
+};
 
 /** 与 store 测试同款：绕过 Node≥26 实验性全局 localStorage 遮蔽，取 jsdom 实例 */
 function storage(): Storage | undefined {
@@ -46,10 +53,13 @@ describe('unitFromParam · ?unit= 参数解析', () => {
     expect(unitFromParam('unit3')).toBe('unit3');
   });
 
-  it('单元号写法：跨册同号时解析为注册表靠后的册（选择性必修一）', () => {
-    expect(unitFromParam('1')).toBe('unit6'); // 必修一与选择性必修一均有 Unit 1，数字写法落在后注册的册
-    expect(unitFromParam('3')).toBe('unit8');
-    expect(unitFromParam('6')).toBeNull(); // 新增单元文件名为 unit6-10，册内单元号仍是 1-5，6 不是合法写法
+  it('单元号写法：数字固定解析为默认册（必修一）的单元，跨册同号不漂移', () => {
+    // 数字写法是单册时代遗留兼容；七册均有 Unit 1–5 后同号歧义，固定映射必修一
+    expect(unitFromParam('1')).toBe('unit1');
+    expect(unitFromParam('3')).toBe('unit3');
+    expect(unitFromParam('5')).toBe('unit5');
+    expect(unitFromParam('6')).toBeNull(); // 数字只映射册内单元号（1–5），不映射文件名编号
+    expect(unitFromParam('unit6')).toBe('unit6'); // 全拼 id 写法对所有册的单元精确命中
   });
 
   it('非法值返回 null（由存储与默认值兜底），缺省也是 null', () => {
@@ -188,12 +198,12 @@ describe('全局册 + 单元 · 深链与回退（URL → 状态）', () => {
     expect(currentUnit()).toBe('unit2');
   });
 
-  it('仅 ?book=（空册深链）：册被采纳，单元沿用最近有效单元（缺册降级，模块不崩溃）', () => {
+  emptyBookIt('仅 ?book=（空册深链）：册被采纳，单元沿用最近有效单元（缺册降级，模块不崩溃）', () => {
     setUnit('unit4');
-    history.replaceState(null, '', '/grammar?book=elective-2');
-    expect(currentBook()).toBe('elective-2');
+    history.replaceState(null, '', `/grammar?book=${EMPTY_BOOK!}`);
+    expect(currentBook()).toBe(EMPTY_BOOK!);
     expect(currentUnit()).toBe('unit4'); // 空册没有单元可切，沿用最近单元
-    expect(bookStorageValue()).toBe('elective-2');
+    expect(bookStorageValue()).toBe(EMPTY_BOOK!);
     expect(storageValue()).toBe('unit4');
   });
 
@@ -212,30 +222,30 @@ describe('全局册 + 单元 · 深链与回退（URL → 状态）', () => {
     expect(currentBook()).toBe('required-1');
   });
 
-  it('存储册为空册 + 存储单元合法：无参地址沿用该组合（空册降级保持最近单元）', () => {
-    setBook('elective-2'); // 空册：unit 沿用 setBook 前的 unit1
+  emptyBookIt('存储册为空册 + 存储单元合法：无参地址沿用该组合（空册降级保持最近单元）', () => {
+    setBook(EMPTY_BOOK!); // 空册：unit 沿用 setBook 前的 unit1
     history.replaceState(null, '', '/grammar');
-    expect(currentBook()).toBe('elective-2');
+    expect(currentBook()).toBe(EMPTY_BOOK!);
     expect(currentUnit()).toBe('unit1');
   });
 });
 
 describe('全局册切换 · setBook（两级联动 + 状态 → URL 同步）', () => {
-  it('切到空册：URL 只写 ?book=（不写误导性的 ?unit=），册 + 单元双写存储', () => {
+  emptyBookIt('切到空册：URL 只写 ?book=（不写误导性的 ?unit=），册 + 单元双写存储', () => {
     history.replaceState(null, '', '/');
     setUnit('unit3');
-    setBook('elective-2');
-    expect(bookStorageValue()).toBe('elective-2');
+    setBook(EMPTY_BOOK!);
+    expect(bookStorageValue()).toBe(EMPTY_BOOK!);
     expect(storageValue()).toBe('unit3'); // 空册沿用最近单元（降级）
     const params = new URLSearchParams(location.search);
-    expect(params.get('book')).toBe('elective-2');
+    expect(params.get('book')).toBe(EMPTY_BOOK!);
     expect(params.get('unit')).toBeNull(); // 空册不带单元参数
   });
 
-  it('从空册切回必修一：默认册不写 ?book=，单元恢复册内最近选择', () => {
+  emptyBookIt('从空册切回必修一：默认册不写 ?book=，单元恢复册内最近选择', () => {
     history.replaceState(null, '', '/');
     setUnit('unit3');
-    setBook('elective-2');
+    setBook(EMPTY_BOOK!);
     setBook('required-1');
     expect(bookStorageValue()).toBe('required-1');
     expect(storageValue()).toBe('unit3'); // 册内最近选择恢复

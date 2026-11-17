@@ -1,0 +1,182 @@
+[
+  {
+    "id": "bandage",
+    "word": "bandage",
+    "phonetic": "/ˈbændɪdʒ/",
+    "pos": "n.",
+    "meaning": "绷带 vt. 用绷带包扎",
+    "example": "The nurse put a bandage around his arm.",
+    "exampleZh": "护士在他的手臂上缠了绷带。"
+  },
+  {
+    "id": "bleed",
+    "word": "bleed",
+    "phonetic": "/bliːd/",
+    "pos": "vi.",
+    "meaning": "流血；出血",
+    "example": "His nose began to bleed after the fall.",
+    "exampleZh": "摔倒后他的鼻子开始流血。"
+  },
+  {
+    "id": "choke",
+    "word": "choke",
+    "phonetic": "/tʃəʊk/",
+    "pos": "v.",
+    "meaning": "（使）窒息；（使）噎住；塞满",
+    "example": "He choked on a piece of steak at dinner.",
+    "exampleZh": "晚餐时他被一块牛排噎住了。"
+  },
+  {
+    "id": "burn",
+    "word": "burn",
+    "phonetic": "/bɜːn/",
+    "pos": "n.",
+    "meaning": "烧伤；灼伤 v. 燃烧；烧伤",
+    "example": "Cool the burn with running water at once.",
+    "exampleZh": "立即用流动的冷水给烧伤处降温。"
+  },
+  {
+    "id": "poison",
+    "word": "poison",
+    "phonetic": "/ˈpɔɪzn/",
+    "pos": "n.",
+    "meaning": "毒药；毒物 vt. 使中毒",
+    "example": "Some wild mushrooms contain a deadly poison.",
+    "exampleZh": "有些野生蘑菇含有致命毒素。"
+  },
+  {
+    "id": "symptom",
+    "word": "symptom",
+    "phonetic": "/ˈsɪmptəm/",
+    "pos": "n.",
+    "meaning": "症状；征兆",
+    "example": "A high fever is a common symptom of the flu.",
+    "exampleZh": "高烧是流感的常见症状。"
+  },
+  {
+    "id": "pulse",
+    "word": "pulse",
+    "phonetic": "/pʌls/",
+    "pos": "n.",
+    "meaning": "脉搏；节拍",
+    "example": "The doctor first checked the patient's pulse.",
+    "exampleZh": "医生先检查了病人的脉搏。"
+  },
+  {
+    "id": "ambulance",
+    "word": "ambulance",
+    "phonetic": "/ˈæmbjələns/",
+    "pos": "n.",
+    "meaning": "救护车",
+    "example": "Someone called an ambulance immediately.",
+    "exampleZh": "有人立即叫了救护车。"
+  },
+  {
+    "id": "precaution",
+    "word": "precaution",
+    "phonetic": "/prɪˈkɔːʃn/",
+    "pos": "n.",
+    "meaning": "预防措施",
+    "example": "Wearing gloves is a basic precaution when giving first aid.",
+    "exampleZh": "实施急救时戴手套是一项基本预防措施。"
+  },
+  {
+    "id": "panic",
+    "word": "panic",
+    "phonetic": "/ˈpænɪk/",
+    "pos": "n.",
+    "meaning": "恐慌；慌乱 v. （使）惊慌",
+    "example": "Try not to panic in an emergency.",
+    "exampleZh": "紧急情况下尽量不要惊慌。"
+  },
+  {
+    "id": "wrap",
+    "word": "wrap",
+    "phonetic": "/ræp/",
+    "pos": "vt.",
+    "meaning": "包；裹；缠绕",
+    "example": "Wrap the burnt area with a clean cloth.",
+    "exampleZh": "用干净的布把烧伤部位包起来。"
+  },
+  {
+    "id": "squeeze",
+    "word": "squeeze",
+    "phonetic": "/skwiːz/",
+    "pos": "vt./vi.",
+    "meaning": "挤；捏；压榨",
+    "example": "Squeeze the tube gently from the bottom.",
+    "exampleZh": "从底部轻轻地挤这管软膏。"
+  },
+  {
+    "id": "electric",
+    "word": "electric",
+    "phonetic": "/ɪˈlektrɪk/",
+    "pos": "adj.",
+    "meaning": "电的；用电的；电动的",
+    "example": "Never touch an electric switch with a wet hand.",
+    "exampleZh": "千万别用湿手触碰电开关。"
+  },
+  {
+    "id": "needle",
+    "word": "needle",
+    "phonetic": "/ˈniːdl/",
+    "pos": "n.",
+    "meaning": "针；指针；针状物",
+    "example": "The compass needle points north.",
+    "exampleZh": "罗盘的指针指向北方。"
+  },
+  {
+    "id": "alcohol",
+    "word": "alcohol",
+    "phonetic": "/ˈælkəhɒl/",
+    "pos": "n.",
+    "meaning": "酒精；酒",
+    "example": "Clean the wound with medical alcohol.",
+    "exampleZh": "用医用酒精清洁伤口。"
+  },
+  {
+    "id": "recovery",
+    "word": "recovery",
+    "phonetic": "/rɪˈkʌvəri/",
+    "pos": "n.",
+    "meaning": "康复；痊愈；恢复",
+    "example": "The old man made a quick recovery after the operation.",
+    "exampleZh": "老人手术后恢复得很快。"
+  },
+  {
+    "id": "vital",
+    "word": "vital",
+    "phonetic": "/ˈvaɪtl/",
+    "pos": "adj.",
+    "meaning": "至关重要的；生命的",
+    "example": "Quick action is vital in an emergency.",
+    "exampleZh": "紧急情况下迅速行动至关重要。"
+  },
+  {
+    "id": "technique",
+    "word": "technique",
+    "phonetic": "/tekˈniːk/",
+    "pos": "n.",
+    "meaning": "技术；方法；技巧",
+    "example": "The teacher showed us the right technique for pressing the chest.",
+    "exampleZh": "老师给我们示范了正确的胸外按压方法。"
+  },
+  {
+    "id": "ward",
+    "word": "ward",
+    "phonetic": "/wɔːd/",
+    "pos": "n.",
+    "meaning": "病房；行政区",
+    "example": "She visited her grandmother in the hospital ward.",
+    "exampleZh": "她去医院病房看望了祖母。"
+  },
+  {
+    "id": "guideline",
+    "word": "guideline",
+    "phonetic": "/ˈɡaɪdlaɪn/",
+    "pos": "n.",
+    "meaning": "指导方针；准则",
+    "example": "The class learned the basic guidelines for treating burns.",
+    "exampleZh": "同学们学习了处理烧伤的基本准则。"
+  }
+]

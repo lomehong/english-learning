@@ -50,12 +50,18 @@ function unitStorage(): UnitStorage | null {
   }
 }
 
-/** ?unit= 深链写法 → 规范单元 id（unit1/unit2… 与单元号 1/2… 均为合法写法） */
+/**
+ * ?unit= 深链写法 → 规范单元 id：
+ * - 全拼写法（unit1 / unit2 …）对所有注册单元有效；
+ * - 数字写法（1 / 2 …）是单册时代的遗留兼容，跨册存在同号单元后有歧义，
+ *   固定解析为默认册（必修一）的对应单元，语义不随册别扩充而漂移。
+ */
 const UNIT_PARAM_SPELLINGS = new Map<string, UnitId>(
-  UNIT_IDS.flatMap((id) => [
-    [id, id] as const,
-    [String(UNIT_META[id].no), id] as const,
-  ]),
+  UNIT_IDS.flatMap((id) => {
+    const spellings: Array<readonly [string, UnitId]> = [[id, id]];
+    if (bookOfUnit(id) === DEFAULT_BOOK) spellings.push([String(UNIT_META[id].no), id]);
+    return spellings;
+  }),
 );
 
 /** ?book= 深链写法 → 册别 id（slug 写法 required-1 与中文册名写法 必修一 均为合法写法） */
