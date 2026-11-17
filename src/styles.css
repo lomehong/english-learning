@@ -1,0 +1,190 @@
+/**
+ * 统一设计令牌 · 深色玻璃拟态（Dark Glassmorphism）
+ * 主色 #4f8cff / 暖色 #ff9f1c
+ */
+:root {
+  /* 品牌色 */
+  --color-primary: #4f8cff;
+  --color-primary-strong: #3f78ef;
+  --color-primary-weak: rgba(79, 140, 255, 0.16);
+  --color-accent: #ff9f1c;
+  --color-accent-strong: #f08f00;
+  --color-accent-weak: rgba(255, 159, 28, 0.16);
+
+  /* 背景与文本 */
+  --color-bg: #0b1020;
+  --color-bg-soft: #111935;
+  --color-text: #e8edf9;
+  --color-text-dim: #9aa7c7;
+  --color-line: rgba(232, 237, 249, 0.12);
+
+  /* 玻璃拟态 */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-blur: 14px;
+
+  /* 圆角 / 阴影 / 间距 */
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-glass: 0 8px 32px rgba(4, 8, 22, 0.45);
+  --space-nav: 64px;
+  --space-gutter: 24px;
+
+  /* 字体 */
+  --font-sans:
+    'Inter', 'HarmonyOS Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui,
+    -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(
+      52rem 30rem at 12% -8%,
+      rgba(79, 140, 255, 0.22),
+      transparent 60%
+    ),
+    radial-gradient(
+      44rem 26rem at 92% 4%,
+      rgba(255, 159, 28, 0.14),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-soft) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 应用骨架 ---- */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--space-gutter);
+  height: var(--space-nav);
+  padding: 0 var(--space-gutter);
+  background: var(--glass-bg);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.app-brand-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  box-shadow: 0 0 12px var(--color-primary-weak);
+}
+
+.app-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.app-nav-link {
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--color-text-dim);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.app-nav-link:hover {
+  color: var(--color-text);
+  background: var(--glass-bg);
+}
+
+.app-nav-link.is-active {
+  color: #ffffff;
+  background: var(--color-primary-weak);
+  border: 1px solid rgba(79, 140, 255, 0.45);
+}
+
+.app-main {
+  flex: 1;
+  width: min(1080px, 100% - 2 * var(--space-gutter));
+  margin: 0 auto;
+  padding: calc(var(--space-gutter) * 1.5) 0;
+}
+
+/* ---- 通用玻璃卡片 / 空页面占位 ---- */
+.page {
+  display: grid;
+  gap: var(--space-gutter);
+}
+
+.page-hero {
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.page-hero h1 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+}
+
+.page-hero h1::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+}
+
+.page-hero p {
+  margin: 0;
+  color: var(--color-text-dim);
+}
+
+.page-placeholder {
+  padding: 48px 28px;
+  text-align: center;
+  color: var(--color-text-dim);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--glass-border);
+  background: var(--glass-bg);
+}
