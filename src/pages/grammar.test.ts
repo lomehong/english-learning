@@ -287,6 +287,29 @@ describe('语法页 · 单元切换（Unit 2）', () => {
     expect(entry.module).toBe('grammar');
   });
 
+  it('?unit=2 数字写法深链等同 unit=unit2：初始加载即 Unit 2 讲解卡', () => {
+    history.replaceState(null, '', '/grammar?unit=2');
+    const container = document.createElement('div');
+    renderGrammar(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.textContent).toContain('现在完成时');
+    expect(container.querySelector('.exercise[data-exercise="u2-g1"]')).toBeTruthy();
+    expect(container.querySelector('.exercise[data-exercise="g1"]')).toBeNull();
+  });
+
+  it('?unit=xyz 非法值深链回退 Unit 1（一般现在时）', () => {
+    history.replaceState(null, '', '/grammar?unit=xyz');
+    const container = document.createElement('div');
+    renderGrammar(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.textContent).toContain('一般现在时');
+    expect(container.querySelector('.exercise[data-exercise="g1"]')).toBeTruthy();
+    expect(container.querySelector('.exercise[data-exercise="u2-g1"]')).toBeNull();
+  });
+
   it('点击 Unit 1 切换按钮：内容重建为 Unit 1 讲解卡（一般现在时）', () => {
     const deps = makeDeps();
     const container = document.createElement('div');

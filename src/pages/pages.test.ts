@@ -256,6 +256,38 @@ describe('词汇页 · 单元切换（/vocabulary 容器）', () => {
     expect(progress.cards['teenage']).toBeUndefined();
   });
 
+  it('?unit=2 数字写法深链：初始加载即 Unit 2（标题 / 切换器 / 词表）', () => {
+    history.replaceState(null, '', '/vocabulary?unit=2');
+    const container = document.createElement('div');
+    renderVocabulary(container);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    const unit2Tab = container.querySelector<HTMLElement>(
+      '[data-testid="unit-switcher"] button[data-unit="unit2"]',
+    )!;
+    expect(unit2Tab.classList.contains('tab--active')).toBe(true);
+    expect(unit2Tab.getAttribute('aria-selected')).toBe('true');
+    const counter = container.querySelector<HTMLElement>('.card-nav__counter')!;
+    expect(counter.textContent).toBe(`1 / ${getWordsByUnit('unit2').length}`);
+  });
+
+  it('?unit=99 非法值深链回退 Unit 1', () => {
+    history.replaceState(null, '', '/vocabulary?unit=99');
+    const container = document.createElement('div');
+    renderVocabulary(container);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.querySelector('h1')!.textContent).toContain('Teenage Life');
+    const unit1Tab = container.querySelector<HTMLElement>(
+      '[data-testid="unit-switcher"] button[data-unit="unit1"]',
+    )!;
+    expect(unit1Tab.classList.contains('tab--active')).toBe(true);
+    expect(container.querySelector<HTMLElement>('.card-nav__counter')!.textContent).toBe(
+      `1 / ${getWordsByUnit('unit1').length}`,
+    );
+  });
+
   it('单元与 Tab 参数共存：?unit=unit2&tab=review 直达复习队列，URL 保留单元', () => {
     history.replaceState(null, '', '/vocabulary?unit=unit2&tab=review');
     const progress = emptyProgress();

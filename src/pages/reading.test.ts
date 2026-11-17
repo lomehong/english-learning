@@ -244,6 +244,29 @@ describe('阅读页 · 单元切换（Unit 2）', () => {
     expect(container.querySelector('[data-testid="vocab-chip"]')!.textContent).toContain('词汇本 1 词');
   });
 
+  it('?unit=2 数字写法深链：初始加载即 Unit 2 短文与题目', () => {
+    history.replaceState(null, '', '/reading?unit=2');
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.textContent).toContain('A Weekend in an Ancient Town');
+    expect(container.querySelectorAll('.exercise--reading')).toHaveLength(TOTAL_U2);
+    expect(container.querySelector('[data-question="u2-r1-1"]')).toBeTruthy();
+  });
+
+  it('?unit=oops 非法值深链回退 Unit 1 短文', () => {
+    history.replaceState(null, '', '/reading?unit=oops');
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.textContent).toContain("Passage 1 · A Freshman's First Term");
+    expect(container.querySelectorAll('.exercise--reading')).toHaveLength(TOTAL);
+    expect(container.querySelector('[data-question="u2-r1-1"]')).toBeNull();
+  });
+
   it('Unit 2 作答计入 unit2 统计维度；错题 id 带 u2- 前缀', () => {
     const container = document.createElement('div');
     renderReading(container, makeDeps());

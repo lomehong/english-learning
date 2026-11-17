@@ -189,6 +189,29 @@ describe('写作页 · 单元切换（Unit 2）', () => {
     expect(deps.load().drafts['u2-w2']).toBeUndefined();
   });
 
+  it('?unit=2 数字写法深链：初始加载即 Unit 2 写作任务', () => {
+    history.replaceState(null, '', '/writing?unit=2');
+    const container = document.createElement('div');
+    renderWriting(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.querySelector('[data-task="u2-w1"]')).toBeTruthy();
+    expect(container.querySelector('[data-testid="draft-editor-u2-w1"]')).toBeTruthy();
+    expect(container.querySelector('[data-task="w1"]')).toBeNull();
+  });
+
+  it('?unit=oops 非法值深链回退 Unit 1 写作任务', () => {
+    history.replaceState(null, '', '/writing?unit=oops');
+    const container = document.createElement('div');
+    renderWriting(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.querySelector('[data-task="w1"]')).toBeTruthy();
+    expect(container.querySelector('[data-testid="draft-editor-w1"]')).toBeTruthy();
+    expect(container.querySelector('[data-task="u2-w1"]')).toBeNull();
+  });
+
   it('点击 Unit 1 切换按钮：内容重建为 Unit 1 任务', () => {
     const container = document.createElement('div');
     renderWriting(container, makeDeps());

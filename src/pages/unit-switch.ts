@@ -1,15 +1,28 @@
-import { UNIT_IDS, UNIT_META, isUnitId, type UnitId } from '../data/units';
+import { UNIT_IDS, UNIT_META, type UnitId } from '../data/units';
 
 /**
  * 单元切换器（词汇/语法/阅读/听力/写作各页共用）：
- * - 从 ?unit= 读取当前单元（缺省 Unit 1，非法值回退 Unit 1）；
+ * - 从 ?unit= 读取当前单元（接受规范 id「unit1/unit2」与单元号「1/2」，缺省与非法值回退 Unit 1）；
  * - URL 约定保留其余参数（如 /vocabulary?tab=review 的 tab）。
  */
 
+/** ?unit= 深链写法 → 规范单元 id（unit1/unit2 与 1/2 均为合法写法） */
+const UNIT_PARAM_SPELLINGS = new Map<string, UnitId>(
+  UNIT_IDS.flatMap((id) => [
+    [id, id] as const,
+    [String(UNIT_META[id].no), id] as const,
+  ]),
+);
+
+/** 解析 ?unit= 参数：缺省（null）与非法值一律回退 Unit 1 */
+export function unitFromParam(value: string | null): UnitId {
+  if (value === null) return 'unit1';
+  return UNIT_PARAM_SPELLINGS.get(value) ?? 'unit1';
+}
+
 /** 从当前地址读取单元参数 */
 export function currentUnit(): UnitId {
-  const value = new URLSearchParams(location.search).get('unit');
-  return isUnitId(value) ? value : 'unit1';
+  return unitFromParam(new URLSearchParams(location.search).get('unit'));
 }
 
 /** 构造保留既有查询参数的单元 URL（unit1 且无其他参数时返回干净路径） */
