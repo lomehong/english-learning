@@ -20,3 +20,7 @@ npm run dev          # 本地开发服务器
 npm run build        # 类型检查 + 生产构建（产物在 dist/）
 npm run preview      # 预览生产构建
 ```
+
+## License
+
+本项目基于 [MIT License](./LICENSE) 开源，版权所有 Copyright (c) 2026 lomehong。
