@@ -8,6 +8,8 @@ export function renderHome(root: HTMLElement): void {
         <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
         <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
         <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
+        <a class="btn btn--ghost" href="/listening" data-link>听力</a>
+        <a class="btn btn--ghost" href="/writing" data-link>写作</a>
         <a class="btn btn--ghost" href="/mistakes" data-link>错题本</a>
         <a class="btn btn--ghost" href="/report" data-link>学习报告</a>
       </nav>
@@ -20,7 +22,7 @@ export function renderHome(root: HTMLElement): void {
       高一英语学习系统 · 人教2019
     </h1>
     <p style="color:var(--color-text-secondary);margin:0 0 var(--space-4);">
-      课本同步词汇（SM-2 间隔复习）与语法专项练习，进度保存在本机浏览器。
+      词汇 / 语法 / 阅读 / 听力 / 写作五大模块专项练习，错题自动沉淀、报告随时可查，进度保存在本机浏览器。
     </p>
     <div class="module-grid">
       <a class="module-card" href="/vocabulary" data-link>
@@ -35,14 +37,14 @@ export function renderHome(root: HTMLElement): void {
         <h2 class="module-card__title">📄 阅读</h2>
         <p class="module-card__desc">Unit 1 主题短文 ×2：阅读理解即时判分，生词一点收进词汇本</p>
       </a>
-      <div class="module-card module-card--disabled">
+      <a class="module-card" href="/listening" data-link>
         <h2 class="module-card__title">🎧 听力</h2>
-        <p class="module-card__desc">建设中，敬请期待</p>
-      </div>
-      <div class="module-card module-card--disabled">
+        <p class="module-card__desc">Unit 1 主题材料 ×2：浏览器本地朗读，语速可调，答题即时判分</p>
+      </a>
+      <a class="module-card" href="/writing" data-link>
         <h2 class="module-card__title">✍️ 写作</h2>
-        <p class="module-card__desc">建设中，敬请期待</p>
-      </div>
+        <p class="module-card__desc">Unit 1 主题写作 ×2：范文对照 + 自评清单，草稿自动保存</p>
+      </a>
       <a class="module-card" href="/mistakes" data-link>
         <h2 class="module-card__title">📝 错题本</h2>
         <p class="module-card__desc">四模块错题汇总：按模块过滤、逐条移除、去重练</p>
