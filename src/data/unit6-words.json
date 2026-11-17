@@ -1,0 +1,182 @@
+[
+  {
+    "id": "lantern",
+    "word": "lantern",
+    "phonetic": "/ˈlæntən/",
+    "pos": "n.",
+    "meaning": "灯笼；提灯",
+    "example": "During the Lantern Festival, children carried colourful lanterns through the streets.",
+    "exampleZh": "元宵节期间，孩子们提着五彩的灯笼穿过街道。"
+  },
+  {
+    "id": "carnival",
+    "word": "carnival",
+    "phonetic": "/ˈkɑːnɪvl/",
+    "pos": "n.",
+    "meaning": "狂欢节；嘉年华",
+    "example": "The whole city danced in the streets during the carnival.",
+    "exampleZh": "狂欢节期间，全城的人都在街头跳舞。"
+  },
+  {
+    "id": "costume",
+    "word": "costume",
+    "phonetic": "/ˈkɒstjuːm/",
+    "pos": "n.",
+    "meaning": "服装；戏装；（节日穿的）盛装",
+    "example": "She wore a traditional costume at the school culture festival.",
+    "exampleZh": "她在学校文化节上穿着传统服装。"
+  },
+  {
+    "id": "march",
+    "word": "march",
+    "phonetic": "/mɑːtʃ/",
+    "pos": "v.",
+    "meaning": "游行前进；齐步走（n. 进行曲；游行）",
+    "example": "The band marched through the town square, playing cheerful music.",
+    "exampleZh": "乐队奏着欢快的音乐行进穿过小镇广场。"
+  },
+  {
+    "id": "congratulation",
+    "word": "congratulation",
+    "phonetic": "/kənˌɡrætʃuˈleɪʃn/",
+    "pos": "n.",
+    "meaning": "祝贺；恭喜（常用复数）",
+    "example": "Congratulations on winning the first prize in the lantern riddle contest!",
+    "exampleZh": "祝贺你在灯谜比赛中获得一等奖！"
+  },
+  {
+    "id": "riddle",
+    "word": "riddle",
+    "phonetic": "/ˈrɪdl/",
+    "pos": "n.",
+    "meaning": "谜语",
+    "example": "People guess the riddles that are written on colourful lanterns.",
+    "exampleZh": "人们猜写在彩灯上的谜语。"
+  },
+  {
+    "id": "ceremony",
+    "word": "ceremony",
+    "phonetic": "/ˈserəməni/",
+    "pos": "n.",
+    "meaning": "典礼；仪式",
+    "example": "The opening ceremony of the food festival will start at nine in the morning.",
+    "exampleZh": "美食节的开幕式将于上午九点开始。"
+  },
+  {
+    "id": "origin",
+    "word": "origin",
+    "phonetic": "/ˈɒrɪdʒɪn/",
+    "pos": "n.",
+    "meaning": "起源；由来；起因",
+    "example": "The teacher told us about the origin of the Dragon Boat Festival.",
+    "exampleZh": "老师给我们讲了端午节的由来。"
+  },
+  {
+    "id": "religious",
+    "word": "religious",
+    "phonetic": "/rɪˈlɪdʒəs/",
+    "pos": "adj.",
+    "meaning": "宗教的；虔诚的",
+    "example": "Some festivals have a religious origin, while others celebrate the harvest.",
+    "exampleZh": "有些节日起源于宗教，另一些则是庆祝丰收的。"
+  },
+  {
+    "id": "harvest",
+    "word": "harvest",
+    "phonetic": "/ˈhɑːvɪst/",
+    "pos": "n.",
+    "meaning": "收获；收成（v. 收割）",
+    "example": "Farmers hold a big feast to celebrate the harvest every autumn.",
+    "exampleZh": "农民每年秋天都举办盛宴庆祝丰收。"
+  },
+  {
+    "id": "agriculture",
+    "word": "agriculture",
+    "phonetic": "/ˈæɡrɪkʌltʃə(r)/",
+    "pos": "n.",
+    "meaning": "农业；农艺",
+    "example": "The fair shows how science has changed modern agriculture.",
+    "exampleZh": "展会展示了科学如何改变了现代农业。"
+  },
+  {
+    "id": "crop",
+    "word": "crop",
+    "phonetic": "/krɒp/",
+    "pos": "n.",
+    "meaning": "庄稼；作物",
+    "example": "The farmers were busy gathering the crops before the rain came.",
+    "exampleZh": "农民们赶在下雨前忙着收庄稼。"
+  },
+  {
+    "id": "gather",
+    "word": "gather",
+    "phonetic": "/ˈɡæðə(r)/",
+    "pos": "v.",
+    "meaning": "聚集；集合；收集",
+    "example": "The whole family gathers for a big dinner on New Year's Eve.",
+    "exampleZh": "除夕夜，全家人聚在一起吃团圆饭。"
+  },
+  {
+    "id": "starve",
+    "word": "starve",
+    "phonetic": "/stɑːv/",
+    "pos": "v.",
+    "meaning": "挨饿；饿死",
+    "example": "In the old story, people offered food to their ancestors so that no one would starve in winter.",
+    "exampleZh": "在古老的故事里，人们向祖先献上食物，祈求冬天无人挨饿。"
+  },
+  {
+    "id": "typical",
+    "word": "typical",
+    "phonetic": "/ˈtɪpɪkl/",
+    "pos": "adj.",
+    "meaning": "典型的；有代表性的",
+    "example": "Colourful lanterns and sweet dumplings are typical of the Lantern Festival.",
+    "exampleZh": "彩灯和汤圆是元宵节的典型特色。"
+  },
+  {
+    "id": "firework",
+    "word": "firework",
+    "phonetic": "/ˈfaɪəwɜːk/",
+    "pos": "n.",
+    "meaning": "烟花；焰火（常用复数）",
+    "example": "We watched the fireworks light up the night sky over the river.",
+    "exampleZh": "我们观看烟花点亮河上的夜空。"
+  },
+  {
+    "id": "evil",
+    "word": "evil",
+    "phonetic": "/ˈiːvl/",
+    "pos": "adj.",
+    "meaning": "邪恶的（n. 邪恶；罪恶）",
+    "example": "In the old tale, the loud noise of fireworks drives away evil spirits.",
+    "exampleZh": "古老的传说中说，烟花的巨响能驱赶邪灵。"
+  },
+  {
+    "id": "commercial",
+    "word": "commercial",
+    "phonetic": "/kəˈmɜːʃl/",
+    "pos": "adj.",
+    "meaning": "商业的；商务的",
+    "example": "Some people complain that the festival has become too commercial.",
+    "exampleZh": "有些人抱怨这个节日已经变得太商业化了。"
+  },
+  {
+    "id": "charm",
+    "word": "charm",
+    "phonetic": "/tʃɑːm/",
+    "pos": "n.",
+    "meaning": "魅力；吸引力（v. 使着迷）",
+    "example": "The old town still keeps the traditional charm of the festival.",
+    "exampleZh": "这座古镇仍保留着节日的传统魅力。"
+  },
+  {
+    "id": "grateful",
+    "word": "grateful",
+    "phonetic": "/ˈɡreɪtfl/",
+    "pos": "adj.",
+    "meaning": "感激的；表示感谢的",
+    "example": "We are grateful to the neighbours who helped prepare the celebration.",
+    "exampleZh": "我们感激帮忙筹备庆祝活动的邻居们。"
+  }
+]

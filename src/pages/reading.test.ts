@@ -247,8 +247,8 @@ describe('阅读页 · 全局单元联动（Unit 2）', () => {
     expect(container.querySelector('[data-testid="vocab-chip"]')!.textContent).toContain('词汇本 1 词');
   });
 
-  it('?unit=2 数字写法深链：初始加载即 Unit 2 短文与题目', () => {
-    history.replaceState(null, '', '/reading?unit=2');
+  it('?unit=unit2 深链：初始加载即 Unit 2 短文与题目', () => {
+    history.replaceState(null, '', '/reading?unit=unit2');
     const container = document.createElement('div');
     renderReading(container, makeDeps());
 

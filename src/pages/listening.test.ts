@@ -326,8 +326,8 @@ describe('听力页 · 全局单元联动（Unit 2）', () => {
     expect(loadStats().units.unit1.listening).toEqual({ answered: 0, correct: 0 });
   });
 
-  it('?unit=2 数字写法深链：初始加载即 Unit 2 听力材料', () => {
-    history.replaceState(null, '', '/listening?unit=2');
+  it('?unit=unit2 深链：初始加载即 Unit 2 听力材料', () => {
+    history.replaceState(null, '', '/listening?unit=unit2');
     const container = document.createElement('div');
     renderListening(container, makeDeps(makeFakeEngine()));
 

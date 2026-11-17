@@ -1,0 +1,182 @@
+[
+  {
+    "id": "moral",
+    "word": "moral",
+    "phonetic": "/ˈmɒrəl/",
+    "pos": "adj.",
+    "meaning": "道德的；道义上的（n. 品行；寓意）",
+    "example": "Every choice we make in a moral dilemma shows who we really are.",
+    "exampleZh": "我们在道德两难中作出的每个选择都体现我们的真实品格。"
+  },
+  {
+    "id": "virtue",
+    "word": "virtue",
+    "phonetic": "/ˈvɜːtʃuː/",
+    "pos": "n.",
+    "meaning": "美德；优秀品质",
+    "example": "Honesty and kindness are virtues that we should practise every day.",
+    "exampleZh": "诚实和善良是我们每天都应践行的美德。"
+  },
+  {
+    "id": "dilemma",
+    "word": "dilemma",
+    "phonetic": "/dɪˈlemə/",
+    "pos": "n.",
+    "meaning": "（进退两难的）窘境；困境",
+    "example": "She faced a dilemma: keep the found money or return it to its owner.",
+    "exampleZh": "她面临两难：把捡到的钱留下，还是归还失主。"
+  },
+  {
+    "id": "faint",
+    "word": "faint",
+    "phonetic": "/feɪnt/",
+    "pos": "v.",
+    "meaning": "昏倒（adj. 微弱的；眩晕的）",
+    "example": "The old man suddenly fainted on the bus, and a student helped him at once.",
+    "exampleZh": "老人在公交车上突然昏倒，一名学生立刻上前帮忙。"
+  },
+  {
+    "id": "illustrate",
+    "word": "illustrate",
+    "phonetic": "/ˈɪləstreɪt/",
+    "pos": "vt.",
+    "meaning": "（举例）说明；阐明",
+    "example": "The teacher told us a short story to illustrate the meaning of honesty.",
+    "exampleZh": "老师讲了一个小故事来说明诚实的含义。"
+  },
+  {
+    "id": "precious",
+    "word": "precious",
+    "phonetic": "/ˈpreʃəs/",
+    "pos": "adj.",
+    "meaning": "宝贵的；珍贵的",
+    "example": "Time is precious, so we should use it to do meaningful things.",
+    "exampleZh": "时间很宝贵，我们应该用它做有意义的事。"
+  },
+  {
+    "id": "tuition",
+    "word": "tuition",
+    "phonetic": "/tjuˈɪʃn/",
+    "pos": "n.",
+    "meaning": "学费；教学",
+    "example": "The kind neighbour helped pay her tuition when her family was in trouble.",
+    "exampleZh": "她家遇到困难时，好心的邻居帮她付了学费。"
+  },
+  {
+    "id": "affection",
+    "word": "affection",
+    "phonetic": "/əˈfekʃn/",
+    "pos": "n.",
+    "meaning": "喜爱；关爱",
+    "example": "The nurse looks after every baby with great affection.",
+    "exampleZh": "这位护士满怀关爱地照料每一个婴儿。"
+  },
+  {
+    "id": "marriage",
+    "word": "marriage",
+    "phonetic": "/ˈmærɪdʒ/",
+    "pos": "n.",
+    "meaning": "结婚；婚姻",
+    "example": "Their marriage is built on trust and respect.",
+    "exampleZh": "他们的婚姻建立在信任与尊重之上。"
+  },
+  {
+    "id": "trust",
+    "word": "trust",
+    "phonetic": "/trʌst/",
+    "pos": "n.",
+    "meaning": "信任；信赖（vt. 信任）",
+    "example": "Honest people win the trust of others.",
+    "exampleZh": "诚实的人赢得他人的信任。"
+  },
+  {
+    "id": "complain",
+    "word": "complain",
+    "phonetic": "/kəmˈpleɪn/",
+    "pos": "vi.",
+    "meaning": "抱怨；投诉",
+    "example": "He never complains, even when the work is hard.",
+    "exampleZh": "即使工作辛苦，他也从不抱怨。"
+  },
+  {
+    "id": "respond",
+    "word": "respond",
+    "phonetic": "/rɪˈspɒnd/",
+    "pos": "vi.",
+    "meaning": "回答；作出反应",
+    "example": "She responded to the difficult question with a calm smile.",
+    "exampleZh": "她以平静的微笑回应了这个难题。"
+  },
+  {
+    "id": "scholar",
+    "word": "scholar",
+    "phonetic": "/ˈskɒlə(r)/",
+    "pos": "n.",
+    "meaning": "学者；奖学金获得者",
+    "example": "The old scholar has spent his whole life studying Chinese medicine.",
+    "exampleZh": "这位老学者毕生研究中医药。"
+  },
+  {
+    "id": "scan",
+    "word": "scan",
+    "phonetic": "/skæn/",
+    "pos": "vt.",
+    "meaning": "浏览；扫描",
+    "example": "Every night she scans the medical journals for the newest treatments.",
+    "exampleZh": "她每晚浏览医学期刊，寻找最新的治疗方法。"
+  },
+  {
+    "id": "kindness",
+    "word": "kindness",
+    "phonetic": "/ˈkaɪndnəs/",
+    "pos": "n.",
+    "meaning": "善良；好意",
+    "example": "Small acts of kindness can change a person's day.",
+    "exampleZh": "小小的善举能改变一个人的一天。"
+  },
+  {
+    "id": "physician",
+    "word": "physician",
+    "phonetic": "/fɪˈzɪʃn/",
+    "pos": "n.",
+    "meaning": "医师；内科医生",
+    "example": "As a village physician, she takes care of more than a thousand patients.",
+    "exampleZh": "作为一名乡村医生，她照顾着一千多名病人。"
+  },
+  {
+    "id": "elect",
+    "word": "elect",
+    "phonetic": "/ɪˈlekt/",
+    "pos": "vt.",
+    "meaning": "选举；推选",
+    "example": "The students elected her monitor because of her sense of duty.",
+    "exampleZh": "由于她的责任感，同学们推选她当班长。"
+  },
+  {
+    "id": "principle",
+    "word": "principle",
+    "phonetic": "/ˈprɪnsəpl/",
+    "pos": "n.",
+    "meaning": "原则；准则",
+    "example": "He never tells a lie, because honesty is his principle.",
+    "exampleZh": "他从不说谎，因为诚实是他的原则。"
+  },
+  {
+    "id": "generous",
+    "word": "generous",
+    "phonetic": "/ˈdʒenərəs/",
+    "pos": "adj.",
+    "meaning": "慷慨的；大方的",
+    "example": "It was generous of them to share their notes with the whole class.",
+    "exampleZh": "他们和全班同学分享笔记，真是慷慨。"
+  },
+  {
+    "id": "assist",
+    "word": "assist",
+    "phonetic": "/əˈsɪst/",
+    "pos": "v.",
+    "meaning": "帮助；协助",
+    "example": "The volunteers assisted the elderly with their heavy bags.",
+    "exampleZh": "志愿者帮助老人拎沉重的袋子。"
+  }
+]

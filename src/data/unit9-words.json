@@ -1,0 +1,182 @@
+[
+  {
+    "id": "astronaut",
+    "word": "astronaut",
+    "phonetic": "/ˈæstrənɔːt/",
+    "pos": "n.",
+    "meaning": "宇航员；航天员",
+    "example": "The astronaut waved to the earth from inside the spacecraft.",
+    "exampleZh": "宇航员在航天器里向地球挥手。"
+  },
+  {
+    "id": "procedure",
+    "word": "procedure",
+    "phonetic": "/prəˈsiːdʒə(r)/",
+    "pos": "n.",
+    "meaning": "程序；步骤；手续",
+    "example": "Every astronaut must follow a strict procedure before entering the space station.",
+    "exampleZh": "每名宇航员进入空间站前都必须遵循严格的程序。"
+  },
+  {
+    "id": "mental",
+    "word": "mental",
+    "phonetic": "/ˈmentl/",
+    "pos": "adj.",
+    "meaning": "精神的；智力的；脑力的",
+    "example": "Space missions require not only a strong body but also good mental health.",
+    "exampleZh": "太空任务不仅需要强健的体魄，还需要良好的心理素质。"
+  },
+  {
+    "id": "intelligent",
+    "word": "intelligent",
+    "phonetic": "/ɪnˈtelɪdʒənt/",
+    "pos": "adj.",
+    "meaning": "聪明的；智能的",
+    "example": "Intelligent robots help scientists carry out dangerous tasks in space.",
+    "exampleZh": "智能机器人帮助科学家在太空中执行危险任务。"
+  },
+  {
+    "id": "rocket",
+    "word": "rocket",
+    "phonetic": "/ˈrɒkɪt/",
+    "pos": "n.",
+    "meaning": "火箭（v. 快速增长）",
+    "example": "The rocket lifted off with a loud noise and bright flames.",
+    "exampleZh": "火箭伴随着巨响和明亮的火焰升空。"
+  },
+  {
+    "id": "panel",
+    "word": "panel",
+    "phonetic": "/ˈpænl/",
+    "pos": "n.",
+    "meaning": "板；面板（solar panels 太阳能电池板）",
+    "example": "The solar panels provide power for the whole space station.",
+    "exampleZh": "太阳能电池板为整个空间站提供电力。"
+  },
+  {
+    "id": "ambition",
+    "word": "ambition",
+    "phonetic": "/æmˈbɪʃn/",
+    "pos": "n.",
+    "meaning": "抱负；雄心；野心",
+    "example": "Her ambition is to walk on the Moon one day.",
+    "exampleZh": "她的抱负是有朝一日在月球上行走。"
+  },
+  {
+    "id": "gravity",
+    "word": "gravity",
+    "phonetic": "/ˈɡrævəti/",
+    "pos": "n.",
+    "meaning": "重力；引力；严重性",
+    "example": "In space, astronauts float because there is little gravity.",
+    "exampleZh": "在太空中，由于几乎没有重力，宇航员会漂浮起来。"
+  },
+  {
+    "id": "satellite",
+    "word": "satellite",
+    "phonetic": "/ˈsætəlaɪt/",
+    "pos": "n.",
+    "meaning": "卫星；人造卫星",
+    "example": "The weather satellite sends photos of clouds to the ground every hour.",
+    "exampleZh": "这颗气象卫星每小时向地面发送云图。"
+  },
+  {
+    "id": "orbit",
+    "word": "orbit",
+    "phonetic": "/ˈɔːbɪt/",
+    "pos": "n.",
+    "meaning": "（天体等沿）轨道运行（n. 轨道）",
+    "example": "The space station orbits the earth every ninety minutes.",
+    "exampleZh": "空间站每九十分钟绕地球运行一圈。"
+  },
+  {
+    "id": "spacecraft",
+    "word": "spacecraft",
+    "phonetic": "/ˈspeɪskrɑːft/",
+    "pos": "n.",
+    "meaning": "航天器；宇宙飞船（单复数同形）",
+    "example": "The spacecraft carried three astronauts to the space station.",
+    "exampleZh": "这艘航天器把三名宇航员送到了空间站。"
+  },
+  {
+    "id": "launch",
+    "word": "launch",
+    "phonetic": "/lɔːntʃ/",
+    "pos": "vt.",
+    "meaning": "发射；发起（n. 发射）",
+    "example": "China will launch a new environmental satellite next month.",
+    "exampleZh": "中国下个月将发射一颗新的环境卫星。"
+  },
+  {
+    "id": "vehicle",
+    "word": "vehicle",
+    "phonetic": "/ˈviːəkl/",
+    "pos": "n.",
+    "meaning": "交通工具；车辆；（航天）运载工具",
+    "example": "The launch vehicle carried the probe out of the earth's atmosphere.",
+    "exampleZh": "运载火箭把探测器送出了地球大气层。"
+  },
+  {
+    "id": "universe",
+    "word": "universe",
+    "phonetic": "/ˈjuːnɪvɜːs/",
+    "pos": "n.",
+    "meaning": "宇宙；天地万物",
+    "example": "Scientists keep asking how the universe began.",
+    "exampleZh": "科学家们不断追问宇宙是如何开始的。"
+  },
+  {
+    "id": "solar",
+    "word": "solar",
+    "phonetic": "/ˈsəʊlə(r)/",
+    "pos": "adj.",
+    "meaning": "太阳的；太阳能的",
+    "example": "The probe gets its energy from its solar wings.",
+    "exampleZh": "探测器从太阳能帆板获取能量。"
+  },
+  {
+    "id": "agency",
+    "word": "agency",
+    "phonetic": "/ˈeɪdʒənsi/",
+    "pos": "n.",
+    "meaning": "机构；代理处（space agency 航天局）",
+    "example": "The space agency announced the plan for a new space station.",
+    "exampleZh": "航天局宣布了新空间站的计划。"
+  },
+  {
+    "id": "frontier",
+    "word": "frontier",
+    "phonetic": "/frʌnˈtɪə(r)/",
+    "pos": "n.",
+    "meaning": "前线；边界；（知识等的）前沿",
+    "example": "Space is the final frontier for human exploration.",
+    "exampleZh": "太空是人类探索的最后前沿。"
+  },
+  {
+    "id": "endure",
+    "word": "endure",
+    "phonetic": "/ɪnˈdjʊə(r)/",
+    "pos": "v.",
+    "meaning": "忍耐；承受；持久",
+    "example": "Astronauts must endure months of hard training before their first flight.",
+    "exampleZh": "宇航员首次飞行前必须承受数月的艰苦训练。"
+  },
+  {
+    "id": "dedicate",
+    "word": "dedicate",
+    "phonetic": "/ˈdedɪkeɪt/",
+    "pos": "vt.",
+    "meaning": "致力于；献身于（dedicate…to）",
+    "example": "The scientist dedicated his whole life to studying the universe.",
+    "exampleZh": "这位科学家毕生致力于研究宇宙。"
+  },
+  {
+    "id": "ongoing",
+    "word": "ongoing",
+    "phonetic": "/ˈɒnɡəʊɪŋ/",
+    "pos": "adj.",
+    "meaning": "持续存在的；仍在进行的",
+    "example": "The ongoing space programme will last for another ten years.",
+    "exampleZh": "这项正在进行的航天计划还将持续十年。"
+  }
+]

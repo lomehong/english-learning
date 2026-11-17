@@ -9,7 +9,7 @@ import { renderWriting } from './writing';
 import { renderMistakes } from './mistakes';
 import { renderReport } from './report';
 import { resetUnitState } from './unit-switch';
-import { UNIT_IDS } from '../data/units';
+import { unitIdsOfBook } from '../data/units';
 
 const routes: Route[] = [
   { path: '/', render: renderHome },
@@ -40,7 +40,9 @@ describe('路由接线', () => {
     cleanup = createRouter(root, routes).destroy;
     expect(root.querySelector('.module-grid')).toBeTruthy();
     expect(root.querySelector('[data-testid="unit-switcher"]')).toBeTruthy();
-    expect(root.querySelectorAll('[data-testid="unit-switcher"] button')).toHaveLength(UNIT_IDS.length);
+    expect(root.querySelectorAll('[data-testid="unit-switcher"] button')).toHaveLength(
+      unitIdsOfBook('required-1').length,
+    );
     const hrefs = ['/vocabulary', '/grammar', '/reading', '/listening', '/writing', '/mistakes', '/report'];
     for (const href of hrefs) {
       const card = root.querySelector(`a.module-card[href="${href}"]`);
