@@ -1,0 +1,182 @@
+[
+  {
+    "id": "aptitude",
+    "word": "aptitude",
+    "phonetic": "/ˈæptɪtjuːd/",
+    "pos": "n.",
+    "meaning": "天资；才能；倾向",
+    "example": "She has an aptitude for numbers and logic.",
+    "exampleZh": "她有数字和逻辑方面的天赋。"
+  },
+  {
+    "id": "participant",
+    "word": "participant",
+    "phonetic": "/pɑːˈtɪsɪpənt/",
+    "pos": "n.",
+    "meaning": "参与者；参加者",
+    "example": "Each participant gave a three-minute talk about their dream job.",
+    "exampleZh": "每位参与者就自己理想的职业做了三分钟演讲。"
+  },
+  {
+    "id": "participate",
+    "word": "participate",
+    "phonetic": "/pɑːˈtɪsɪpeɪt/",
+    "pos": "vi.",
+    "meaning": "参加；参与",
+    "example": "All students are welcome to participate in the job fair.",
+    "exampleZh": "欢迎所有学生参加招聘会。"
+  },
+  {
+    "id": "deduce",
+    "word": "deduce",
+    "phonetic": "/dɪˈdjuːs/",
+    "pos": "vt.",
+    "meaning": "推断；推理出",
+    "example": "From the test results we can deduce his strengths.",
+    "exampleZh": "从测试结果我们可以推断出他的特长。"
+  },
+  {
+    "id": "prose",
+    "word": "prose",
+    "phonetic": "/prəʊz/",
+    "pos": "n.",
+    "meaning": "散文；散文体",
+    "example": "Her report reads like beautiful prose.",
+    "exampleZh": "她的报告读起来像优美的散文。"
+  },
+  {
+    "id": "prospect",
+    "word": "prospect",
+    "phonetic": "/ˈprɒspekt/",
+    "pos": "n.",
+    "meaning": "前景；前途；可能性",
+    "example": "The job offers good prospects for young engineers.",
+    "exampleZh": "这份工作给年轻工程师提供了很好的前景。"
+  },
+  {
+    "id": "proficient",
+    "word": "proficient",
+    "phonetic": "/prəˈfɪʃnt/",
+    "pos": "adj.",
+    "meaning": "熟练的；精通的",
+    "example": "She is proficient in three languages.",
+    "exampleZh": "她精通三门语言。"
+  },
+  {
+    "id": "profession",
+    "word": "profession",
+    "phonetic": "/prəˈfeʃn/",
+    "pos": "n.",
+    "meaning": "职业；（某）行业；同行",
+    "example": "Teaching is a profession that needs patience and love.",
+    "exampleZh": "教学是一个需要耐心和爱心的职业。"
+  },
+  {
+    "id": "employer",
+    "word": "employer",
+    "phonetic": "/ɪmˈplɔɪə(r)/",
+    "pos": "n.",
+    "meaning": "雇主；雇用者",
+    "example": "The employer was impressed by her clear answers.",
+    "exampleZh": "雇主对她清晰的回答印象深刻。"
+  },
+  {
+    "id": "employee",
+    "word": "employee",
+    "phonetic": "/ɪmˈplɔɪiː/",
+    "pos": "n.",
+    "meaning": "受雇者；雇员",
+    "example": "Every new employee attends a training week.",
+    "exampleZh": "每位新员工都要参加一周的培训。"
+  },
+  {
+    "id": "recruit",
+    "word": "recruit",
+    "phonetic": "/rɪˈkruːt/",
+    "pos": "vt. & n.",
+    "meaning": "招募；聘用  新成员",
+    "example": "The lab recruits two interns every summer.",
+    "exampleZh": "实验室每年夏天招募两名实习生。"
+  },
+  {
+    "id": "candidate",
+    "word": "candidate",
+    "phonetic": "/ˈkændɪdət/",
+    "pos": "n.",
+    "meaning": "候选人；求职者；应试者",
+    "example": "There were thirty candidates for the internship.",
+    "exampleZh": "有三十名求职者竞争这个实习岗位。"
+  },
+  {
+    "id": "qualification",
+    "word": "qualification",
+    "phonetic": "/ˌkwɒlɪfɪˈkeɪʃn/",
+    "pos": "n.",
+    "meaning": "资格；资历；学历",
+    "example": "A good qualification opens doors, but attitude keeps them open.",
+    "exampleZh": "好的资历能敲开门，但态度才能让门一直开着。"
+  },
+  {
+    "id": "qualify",
+    "word": "qualify",
+    "phonetic": "/ˈkwɒlɪfaɪ/",
+    "pos": "vt. & vi.",
+    "meaning": "（使）具有资格；（使）合格",
+    "example": "The course qualifies students for the national exam.",
+    "exampleZh": "这门课程使学生有资格参加全国考试。"
+  },
+  {
+    "id": "internship",
+    "word": "internship",
+    "phonetic": "/ˈɪntɜːnʃɪp/",
+    "pos": "n.",
+    "meaning": "实习期；实习职位",
+    "example": "He did a summer internship at a local hospital.",
+    "exampleZh": "他在当地一家医院完成了暑期实习。"
+  },
+  {
+    "id": "intern",
+    "word": "intern",
+    "phonetic": "/ˈɪntɜːn/",
+    "pos": "n.",
+    "meaning": "实习生；实习医师",
+    "example": "The intern learns to write case reports every day.",
+    "exampleZh": "这名实习生每天学习写病例报告。"
+  },
+  {
+    "id": "motivation",
+    "word": "motivation",
+    "phonetic": "/ˌməʊtɪˈveɪʃn/",
+    "pos": "n.",
+    "meaning": "动机；积极性；动力",
+    "example": "Interest is the best motivation for learning.",
+    "exampleZh": "兴趣是最好的学习动力。"
+  },
+  {
+    "id": "biography",
+    "word": "biography",
+    "phonetic": "/baɪˈɒɡrəfi/",
+    "pos": "n.",
+    "meaning": "传记",
+    "example": "Reading a scientist's biography inspired her career choice.",
+    "exampleZh": "读一位科学家的传记启发了她的职业选择。"
+  },
+  {
+    "id": "category",
+    "word": "category",
+    "phonetic": "/ˈkætəɡəri/",
+    "pos": "n.",
+    "meaning": "类别；种类",
+    "example": "The careers are listed under six categories.",
+    "exampleZh": "这些职业被列在六个类别之下。"
+  },
+  {
+    "id": "entrepreneur",
+    "word": "entrepreneur",
+    "phonetic": "/ˌɒntrəprəˈnɜː(r)/",
+    "pos": "n.",
+    "meaning": "企业家；创业者",
+    "example": "The young entrepreneur started a company at nineteen.",
+    "exampleZh": "这位年轻企业家十九岁时创办了一家公司。"
+  }
+]

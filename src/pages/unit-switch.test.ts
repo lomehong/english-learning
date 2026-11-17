@@ -46,10 +46,10 @@ describe('unitFromParam · ?unit= 参数解析', () => {
     expect(unitFromParam('unit3')).toBe('unit3');
   });
 
-  it('单元号写法：跨册同号时解析为注册表靠后的册（选择性必修一）', () => {
-    expect(unitFromParam('1')).toBe('unit6'); // 必修一与选择性必修一均有 Unit 1，数字写法落在后注册的册
-    expect(unitFromParam('3')).toBe('unit8');
-    expect(unitFromParam('6')).toBeNull(); // 新增单元文件名为 unit6-10，册内单元号仍是 1-5，6 不是合法写法
+  it('单元号写法：跨册同号时解析为注册表靠后的册（选择性必修四）', () => {
+    expect(unitFromParam('1')).toBe('unit11'); // 必修一 / 选必一 / 选必四均有 Unit 1，数字写法落在最后注册的册
+    expect(unitFromParam('3')).toBe('unit13');
+    expect(unitFromParam('6')).toBeNull(); // 册内单元号仍为 1-5，6 不是合法单元号写法
   });
 
   it('非法值返回 null（由存储与默认值兜底），缺省也是 null', () => {

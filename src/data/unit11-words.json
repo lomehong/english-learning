@@ -1,0 +1,182 @@
+[
+  {
+    "id": "fiction",
+    "word": "fiction",
+    "phonetic": "/ˈfɪkʃn/",
+    "pos": "n.",
+    "meaning": "小说；虚构的事",
+    "example": "Science fiction often imagines the world of tomorrow.",
+    "exampleZh": "科幻小说常常想象明天的世界。"
+  },
+  {
+    "id": "fantastic",
+    "word": "fantastic",
+    "phonetic": "/fænˈtæstɪk/",
+    "pos": "adj.",
+    "meaning": "极好的；奇异的；幻想出来的",
+    "example": "The film shows a fantastic city under the sea.",
+    "exampleZh": "这部电影展现了一座奇妙的海底城市。"
+  },
+  {
+    "id": "bonus",
+    "word": "bonus",
+    "phonetic": "/ˈbəʊnəs/",
+    "pos": "n.",
+    "meaning": "奖金；意外的好处",
+    "example": "A robot that can cook is a real bonus for busy families.",
+    "exampleZh": "会做饭的机器人对忙碌的家庭来说真是意外之喜。"
+  },
+  {
+    "id": "nail",
+    "word": "nail",
+    "phonetic": "/neɪl/",
+    "pos": "n. & vt.",
+    "meaning": "钉子；指甲  钉牢，固定",
+    "example": "The robot can nail the loose board back to the wall.",
+    "exampleZh": "这个机器人能把松动的木板钉回墙上。"
+  },
+  {
+    "id": "dismiss",
+    "word": "dismiss",
+    "phonetic": "/dɪsˈmɪs/",
+    "pos": "vt.",
+    "meaning": "不予理会；解雇；让（某人）离开",
+    "example": "We should not dismiss his idea as a mere dream.",
+    "exampleZh": "我们不应把他的想法当作纯粹的空想而不予理会。"
+  },
+  {
+    "id": "appoint",
+    "word": "appoint",
+    "phonetic": "/əˈpɔɪnt/",
+    "pos": "vt.",
+    "meaning": "任命；约定；指定",
+    "example": "The company appointed a new team to design the robot.",
+    "exampleZh": "公司任命了一支新团队来设计这款机器人。"
+  },
+  {
+    "id": "declare",
+    "word": "declare",
+    "phonetic": "/dɪˈkleə(r)/",
+    "pos": "vt.",
+    "meaning": "宣布；声明；申报",
+    "example": "The manager declares that the new model will appear next year.",
+    "exampleZh": "经理宣布新型号将于明年面世。"
+  },
+  {
+    "id": "suspect",
+    "word": "suspect",
+    "phonetic": "/səˈspekt/",
+    "pos": "vt. & n.",
+    "meaning": "怀疑；猜疑  嫌疑犯",
+    "example": "At first she suspected that the robot could not understand people.",
+    "exampleZh": "起初她怀疑这个机器人并不真正理解人。"
+  },
+  {
+    "id": "absurd",
+    "word": "absurd",
+    "phonetic": "/əbˈsɜːd/",
+    "pos": "adj.",
+    "meaning": "荒谬的；荒唐的",
+    "example": "The price of the first flying car sounded absurd.",
+    "exampleZh": "第一辆飞行汽车的价钱听起来很离谱。"
+  },
+  {
+    "id": "dignity",
+    "word": "dignity",
+    "phonetic": "/ˈdɪɡnəti/",
+    "pos": "n.",
+    "meaning": "尊严；庄重",
+    "example": "The old robot worked with quiet dignity.",
+    "exampleZh": "这台旧机器人安静而庄重地工作着。"
+  },
+  {
+    "id": "elegant",
+    "word": "elegant",
+    "phonetic": "/ˈelɪɡənt/",
+    "pos": "adj.",
+    "meaning": "优雅的；精美的",
+    "example": "The machine replied in an elegant voice.",
+    "exampleZh": "这台机器用优雅的声音回答。"
+  },
+  {
+    "id": "salary",
+    "word": "salary",
+    "phonetic": "/ˈsæləri/",
+    "pos": "n.",
+    "meaning": "薪水，薪金",
+    "example": "He saved half of his salary to buy a household robot.",
+    "exampleZh": "他攒下一半的薪水想买一台家用机器人。"
+  },
+  {
+    "id": "household",
+    "word": "household",
+    "phonetic": "/ˈhaʊshəʊld/",
+    "pos": "n. & adj.",
+    "meaning": "一家人；家庭  家用的",
+    "example": "Every household in the story has a robot helper.",
+    "exampleZh": "故事里的每个家庭都有一台机器人帮手。"
+  },
+  {
+    "id": "cushion",
+    "word": "cushion",
+    "phonetic": "/ˈkʊʃn/",
+    "pos": "n.",
+    "meaning": "垫子；起缓解作用的东西",
+    "example": "The robot repaired the cushion on the sofa.",
+    "exampleZh": "机器人修补了沙发上的垫子。"
+  },
+  {
+    "id": "carpet",
+    "word": "carpet",
+    "phonetic": "/ˈkɑːpɪt/",
+    "pos": "n.",
+    "meaning": "地毯",
+    "example": "The robot cleans the carpet every afternoon.",
+    "exampleZh": "机器人每天下午清洁地毯。"
+  },
+  {
+    "id": "pace",
+    "word": "pace",
+    "phonetic": "/peɪs/",
+    "pos": "n.",
+    "meaning": "步速；节奏",
+    "example": "The robot walks at a slow, steady pace.",
+    "exampleZh": "机器人以缓慢而平稳的步速行走。"
+  },
+  {
+    "id": "fabric",
+    "word": "fabric",
+    "phonetic": "/ˈfæbrɪk/",
+    "pos": "n.",
+    "meaning": "织物；布料；（社会等的）结构",
+    "example": "The seat is covered with a soft silver fabric.",
+    "exampleZh": "座椅包着一层柔软的银色织物。"
+  },
+  {
+    "id": "pile",
+    "word": "pile",
+    "phonetic": "/paɪl/",
+    "pos": "n. & vt.",
+    "meaning": "一堆；一叠  堆放",
+    "example": "Robin lifted a pile of books from the floor.",
+    "exampleZh": "罗宾从地板上抱起一摞书。"
+  },
+  {
+    "id": "offend",
+    "word": "offend",
+    "phonetic": "/əˈfend/",
+    "pos": "vt. & vi.",
+    "meaning": "冒犯；使不舒服；犯罪",
+    "example": "A polite robot never offends its host.",
+    "exampleZh": "有礼貌的机器人从不冒犯主人。"
+  },
+  {
+    "id": "grand",
+    "word": "grand",
+    "phonetic": "/ɡrænd/",
+    "pos": "adj.",
+    "meaning": "宏伟的；重大的；极好的",
+    "example": "The novel ends with a grand journey to Mars.",
+    "exampleZh": "小说以一场宏伟的火星之旅结束。"
+  }
+]
