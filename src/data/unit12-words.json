@@ -1,0 +1,182 @@
+[
+  {
+    "id": "abroad",
+    "word": "abroad",
+    "phonetic": "/əˈbrɔːd/",
+    "pos": "adv.",
+    "meaning": "在国外；到国外",
+    "example": "She will study abroad for one year.",
+    "exampleZh": "她将出国学习一年。"
+  },
+  {
+    "id": "qualify",
+    "word": "qualify",
+    "phonetic": "/ˈkwɒlɪfaɪ/",
+    "pos": "v.",
+    "meaning": "（使）具有资格；（使）合格",
+    "example": "You need a good score to qualify for the programme.",
+    "exampleZh": "你需要一个好成绩才有资格参加这个项目。"
+  },
+  {
+    "id": "ambition",
+    "word": "ambition",
+    "phonetic": "/æmˈbɪʃn/",
+    "pos": "n.",
+    "meaning": "雄心；抱负；野心",
+    "example": "Her ambition is to become an interpreter.",
+    "exampleZh": "她的抱负是成为一名口译员。"
+  },
+  {
+    "id": "adapt",
+    "word": "adapt",
+    "phonetic": "/əˈdæpt/",
+    "pos": "v.",
+    "meaning": "（使）适应；改编",
+    "example": "It took him a month to adapt to the new school.",
+    "exampleZh": "他花了一个月才适应新学校。"
+  },
+  {
+    "id": "tutor",
+    "word": "tutor",
+    "phonetic": "/ˈtjuːtə(r)/",
+    "pos": "n.",
+    "meaning": "导师；指导教师；家庭教师",
+    "example": "His tutor gives him advice every week.",
+    "exampleZh": "他的导师每周给他提建议。"
+  },
+  {
+    "id": "participate",
+    "word": "participate",
+    "phonetic": "/pɑːˈtɪsɪpeɪt/",
+    "pos": "vi.",
+    "meaning": "参加；参与（in）",
+    "example": "All students are welcome to participate in the discussion.",
+    "exampleZh": "欢迎所有学生参加讨论。"
+  },
+  {
+    "id": "involve",
+    "word": "involve",
+    "phonetic": "/ɪnˈvɒlv/",
+    "pos": "vt.",
+    "meaning": "涉及；使参与；包含",
+    "example": "The exchange programme involves living with a host family.",
+    "exampleZh": "这个交换项目包括寄宿家庭生活。"
+  },
+  {
+    "id": "presentation",
+    "word": "presentation",
+    "phonetic": "/ˌpreznˈteɪʃn/",
+    "pos": "n.",
+    "meaning": "报告；演讲；展示",
+    "example": "He gave a presentation about Chinese tea culture.",
+    "exampleZh": "他做了一场关于中国茶文化的展示。"
+  },
+  {
+    "id": "perspective",
+    "word": "perspective",
+    "phonetic": "/pəˈspektɪv/",
+    "pos": "n.",
+    "meaning": "视角；观点；远景",
+    "example": "Living abroad gave her a new perspective on home.",
+    "exampleZh": "海外生活让她对家乡有了新的视角。"
+  },
+  {
+    "id": "sympathy",
+    "word": "sympathy",
+    "phonetic": "/ˈsɪmpəθi/",
+    "pos": "n.",
+    "meaning": "同情（心）；赞同",
+    "example": "She felt great sympathy for the homesick students.",
+    "exampleZh": "她对想家的学生们深表同情。"
+  },
+  {
+    "id": "embrace",
+    "word": "embrace",
+    "phonetic": "/ɪmˈbreɪs/",
+    "pos": "vt.",
+    "meaning": "欣然接受；拥抱；包含",
+    "example": "We should embrace differences instead of fearing them.",
+    "exampleZh": "我们应该欣然接受差异而不是害怕差异。"
+  },
+  {
+    "id": "variety",
+    "word": "variety",
+    "phonetic": "/vəˈraɪəti/",
+    "pos": "n.",
+    "meaning": "多样化；种类（a variety of 各种各样）",
+    "example": "The festival offers a variety of cultural activities.",
+    "exampleZh": "这个文化节提供丰富多彩的文化活动。"
+  },
+  {
+    "id": "ceremony",
+    "word": "ceremony",
+    "phonetic": "/ˈserəməni/",
+    "pos": "n.",
+    "meaning": "典礼；仪式；礼节",
+    "example": "The opening ceremony of the festival was wonderful.",
+    "exampleZh": "艺术节的开幕式非常精彩。"
+  },
+  {
+    "id": "tradition",
+    "word": "tradition",
+    "phonetic": "/trəˈdɪʃn/",
+    "pos": "n.",
+    "meaning": "传统；惯例",
+    "example": "Making dumplings is a family tradition at Spring Festival.",
+    "exampleZh": "春节包饺子是这个家的传统。"
+  },
+  {
+    "id": "idiom",
+    "word": "idiom",
+    "phonetic": "/ˈɪdiəm/",
+    "pos": "n.",
+    "meaning": "习语；成语；表达方式",
+    "example": "Learning idioms makes your English sound natural.",
+    "exampleZh": "学习习语能让你的英语听起来更地道。"
+  },
+  {
+    "id": "hurdle",
+    "word": "hurdle",
+    "phonetic": "/ˈhɜːdl/",
+    "pos": "n.",
+    "meaning": "难关；障碍；跨栏",
+    "example": "Language was the first hurdle he had to get over.",
+    "exampleZh": "语言是他必须跨越的第一道难关。"
+  },
+  {
+    "id": "optimistic",
+    "word": "optimistic",
+    "phonetic": "/ˌɒptɪˈmɪstɪk/",
+    "pos": "adj.",
+    "meaning": "乐观的；乐观主义的",
+    "example": "She is optimistic about her life abroad.",
+    "exampleZh": "她对自己的海外生活持乐观态度。"
+  },
+  {
+    "id": "homesick",
+    "word": "homesick",
+    "phonetic": "/ˈhəʊmsɪk/",
+    "pos": "adj.",
+    "meaning": "想家的；患思乡病的",
+    "example": "He felt homesick during his first month in London.",
+    "exampleZh": "在伦敦的第一个月他很想家。"
+  },
+  {
+    "id": "horizon",
+    "word": "horizon",
+    "phonetic": "/həˈraɪzn/",
+    "pos": "n.",
+    "meaning": "眼界；视野；地平线",
+    "example": "Travelling widens your horizon.",
+    "exampleZh": "旅行能开阔你的眼界。"
+  },
+  {
+    "id": "strengthen",
+    "word": "strengthen",
+    "phonetic": "/ˈstreŋθn/",
+    "pos": "vt.",
+    "meaning": "加强；增强；巩固",
+    "example": "The programme aims to strengthen ties between the two schools.",
+    "exampleZh": "该项目旨在加强两校之间的联系。"
+  }
+]

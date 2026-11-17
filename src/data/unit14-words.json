@@ -1,0 +1,182 @@
+[
+  {
+    "id": "bay",
+    "word": "bay",
+    "phonetic": "/beɪ/",
+    "pos": "n.",
+    "meaning": "海湾；湾区",
+    "example": "The hotel looks out over a quiet bay.",
+    "exampleZh": "这家旅馆面朝一个安静的海湾。"
+  },
+  {
+    "id": "border",
+    "word": "border",
+    "phonetic": "/ˈbɔːdə(r)/",
+    "pos": "n.",
+    "meaning": "边界；国界；边缘",
+    "example": "The train crossed the border at midnight.",
+    "exampleZh": "火车在午夜越过了边界。"
+  },
+  {
+    "id": "continental",
+    "word": "continental",
+    "phonetic": "/ˌkɒntɪˈnentl/",
+    "pos": "adj.",
+    "meaning": "大陆的；洲的；欧洲大陆的",
+    "example": "They planned a continental trip by rail.",
+    "exampleZh": "他们计划乘火车进行一次横贯大陆的旅行。"
+  },
+  {
+    "id": "urban",
+    "word": "urban",
+    "phonetic": "/ˈɜːbən/",
+    "pos": "adj.",
+    "meaning": "城市的；都市的",
+    "example": "We visited several urban markets on the trip.",
+    "exampleZh": "旅途中我们参观了好几个城市集市。"
+  },
+  {
+    "id": "aboard",
+    "word": "aboard",
+    "phonetic": "/əˈbɔːd/",
+    "pos": "prep./adv.",
+    "meaning": "在（船、车、飞机）上；上（船、车、飞机）",
+    "example": "All passengers went aboard the train at noon.",
+    "exampleZh": "中午所有乘客都上了火车。"
+  },
+  {
+    "id": "rail",
+    "word": "rail",
+    "phonetic": "/reɪl/",
+    "pos": "n.",
+    "meaning": "铁路；铁轨；栏杆",
+    "example": "Travelling by rail is comfortable and safe.",
+    "exampleZh": "乘火车旅行既舒适又安全。"
+  },
+  {
+    "id": "carriage",
+    "word": "carriage",
+    "phonetic": "/ˈkærɪdʒ/",
+    "pos": "n.",
+    "meaning": "车厢；四轮马车",
+    "example": "Our seats are in the third carriage.",
+    "exampleZh": "我们的座位在第三节车厢。"
+  },
+  {
+    "id": "antique",
+    "word": "antique",
+    "phonetic": "/ænˈtiːk/",
+    "pos": "n.",
+    "meaning": "古董；古物 adj. 古老的",
+    "example": "They bought an antique clock in the small town.",
+    "exampleZh": "他们在小镇上买了一座古董钟。"
+  },
+  {
+    "id": "photographer",
+    "word": "photographer",
+    "phonetic": "/fəˈtɒɡrəfə(r)/",
+    "pos": "n.",
+    "meaning": "摄影师；拍照者",
+    "example": "A wildlife photographer joined our tour.",
+    "exampleZh": "一位野生动物摄影师加入了我们的行程。"
+  },
+  {
+    "id": "literally",
+    "word": "literally",
+    "phonetic": "/ˈlɪtərəli/",
+    "pos": "adv.",
+    "meaning": "按字面地；真正地；确实地",
+    "example": "The city was literally full of visitors in summer.",
+    "exampleZh": "夏天这座城市真的挤满了游客。"
+  },
+  {
+    "id": "spectacular",
+    "word": "spectacular",
+    "phonetic": "/spekˈtækjələ(r)/",
+    "pos": "adj.",
+    "meaning": "壮观的；壮丽的；惊人的",
+    "example": "We enjoyed a spectacular view of the mountains at dusk.",
+    "exampleZh": "黄昏时我们欣赏到了壮观的群山景色。"
+  },
+  {
+    "id": "wildlife",
+    "word": "wildlife",
+    "phonetic": "/ˈwaɪldlaɪf/",
+    "pos": "n.",
+    "meaning": "野生动物；野生生物",
+    "example": "You can see a lot of wildlife along the river.",
+    "exampleZh": "沿河可以看到很多野生动物。"
+  },
+  {
+    "id": "maple",
+    "word": "maple",
+    "phonetic": "/ˈmeɪpl/",
+    "pos": "n.",
+    "meaning": "枫树；槭树",
+    "example": "The maple trees turn red in October.",
+    "exampleZh": "十月枫树变红了。"
+  },
+  {
+    "id": "provincial",
+    "word": "provincial",
+    "phonetic": "/prəˈvɪnʃl/",
+    "pos": "adj.",
+    "meaning": "省的；地方的；乡间的",
+    "example": "They stayed in a small provincial town for a night.",
+    "exampleZh": "他们在一座乡间小镇住了一晚。"
+  },
+  {
+    "id": "dusk",
+    "word": "dusk",
+    "phonetic": "/dʌsk/",
+    "pos": "n.",
+    "meaning": "黄昏；傍晚",
+    "example": "The stars come out at dusk.",
+    "exampleZh": "黄昏时分星星出来了。"
+  },
+  {
+    "id": "highlight",
+    "word": "highlight",
+    "phonetic": "/ˈhaɪlaɪt/",
+    "pos": "n.",
+    "meaning": "最精彩的部分；亮点 vt. 突出",
+    "example": "The highlight of the trip was the boat ride on the bay.",
+    "exampleZh": "此行的亮点是海湾上的乘船游览。"
+  },
+  {
+    "id": "proceed",
+    "word": "proceed",
+    "phonetic": "/prəˈsiːd/",
+    "pos": "vi.",
+    "meaning": "继续行进；接着做（proceed to）",
+    "example": "After lunch, we proceeded to the next city.",
+    "exampleZh": "午饭后我们继续前往下一座城市。"
+  },
+  {
+    "id": "wander",
+    "word": "wander",
+    "phonetic": "/ˈwɒndə(r)/",
+    "pos": "vi.",
+    "meaning": "漫游；闲逛；走失",
+    "example": "We wandered around the old streets for an hour.",
+    "exampleZh": "我们在老街上闲逛了一个小时。"
+  },
+  {
+    "id": "breathtaking",
+    "word": "breathtaking",
+    "phonetic": "/ˈbreθteɪkɪŋ/",
+    "pos": "adj.",
+    "meaning": "激动人心的；令人惊叹的",
+    "example": "The view from the top of the hill was breathtaking.",
+    "exampleZh": "山顶的景色令人叹为观止。"
+  },
+  {
+    "id": "departure",
+    "word": "departure",
+    "phonetic": "/dɪˈpɑːtʃə(r)/",
+    "pos": "n.",
+    "meaning": "离开；出发；背离",
+    "example": "The departure time of the train is 9:00 a.m.",
+    "exampleZh": "火车的发车时间是上午九点。"
+  }
+]
