@@ -5,13 +5,14 @@ import { renderGrammar } from './grammar';
 import { renderReading } from './reading';
 import { renderListening } from './listening';
 import { renderWriting } from './writing';
-import { UNIT_STORAGE_KEY, resetUnitState } from './unit-switch';
+import { UNIT_STORAGE_KEY, BOOK_STORAGE_KEY, resetUnitState } from './unit-switch';
 import { getWordsByUnit } from '../data/words';
-import { UNIT_IDS } from '../data/units';
+import { UNIT_IDS, BOOKS, BOOK_IDS } from '../data/units';
 
 /**
- * 首页全局单元切换器 ↔ 各模块联动：
- * 首页点选 → localStorage + ?unit= 同步 → 各模块页挂载读取全局单元渲染对应数据。
+ * 首页两级切换器（册 + 单元）↔ 各模块联动：
+ * 首页选册 → 第二级单元列表重建为该册单元 → 点选单元 → localStorage + ?book=&unit= 同步
+ * → 各模块页挂载读取全局「册 + 单元」渲染对应数据。
  */
 
 function click(el: Element): void {
@@ -24,10 +25,27 @@ function switcherButton(root: HTMLElement, unit: string): HTMLButtonElement {
   )!;
 }
 
+function bookButton(root: HTMLElement, book: string): HTMLButtonElement {
+  return root.querySelector<HTMLButtonElement>(
+    `[data-testid="book-switcher"] button[data-book="${book}"]`,
+  )!;
+}
+
+function unitButtons(root: HTMLElement): string[] {
+  return [...root.querySelectorAll('[data-testid="unit-switcher"] button')].map(
+    (b) => (b as HTMLElement).dataset.unit!,
+  );
+}
+
 function storageValue(): string | null {
   // 与 store 测试同款：绕过 Node≥26 实验性全局 localStorage 遮蔽，取 jsdom 实例
   const g = globalThis as unknown as { _localStorage?: Storage; localStorage?: Storage };
   return (g._localStorage ?? g.localStorage)?.getItem(UNIT_STORAGE_KEY) ?? null;
+}
+
+function bookStorageValue(): string | null {
+  const g = globalThis as unknown as { _localStorage?: Storage; localStorage?: Storage };
+  return (g._localStorage ?? g.localStorage)?.getItem(BOOK_STORAGE_KEY) ?? null;
 }
 
 beforeEach(() => {
@@ -241,5 +259,93 @@ describe('模块页 · 深链回退（?unit= 仍可直达）', () => {
       getWordsByUnit('unit1')[0]!.word,
     );
     expect(storageValue()).toBeNull();
+  });
+});
+
+describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）', () => {
+  it('第一级渲染七册固定维度（必修一 ~ 选择性必修四），默认必修一选中；第二级渲染该册全部注册单元', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    const books = [...root.querySelectorAll('[data-testid="book-switcher"] button')];
+    expect(books.map((b) => (b as HTMLElement).dataset.book)).toEqual([...BOOK_IDS]);
+    expect(books.map((b) => b.textContent)).toEqual(BOOKS.map((b) => b.label));
+    expect(bookButton(root, 'required-1').classList.contains('tab--active')).toBe(true);
+    expect(bookButton(root, 'required-1').getAttribute('aria-selected')).toBe('true');
+    expect(bookButton(root, 'elective-1').classList.contains('tab--active')).toBe(false);
+
+    // 第二级 = 当前册（必修一）的单元：unit1-5，默认 Unit 1 选中
+    expect(unitButtons(root)).toEqual([...UNIT_IDS]);
+    expect(switcherButton(root, 'unit1').classList.contains('tab--active')).toBe(true);
+  });
+
+  it('点击空册（选择性必修一）：第二级降级为空态提示，URL 只带 ?book=，模块沿用最近单元（缺册降级）', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+    click(switcherButton(root, 'unit3')); // 先在必修一选中 Unit 3
+    click(bookButton(root, 'elective-1'));
+
+    // 第二级：该册无单元 → 空态提示，不再渲染单元按钮
+    expect(root.querySelector('[data-testid="unit-empty"]')!.textContent).toContain('选择性必修一');
+    expect(root.querySelector('[data-testid="unit-empty"]')!.textContent).toContain('暂未收录单元');
+    expect(root.querySelector('[data-testid="unit-switcher"] button')).toBeNull();
+
+    // 存储与 URL：册写入、单元沿用（不写误导性的 ?unit=）
+    expect(bookStorageValue()).toBe('elective-1');
+    expect(storageValue()).toBe('unit3');
+    expect(new URLSearchParams(location.search).get('book')).toBe('elective-1');
+    expect(new URLSearchParams(location.search).get('unit')).toBeNull();
+
+    // 提示文案：空册降级说明 + 沿用单元
+    const hint = root.querySelector('[data-testid="unit-hint"]')!.textContent!;
+    expect(hint).toContain('选择性必修一');
+    expect(hint).toContain('Unit 3');
+
+    // 模块页联动降级：仍渲染最近单元（Unit 3）不崩溃，徽标显示沿用单元及其所属册
+    history.replaceState(null, '', '/grammar');
+    const grammar = document.createElement('div');
+    renderGrammar(grammar);
+    expect(grammar.querySelector('h1')!.textContent).toContain('Unit 3');
+    const badge = grammar.querySelector<HTMLElement>('[data-testid="current-unit"]')!;
+    expect(badge.dataset.unit).toBe('unit3');
+    expect(badge.textContent).toContain('必修一'); // 徽标带册别维度
+  });
+
+  it('两级联动：空册切回必修一 → 单元列表恢复为该册单元并选中册内最近选择', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+    click(switcherButton(root, 'unit2'));
+    click(bookButton(root, 'elective-2')); // 空册
+    click(bookButton(root, 'required-1')); // 切回
+
+    expect(unitButtons(root)).toEqual([...UNIT_IDS]);
+    expect(switcherButton(root, 'unit2').classList.contains('tab--active')).toBe(true);
+    expect(bookButton(root, 'required-1').classList.contains('tab--active')).toBe(true);
+    const params = new URLSearchParams(location.search);
+    expect(params.get('book')).toBeNull(); // 默认册不写参数
+    expect(params.get('unit')).toBe('unit2');
+    expect(storageValue()).toBe('unit2');
+  });
+
+  it('?book=&unit= 深链首页：两级初始选中（URL → 状态）', () => {
+    history.replaceState(null, '', '/?book=必修一&unit=3'); // 中文册名写法 + 数字单元写法
+    const root = document.createElement('div');
+    renderHome(root);
+
+    expect(bookButton(root, 'required-1').classList.contains('tab--active')).toBe(true);
+    expect(switcherButton(root, 'unit3').classList.contains('tab--active')).toBe(true);
+    expect(storageValue()).toBe('unit3');
+    expect(bookStorageValue()).toBe('required-1');
+  });
+
+  it('?book=elective-3 深链首页（空册）：册选中 + 单元空态，单元回退 Unit 1', () => {
+    history.replaceState(null, '', '/?book=elective-3');
+    const root = document.createElement('div');
+    renderHome(root);
+
+    expect(bookButton(root, 'elective-3').classList.contains('tab--active')).toBe(true);
+    expect(root.querySelector('[data-testid="unit-empty"]')).toBeTruthy();
+    expect(storageValue()).toBe('unit1'); // 空册深链的单元回退落存储
+    expect(bookStorageValue()).toBe('elective-3');
   });
 });

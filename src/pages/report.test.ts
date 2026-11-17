@@ -6,7 +6,7 @@ import { emptyProgress, type Progress } from '../store/progress';
 import { createCard, DAY_MS } from '../srs/sm2';
 import type { ReportDeps } from './deps';
 import type { PracticeModule } from '../types';
-import { UNIT_IDS, type UnitId } from '../data/units';
+import { UNIT_IDS, BOOK_IDS, type UnitId } from '../data/units';
 
 const NOW = Date.UTC(2026, 0, 1);
 
@@ -296,5 +296,60 @@ describe('学习报告页 /report', () => {
     expect(section.querySelector<HTMLButtonElement>('[data-testid="export-btn"]')).toBeTruthy();
     expect(section.querySelector<HTMLInputElement>('[data-testid="import-file"]')).toBeTruthy();
     expect(section.textContent).toContain('合并去重');
+  });
+});
+
+describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () => {
+  it('bookRows：七册固定分组（含空册），必修一汇总该册全部单元，册合计与总量对齐', () => {
+    const data = buildReportData(sampleStats(), sampleBook(), sampleProgress(), NOW);
+
+    expect(data.bookRows.map((r) => r.book)).toEqual([...BOOK_IDS]);
+    const required1 = data.bookRows[0]!;
+    expect(required1.label).toBe('必修一');
+    expect(required1.unitRows.map((r) => r.unit)).toEqual([...UNIT_IDS]);
+    expect(required1.answered).toBe(10);
+    expect(required1.correct).toBe(6);
+    expect(required1.accuracy).toBeCloseTo(0.6);
+    expect(required1.wrongCount).toBe(5);
+
+    // 其余六册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
+    for (const row of data.bookRows.slice(1)) {
+      expect(row.unitRows).toEqual([]);
+      expect(row.answered).toBe(0);
+      expect(row.correct).toBe(0);
+      expect(row.accuracy).toBeNull();
+      expect(row.wrongCount).toBe(0);
+    }
+
+    // 册分组与单元行同源：合计对齐、展开顺序一致
+    expect(data.bookRows.reduce((n, r) => n + r.answered, 0)).toBe(data.totalAnswered);
+    expect(data.bookRows.reduce((n, r) => n + r.wrongCount, 0)).toBe(data.wrongTotal);
+    expect(data.bookRows.flatMap((r) => r.unitRows.map((u) => u.unit))).toEqual(
+      data.unitRows.map((u) => u.unit),
+    );
+  });
+
+  it('渲染：每册一个分组（data-testid=book-group），册头带汇总徽标，空册显示降级占位', () => {
+    const container = document.createElement('div');
+    history.replaceState(null, '', '/report');
+    renderReport(container, makeDeps());
+
+    const groups = container.querySelectorAll('[data-testid="book-group"]');
+    expect(groups).toHaveLength(BOOK_IDS.length);
+
+    const g1 = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="required-1"]')!;
+    expect(g1.querySelector('[data-testid="book-summary"]')!.textContent).toContain('5 个单元');
+    expect(g1.querySelector('[data-testid="book-summary"]')!.textContent).toContain('60%');
+    expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(UNIT_IDS.length);
+
+    // 空册：保留分组（架构占位），册头显示「暂未收录单元」，组内是降级提示而非崩溃
+    const empty = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="elective-2"]')!;
+    expect(empty.querySelector('[data-testid="book-summary"]')!.textContent).toContain('暂未收录单元');
+    expect(empty.querySelector('[data-testid="book-empty"]')!.textContent).toContain('选择性必修二');
+    expect(empty.querySelector('[data-testid="unit-row"]')).toBeNull();
+
+    // 单元行携带册别维度（册 + 单元两级归属）
+    const unit2 = container.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit2"]')!;
+    expect(unit2.dataset.book).toBe('required-1');
   });
 });

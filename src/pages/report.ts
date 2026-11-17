@@ -1,15 +1,15 @@
 import type { PracticeModule, WrongEntry } from '../types';
-import { UNIT_IDS, UNIT_META, type UnitId } from '../data/units';
+import { BOOKS, BOOK_LABELS, UNIT_IDS, UNIT_META, type BookId, type UnitId } from '../data/units';
 import { getWordUnit } from '../data/words';
 import { loadWrongBook, type WrongBook } from '../store/wrongbook';
 import { loadStats, PRACTICE_MODULES, type StatsBook } from '../store/stats';
 import { loadProgress, type Progress } from '../store/progress';
-import { MODULE_LABEL, MODULE_RETRY_ROUTE, pctText, type ReportDeps } from './deps';
+import { MODULE_LABEL, MODULE_RETRY_ROUTE, pctText, buildEmptyState, type ReportDeps } from './deps';
 import { buildDataManagement, defaultDataManagementDeps } from './data-management';
 
 /**
  * /report 学习报告页：汇总各模块练习次数 / 正确率 / 错题数与词汇 SRS 到期数，
- * 并提供按单元统计维度与数据导出/导入。
+ * 并提供按册 + 单元两级统计维度与数据导出/导入。
  * 图表全部用纯 CSS（正确率条）+ 内联 SVG（正确率环）实现，不引第三方图表库。
  */
 
@@ -35,6 +35,8 @@ export interface ModuleRow {
 
 export interface UnitRow {
   unit: UnitId;
+  /** 所属册别（按册 + 单元统计的分组维度） */
+  book: BookId;
   answered: number;
   correct: number;
   /** 0~1；未练习为 null */
@@ -46,9 +48,25 @@ export interface UnitRow {
   srsDue: number;
 }
 
+/** 册别汇总行：该册全部单元的合计统计（册级维度） */
+export interface BookRow {
+  book: BookId;
+  /** 册别展示名（必修一…选择性必修四） */
+  label: string;
+  /** 该册的单元统计行（册内 no 升序；空册为空数组） */
+  unitRows: UnitRow[];
+  answered: number;
+  correct: number;
+  /** 0~1；未练习为 null */
+  accuracy: number | null;
+  wrongCount: number;
+}
+
 export interface ReportData {
   rows: ModuleRow[];
   unitRows: UnitRow[];
+  /** 按册分组聚合（七册固定分组，含空册；与 unitRows 同源） */
+  bookRows: BookRow[];
   totalAnswered: number;
   totalCorrect: number;
   overallAccuracy: number | null;
@@ -102,12 +120,29 @@ export function buildReportData(
     const srsCards = Object.values(progress.cards).filter((c) => getWordUnit(c.id) === unit);
     return {
       unit,
+      book: UNIT_META[unit].book,
       answered,
       correct,
       accuracy: answered === 0 ? null : correct / answered,
       wrongCount: entries.filter((e) => entryUnit(e) === unit).length,
       srsTotal: srsCards.length,
       srsDue: srsCards.filter((c) => c.due <= now).length,
+    };
+  });
+
+  /* 按册分组聚合：七册固定分组（空册保留分组，行内降级提示），册内合计与单元行同源 */
+  const bookRows: BookRow[] = BOOKS.map((def) => {
+    const rows = unitRows.filter((r) => r.book === def.id);
+    const answered = rows.reduce((n, r) => n + r.answered, 0);
+    const correct = rows.reduce((n, r) => n + r.correct, 0);
+    return {
+      book: def.id,
+      label: BOOK_LABELS[def.id],
+      unitRows: rows,
+      answered,
+      correct,
+      accuracy: answered === 0 ? null : correct / answered,
+      wrongCount: rows.reduce((n, r) => n + r.wrongCount, 0),
     };
   });
 
@@ -118,6 +153,7 @@ export function buildReportData(
   return {
     rows,
     unitRows,
+    bookRows,
     totalAnswered,
     totalCorrect,
     overallAccuracy: totalAnswered === 0 ? null : totalCorrect / totalAnswered,
@@ -277,12 +313,13 @@ function buildModuleRow(row: ModuleRow): HTMLElement {
   return item;
 }
 
-/** 单元统计行：练习/正确率/错题/词汇复习汇总（数据源含 stats.units 维度） */
+/** 单元统计行：练习/正确率/错题/词汇复习汇总（数据源含 stats.units 维度；按册分组后隶属某册） */
 function buildUnitRow(row: UnitRow): HTMLElement {
   const item = document.createElement('article');
   item.className = 'report-row card';
   item.setAttribute('data-testid', 'unit-row');
   item.dataset.unit = row.unit;
+  item.dataset.book = row.book;
 
   const badge = document.createElement('span');
   badge.className = `module-badge module-badge--${row.unit}`;
@@ -410,20 +447,48 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   for (const row of data.rows) moduleList.append(buildModuleRow(row));
   moduleSection.append(moduleTitle, moduleList);
 
-  /* 按单元统计 */
+  /* 按册 + 单元统计：七册固定分组（含空册降级提示），册内按单元展开 */
   const unitSection = document.createElement('section');
   unitSection.className = 'report-units';
   unitSection.setAttribute('data-testid', 'unit-stats');
   const unitTitle = document.createElement('h2');
   unitTitle.className = 'section-title';
-  unitTitle.textContent = `按单元统计（Unit ${UNIT_IDS.map((id) => UNIT_META[id].no).join(' / ')}）`;
+  unitTitle.textContent = `按册 + 单元统计（${BOOKS.map((b) => b.label).join(' / ')}）`;
   const unitNote = document.createElement('p');
   unitNote.className = 'page-intro';
   unitNote.textContent =
-    '每个单元汇总语法 / 阅读 / 听力 / 词汇复习的练习与错题，以及该单元词表的间隔复习进度；统计自单元维度上线后开始累积。';
+    '先按册别分组，每册内再按单元汇总语法 / 阅读 / 听力 / 词汇复习的练习与错题，以及该单元词表的间隔复习进度；尚未收录单元数据的册显示占位提示，新增单元数据文件后自动出现。';
   const unitList = document.createElement('div');
   unitList.className = 'report-rows';
-  for (const row of data.unitRows) unitList.append(buildUnitRow(row));
+  for (const row of data.bookRows) {
+    const group = document.createElement('div');
+    group.className = 'report-book';
+    group.setAttribute('data-testid', 'book-group');
+    group.dataset.book = row.book;
+
+    const groupHead = document.createElement('div');
+    groupHead.className = 'report-book__head';
+    const groupTitle = document.createElement('h3');
+    groupTitle.className = 'report-book__title';
+    groupTitle.textContent = row.label;
+    const groupSummary = document.createElement('span');
+    groupSummary.className = 'stat-chip';
+    groupSummary.setAttribute('data-testid', 'book-summary');
+    groupSummary.textContent =
+      row.unitRows.length === 0
+        ? '暂未收录单元'
+        : `${row.unitRows.length} 个单元 · 练习 ${row.answered} 次 · 正确率 ${pctText(row.accuracy)} · 错题 ${row.wrongCount} 道`;
+    groupHead.append(groupTitle, groupSummary);
+    group.append(groupHead);
+
+    if (row.unitRows.length === 0) {
+      // 缺册降级：该册还没有单元数据（纯数据新增后自动出现），不崩溃、不留空白
+      group.append(buildEmptyState(`${row.label} 暂未收录单元数据，新增单元数据文件（meta 的 book 写「${row.label}」）后自动出现。`, 'book-empty'));
+    } else {
+      for (const unitRow of row.unitRows) group.append(buildUnitRow(unitRow));
+    }
+    unitList.append(group);
+  }
   unitSection.append(unitTitle, unitNote, unitList);
 
   /* 学习建议 */

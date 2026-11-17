@@ -1,10 +1,13 @@
-import { UNIT_IDS, UNIT_META, unitTitle } from '../data/units';
-import { buildUnitSwitcher } from './unit-switch';
+import { BOOK_LABELS, BOOKS, UNIT_IDS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
+import { buildBookSwitcher, buildUnitSwitcher, currentUnit } from './unit-switch';
 
-/** 首页：全局单元切换器（localStorage + ?unit= 双向同步）+ 模块入口 */
+/** 首页：全局「册 + 单元」两级切换器（localStorage + ?book=&unit= 双向同步）+ 模块入口 */
 
 /** 单元号列表文案：Unit 1 / 2 / …（随自动发现的注册表扩展） */
 const UNIT_NO_TEXT = UNIT_IDS.map((id) => UNIT_META[id].no).join(' / ');
+
+/** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
+const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
 
 export function renderHome(root: HTMLElement): void {
   const header = document.createElement('header');
@@ -33,26 +36,49 @@ export function renderHome(root: HTMLElement): void {
       词汇 / 语法 / 阅读 / 听力 / 写作五大模块专项练习，错题自动沉淀、报告随时可查，进度保存在本机浏览器。
     </p>`;
 
-  /* 全局单元切换器：选择写入 localStorage 并同步 ?unit=，各模块页按此全局单元取数 */
+  /* 两级切换器：第一级选册（七册），第二级选该册单元；选择写入 localStorage 并同步 ?book=&unit= */
   const unitHead = document.createElement('div');
   unitHead.className = 'page-head';
   const unitLabel = document.createElement('span');
   unitLabel.className = 'stat-chip';
   unitLabel.setAttribute('data-testid', 'unit-hint');
-  const switcher = buildUnitSwitcher(() => {
+
+  const switchGroup = document.createElement('div');
+  switchGroup.className = 'unit-switch-group';
+  const unitHost = document.createElement('div');
+  const bookSwitcher = buildBookSwitcher((book) => {
+    mountUnitSwitcher(book); // 册切换 → 第二级单元列表整体重建为该册单元
     syncUnitHint();
   });
+
+  function mountUnitSwitcher(book: BookId): void {
+    const unitSwitcher = buildUnitSwitcher(book, () => {
+      syncUnitHint();
+    });
+    unitHost.replaceChildren(unitSwitcher.el);
+  }
+
+  mountUnitSwitcher(bookSwitcher.get());
+  switchGroup.append(bookSwitcher.el, unitHost);
+
   const spacer = document.createElement('span');
   spacer.className = 'page-head__spacer';
-  unitHead.append(switcher.el, spacer, unitLabel);
+  unitHead.append(switchGroup, spacer, unitLabel);
 
   function syncUnitHint(): void {
-    unitLabel.textContent = `当前单元 ${unitTitle(switcher.get())}（${UNIT_META[switcher.get()].titleZh}）· 各模块自动跟随`;
+    const unit = currentUnit();
+    const meta = UNIT_META[unit];
+    if (bookOfUnit(unit) !== bookSwitcher.get()) {
+      // 空册降级：该册暂无单元数据，各模块沿用最近一个有效单元
+      unitLabel.textContent = `当前 ${BOOK_LABELS[bookSwitcher.get()]} · 暂未收录单元（各模块暂沿 ${unitTitle(unit)}）`;
+      return;
+    }
+    unitLabel.textContent = `当前 ${BOOK_LABELS[meta.book]} ${unitTitle(unit)}（${meta.titleZh}）· 各模块自动跟随`;
   }
 
   const intro = document.createElement('p');
   intro.style.cssText = 'color:var(--color-text-secondary);margin:0 0 var(--space-4);';
-  intro.textContent = `在这里选择单元后，词汇 / 语法 / 阅读 / 听力 / 写作将统一切换到该单元（选择保存在本机，并同步到地址栏 ?unit=）。`;
+  intro.textContent = `先选册（${BOOK_TEXT}），再选该册单元：词汇 / 语法 / 阅读 / 听力 / 写作将统一跟随当前册 + 单元（选择保存在本机，并同步到地址栏 ?book=&unit=；尚未收录单元的册先显示空态，后续新增数据文件即自动出现）。`;
 
   const grid = document.createElement('div');
   grid.className = 'module-grid';
@@ -83,7 +109,7 @@ export function renderHome(root: HTMLElement): void {
     </a>
     <a class="module-card" href="/report" data-link>
       <h2 class="module-card__title">📊 学习报告</h2>
-      <p class="module-card__desc">模块与按单元统计 / 错题 / 复习到期与学习建议，支持数据导出导入</p>
+      <p class="module-card__desc">按册 + 单元统计 / 错题 / 复习到期与学习建议，支持数据导出导入</p>
     </a>`;
 
   page.append(unitHead, intro, grid);

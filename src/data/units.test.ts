@@ -5,8 +5,20 @@ import {
   UNIT_META,
   UNIT_REGISTRY,
   unitTitle,
+  bookUnitTitle,
   isUnitId,
   buildUnitManifests,
+  BOOKS,
+  BOOK_IDS,
+  BOOK_LABELS,
+  DEFAULT_BOOK,
+  UNITS_BY_BOOK,
+  unitsByBook,
+  unitIdsOfBook,
+  bookOfUnit,
+  firstUnitOfBook,
+  isBookId,
+  normalizeBookValue,
   type UnitId,
   type UnitModuleFiles,
 } from './units';
@@ -29,9 +41,14 @@ const word = (id: string): Word => ({
   exampleZh: `这是 ${id}。`,
 });
 
-const metaFiles = (entries: Array<[id: string, no: number, title?: string]>): Record<string, unknown> =>
+const metaFiles = (
+  entries: Array<[id: string, no: number, title?: string, book?: string]>,
+): Record<string, unknown> =>
   Object.fromEntries(
-    entries.map(([id, no, title]) => [`./${id}-meta.json`, { no, title: title ?? `T${no}`, theme: `主题${no}` }]),
+    entries.map(([id, no, title, book]) => [
+      `./${id}-meta.json`,
+      { ...(book !== undefined ? { book } : {}), no, title: title ?? `T${no}`, theme: `主题${no}` },
+    ]),
   );
 
 describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工清单）', () => {
@@ -43,9 +60,10 @@ describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工�
     expect(new Set(nos).size).toBe(5);
   });
 
-  it('每行 manifest 元信息齐全：id / no / title / theme 非空，theme 为中文', () => {
+  it('每行 manifest 元信息齐全：id / book / no / title / theme 非空，theme 为中文', () => {
     for (const m of UNIT_MANIFESTS) {
       expect(m.id, 'id 非空').toMatch(/^unit\d+$/);
+      expect(isBookId(m.book), `${m.id} book 合法`).toBe(true);
       expect(m.title, `${m.id} title 非空`).toMatch(/[A-Za-z]/);
       expect(m.theme, `${m.id} theme 非空`).toMatch(/[\u4e00-\u9fff]/);
     }
@@ -54,8 +72,9 @@ describe('单元注册表 · 自动发现（unitN-meta.json 驱动，无手工�
   it('UNIT_REGISTRY / UNIT_META / unitTitle 与 manifest 一一对应', () => {
     for (const m of UNIT_MANIFESTS) {
       expect(UNIT_REGISTRY[m.id as UnitId]).toBe(m);
-      expect(UNIT_META[m.id as UnitId]).toEqual({ no: m.no, title: m.title, titleZh: m.theme });
+      expect(UNIT_META[m.id as UnitId]).toEqual({ book: m.book, no: m.no, title: m.title, titleZh: m.theme });
       expect(unitTitle(m.id as UnitId)).toBe(`Unit ${m.no} ${m.title}`);
+      expect(bookUnitTitle(m.id as UnitId)).toBe(`${BOOK_LABELS[m.book]} · Unit ${m.no} ${m.title}`);
     }
   });
 
@@ -80,6 +99,111 @@ describe('单元排序 · 按 no 升序（稳定）', () => {
   it('buildUnitManifests：no 相同时按 id 字典序稳定排序', () => {
     const files: UnitModuleFiles = { meta: metaFiles([['unit12', 2], ['unit11', 2]]) };
     expect(buildUnitManifests(files).map((m) => m.id)).toEqual(['unit11', 'unit12']);
+  });
+});
+
+describe('册别维度 · 注册表按册分组（meta 的 book 字段驱动）', () => {
+  it('七册固定清单：必修一 / 必修二 / 必修三 + 选择性必修一 ~ 四，顺序稳定，默认册为必修一', () => {
+    expect(BOOKS.map((b) => b.label)).toEqual([
+      '必修一',
+      '必修二',
+      '必修三',
+      '选择性必修一',
+      '选择性必修二',
+      '选择性必修三',
+      '选择性必修四',
+    ]);
+    expect(BOOK_IDS).toEqual(BOOKS.map((b) => b.id));
+    expect(DEFAULT_BOOK).toBe('required-1');
+    expect(BOOK_LABELS[DEFAULT_BOOK]).toBe('必修一');
+  });
+
+  it('现有五个单元（unit1-5）全部归入必修一，其余六册为空分组（缺册降级为空数组）', () => {
+    for (const m of UNIT_MANIFESTS) {
+      expect(m.book, `${m.id} 应属必修一`).toBe('required-1');
+      expect(UNIT_META[m.id as UnitId].book).toBe('required-1');
+    }
+    expect(unitIdsOfBook('required-1')).toEqual(['unit1', 'unit2', 'unit3', 'unit4', 'unit5']);
+    for (const book of [
+      'required-2',
+      'required-3',
+      'elective-1',
+      'elective-2',
+      'elective-3',
+      'elective-4',
+    ] as const) {
+      expect(unitIdsOfBook(book), `${book} 尚无单元`).toEqual([]);
+      expect(unitsByBook(book)).toEqual([]);
+      expect(firstUnitOfBook(book)).toBeNull();
+    }
+    expect(firstUnitOfBook('required-1')).toBe('unit1');
+  });
+
+  it('UNITS_BY_BOOK 聚合视图与 manifest 一一对应：七册之和 = 注册表总数（自动发现不变）', () => {
+    expect(UNITS_BY_BOOK[DEFAULT_BOOK].map((m) => m.id)).toEqual([...UNIT_IDS]);
+    const total = BOOK_IDS.reduce((n, book) => n + UNITS_BY_BOOK[book].length, 0);
+    expect(total).toBe(UNIT_MANIFESTS.length);
+    for (const book of BOOK_IDS) {
+      for (const m of UNITS_BY_BOOK[book]) expect(m.book).toBe(book);
+    }
+  });
+
+  it('册别查询助手：bookOfUnit / isBookId / normalizeBookValue（册名与 slug 双写法）', () => {
+    expect(bookOfUnit('unit3')).toBe('required-1');
+    expect(bookOfUnit('unit5')).toBe('required-1');
+    expect(isBookId('required-2')).toBe(true);
+    expect(isBookId('elective-4')).toBe(true);
+    expect(isBookId('必修二')).toBe(false); // 存储与深链统一用 slug，册名不是 id
+    expect(isBookId('book9')).toBe(false);
+    expect(normalizeBookValue('必修二')).toBe('required-2');
+    expect(normalizeBookValue('选择性必修四')).toBe('elective-4');
+    expect(normalizeBookValue('elective-3')).toBe('elective-3'); // slug 写法同样接受
+  });
+
+  it('跨册聚合排序：先按册别顺序（必修一 → 选择性必修四），册内再按 no 升序', () => {
+    const files: UnitModuleFiles = {
+      meta: {
+        ...metaFiles([['unit1', 1]]), // 缺 book → 必修一（缺册降级）
+        ...metaFiles([
+          ['unit6', 2, undefined, '必修二'],
+          ['unit5', 1, undefined, '必修二'],
+          ['unit7', 1, undefined, '选择性必修一'],
+        ]),
+      },
+    };
+    expect(buildUnitManifests(files).map((m) => `${m.book}:${m.id}`)).toEqual([
+      'required-1:unit1',
+      'required-2:unit5', // 必修二册内 no=1 在 no=2 前
+      'required-2:unit6',
+      'elective-1:unit7',
+    ]);
+  });
+});
+
+describe('缺册降级 · meta 的 book 缺失 / 非法不崩溃', () => {
+  it('meta 缺 book 字段 → 该单元降级归入必修一（旧数据兼容）', () => {
+    const files: UnitModuleFiles = { meta: metaFiles([['unit1', 1]]) };
+    expect(buildUnitManifests(files)[0]!.book).toBe('required-1');
+  });
+
+  it('meta 的 book 取值不在七册之列 / 类型不对 → 一律降级归入必修一', () => {
+    const files: UnitModuleFiles = {
+      meta: {
+        './unit2-meta.json': { no: 2, title: 'A', theme: '甲', book: '必修五' },
+        './unit3-meta.json': { no: 3, title: 'B', theme: '乙', book: 5 },
+        './unit4-meta.json': { no: 4, title: 'C', theme: '丙', book: null },
+      },
+    };
+    for (const m of buildUnitManifests(files)) expect(m.book).toBe('required-1');
+  });
+
+  it('缺册降级不影响其余元信息：no / title / theme 照常挂载', () => {
+    const files: UnitModuleFiles = { meta: metaFiles([['unit8', 8, 'Ok']]) };
+    const [m] = buildUnitManifests(files);
+    expect(m!.book).toBe('required-1');
+    expect(m!.no).toBe(8);
+    expect(m!.title).toBe('Ok');
+    expect(m!.theme).toBe('主题8');
   });
 });
 

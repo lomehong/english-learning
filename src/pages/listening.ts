@@ -1,5 +1,5 @@
 import { getListeningsByUnit, countScriptWords, LISTENING_QUESTION_TYPE_LABEL } from '../data/listening';
-import { UNIT_META, unitTitle, type UnitId } from '../data/units';
+import { BOOK_LABELS, UNIT_META, unitTitle, type UnitId } from '../data/units';
 import {
   loadWrongBook,
   saveWrongBook,
@@ -244,7 +244,7 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
     head.className = 'page-head';
     const title = document.createElement('h1');
     title.className = 'page-head__title';
-    title.textContent = `听力 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
+    title.textContent = `听力 · ${BOOK_LABELS[UNIT_META[unit].book]} ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
 
     // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
     const headSpacer = document.createElement('span');

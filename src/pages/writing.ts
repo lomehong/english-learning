@@ -1,5 +1,5 @@
 import { getWritingTasksByUnit, countEssayWords } from '../data/writing';
-import { UNIT_META, unitTitle } from '../data/units';
+import { BOOK_LABELS, UNIT_META, unitTitle } from '../data/units';
 import { putDraft, removeDraft, type WritingDrafts } from '../store/writing';
 import type { WritingTask } from '../types';
 import { buildEmptyState, defaultWritingDeps, type WritingDeps } from './deps';
@@ -202,7 +202,7 @@ export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
   head.className = 'page-head';
   const title = document.createElement('h1');
   title.className = 'page-head__title';
-  title.textContent = `写作 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
+  title.textContent = `写作 · ${BOOK_LABELS[UNIT_META[unit].book]} ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
 
   // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
   head.append(title, buildUnitBadge(unit));
