@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { renderReport, buildReportData, buildAdvice, type ReportData } from './report';
+import { renderReport, buildReportData, buildAdvice, entryUnit, type ReportData } from './report';
 import { emptyStats, recordAnswer, type StatsBook } from '../store/stats';
 import { emptyWrongBook, recordWrong, type WrongBook, type WrongInput } from '../store/wrongbook';
 import { emptyProgress, type Progress } from '../store/progress';
 import { createCard, DAY_MS } from '../srs/sm2';
 import type { ReportDeps } from './deps';
 import type { PracticeModule } from '../types';
+import type { UnitId } from '../data/units';
 
 const NOW = Date.UTC(2026, 0, 1);
 
@@ -21,28 +22,40 @@ function wrongInput(overrides: Partial<WrongInput> = {}): WrongInput {
   };
 }
 
-/** 统计：语法 4 答 2 对、阅读 2 答 2 对、词汇 2 答 1 对 */
+/** 统计：Unit1 语法 4 答 2 对、阅读 2 答 2 对、词汇 2 答 1 对；Unit2 语法 1 答 0 对、听力 1 答 1 对 */
 function sampleStats(): StatsBook {
   let stats = emptyStats();
-  for (const [m, pairs] of [
-    ['grammar', [true, false, false, true]],
-    ['reading', [true, true]],
-    ['vocab', [false, true]],
-  ] as Array<[PracticeModule, boolean[]]>) {
-    for (const correct of pairs) stats = recordAnswer(stats, m, correct);
+  for (const [m, pairs, unit] of [
+    ['grammar', [true, false, false, true], 'unit1'],
+    ['reading', [true, true], 'unit1'],
+    ['vocab', [false, true], 'unit1'],
+    ['grammar', [false], 'unit2'],
+    ['listening', [true], 'unit2'],
+  ] as Array<[PracticeModule, boolean[], UnitId]>) {
+    for (const correct of pairs) stats = recordAnswer(stats, m, correct, unit);
   }
   return stats;
 }
 
-/** 错题：语法 ×2、阅读 ×1 */
+/** 错题：Unit1 语法 ×2、Unit1 阅读 ×1；Unit2 语法 ×1、Unit2 词汇 ×1 */
 function sampleBook(): WrongBook {
   let book = recordWrong(emptyWrongBook(), wrongInput(), NOW);
   book = recordWrong(book, wrongInput({ exerciseId: 'g4' }), NOW);
   book = recordWrong(book, wrongInput({ exerciseId: 'r1-1', module: 'reading' }), NOW);
+  book = recordWrong(
+    book,
+    wrongInput({ exerciseId: 'u2-g1', stem: 'She ______ to the travel office.', yourAnswer: 'has been', correctAnswer: 'has gone' }),
+    NOW,
+  );
+  book = recordWrong(
+    book,
+    wrongInput({ exerciseId: 'w:apply', module: 'vocab', stem: 'apply /əˈplaɪ/', yourAnswer: '重来', correctAnswer: '申请' }),
+    NOW,
+  );
   return book;
 }
 
-/** 进度：3 张卡，其中 2 张到期（teenage/exchange），1 张明天到期 */
+/** 进度：Unit1 两张卡（teenage/exchange 到期，volunteer 明天到期）；Unit2 一张到期 */
 function sampleProgress(): Progress {
   const progress = emptyProgress();
   progress.cards['teenage'] = createCard('teenage', NOW - DAY_MS);
@@ -52,6 +65,7 @@ function sampleProgress(): Progress {
   const future = createCard('volunteer', NOW - DAY_MS);
   future.due = NOW + DAY_MS;
   progress.cards['volunteer'] = future;
+  progress.cards['apply'] = createCard('apply', NOW - DAY_MS);
   return progress;
 }
 
@@ -73,17 +87,51 @@ describe('学习报告 · 数据组装（纯函数）', () => {
     const data = buildReportData(sampleStats(), sampleBook(), sampleProgress(), NOW);
 
     const byModule = new Map(data.rows.map((r) => [r.module, r]));
-    expect(byModule.get('grammar')).toMatchObject({ answered: 4, correct: 2, accuracy: 0.5, wrongCount: 2 });
+    expect(byModule.get('grammar')).toMatchObject({ answered: 5, correct: 2, accuracy: 0.4, wrongCount: 3 });
     expect(byModule.get('reading')).toMatchObject({ answered: 2, correct: 2, accuracy: 1, wrongCount: 1 });
-    expect(byModule.get('vocab')).toMatchObject({ answered: 2, correct: 1, accuracy: 0.5, wrongCount: 0 });
-    expect(byModule.get('listening')).toMatchObject({ answered: 0, correct: 0, accuracy: null, wrongCount: 0 });
+    expect(byModule.get('vocab')).toMatchObject({ answered: 2, correct: 1, accuracy: 0.5, wrongCount: 1 });
+    expect(byModule.get('listening')).toMatchObject({ answered: 1, correct: 1, accuracy: 1, wrongCount: 0 });
 
-    expect(data.totalAnswered).toBe(8);
-    expect(data.totalCorrect).toBe(5);
-    expect(data.overallAccuracy).toBeCloseTo(0.625);
-    expect(data.wrongTotal).toBe(3);
-    expect(data.srsDue).toBe(2);
-    expect(data.srsTotal).toBe(3);
+    expect(data.totalAnswered).toBe(10);
+    expect(data.totalCorrect).toBe(6);
+    expect(data.overallAccuracy).toBeCloseTo(0.6);
+    expect(data.wrongTotal).toBe(5);
+    expect(data.srsDue).toBe(3);
+    expect(data.srsTotal).toBe(4);
+  });
+
+  it('按单元维度汇总：练习/正确率/错题与该单元词汇复习进度', () => {
+    const data = buildReportData(sampleStats(), sampleBook(), sampleProgress(), NOW);
+
+    const byUnit = new Map(data.unitRows.map((r) => [r.unit, r]));
+    expect(byUnit.get('unit1')).toMatchObject({
+      answered: 8,
+      correct: 5,
+      accuracy: 0.625,
+      wrongCount: 3,
+      srsTotal: 2,
+      srsDue: 1,
+    });
+    expect(byUnit.get('unit2')).toMatchObject({
+      answered: 2,
+      correct: 1,
+      accuracy: 0.5,
+      wrongCount: 2,
+      srsTotal: 1,
+      srsDue: 1,
+    });
+    // 两单元合计与总量对齐
+    expect(data.unitRows.reduce((n, r) => n + r.answered, 0)).toBe(data.totalAnswered);
+    expect(data.unitRows.reduce((n, r) => n + r.wrongCount, 0)).toBe(data.wrongTotal);
+    expect(data.unitRows.reduce((n, r) => n + r.srsTotal, 0)).toBe(3); // exchange 不属于任何单元词表
+  });
+
+  it('entryUnit 错题归属：u2- 前缀 → Unit 2；w:词id → 按词表；其余 → Unit 1', () => {
+    const book = sampleBook();
+    expect(entryUnit(book.entries['g1']!)).toBe('unit1');
+    expect(entryUnit(book.entries['r1-1']!)).toBe('unit1');
+    expect(entryUnit(book.entries['u2-g1']!)).toBe('unit2');
+    expect(entryUnit(book.entries['w:apply']!)).toBe('unit2');
   });
 
   it('全空数据：总计为 0、正确率 null、到期 0', () => {
@@ -109,8 +157,8 @@ describe('学习报告 · 建议文案（纯函数）', () => {
 
   it('有到期单词 → 提示优先复习；有错题 → 提示去错题本消化', () => {
     const advice = buildAdvice(base).join('');
-    expect(advice).toContain('2 个单词');
-    expect(advice).toContain('3 道');
+    expect(advice).toContain('3 个单词');
+    expect(advice).toContain('5 道');
   });
 
   it('正确率低的已练模块 → 指出短板（语法/词汇并列时取最先出现者）', () => {
@@ -121,7 +169,7 @@ describe('学习报告 · 建议文案（纯函数）', () => {
 
   it('未开始模块（听力）→ 提示均衡推进；整体正确率高 → 正向反馈', () => {
     let stats = emptyStats();
-    for (let i = 0; i < 10; i += 1) stats = recordAnswer(stats, 'grammar', true);
+    for (let i = 0; i < 10; i += 1) stats = recordAnswer(stats, 'grammar', true, 'unit1');
     const data = buildReportData(stats, emptyWrongBook(), sampleProgress(), NOW);
     const advice = buildAdvice(data).join('');
     expect(advice).toContain('听力');
@@ -145,10 +193,10 @@ describe('学习报告页 /report', () => {
   it('渲染四张总览卡：总练习/正确率/错题数/SRS 到期，数值正确', () => {
     renderReport(container, makeDeps());
 
-    expect(container.querySelector('[data-testid="stat-answered"]')!.textContent).toContain('8');
-    expect(container.querySelector('[data-testid="stat-accuracy"]')!.textContent).toContain('62.5%');
-    expect(container.querySelector('[data-testid="stat-wrong"]')!.textContent).toContain('3');
-    expect(container.querySelector('[data-testid="stat-due"]')!.textContent).toContain('2');
+    expect(container.querySelector('[data-testid="stat-answered"]')!.textContent).toContain('10');
+    expect(container.querySelector('[data-testid="stat-accuracy"]')!.textContent).toContain('60%');
+    expect(container.querySelector('[data-testid="stat-wrong"]')!.textContent).toContain('5');
+    expect(container.querySelector('[data-testid="stat-due"]')!.textContent).toContain('3');
   });
 
   it('渲染各模块行：练习次数/正确率/错题数 + 纯 CSS/SVG 图表（不引第三方库）', () => {
@@ -158,27 +206,27 @@ describe('学习报告页 /report', () => {
     expect(rows).toHaveLength(4);
 
     const grammar = container.querySelector<HTMLElement>('[data-testid="module-row"][data-module="grammar"]')!;
-    expect(grammar.querySelector('[data-testid="module-answered"]')!.textContent).toContain('4');
-    expect(grammar.querySelector('[data-testid="module-accuracy"]')!.textContent).toContain('50%');
-    expect(grammar.querySelector('[data-testid="module-wrong"]')!.textContent).toContain('2');
+    expect(grammar.querySelector('[data-testid="module-answered"]')!.textContent).toContain('5');
+    expect(grammar.querySelector('[data-testid="module-accuracy"]')!.textContent).toContain('40%');
+    expect(grammar.querySelector('[data-testid="module-wrong"]')!.textContent).toContain('3');
 
     // 正确率条：宽度百分比与数据一致（纯 CSS 实现）
     const bar = grammar.querySelector<HTMLElement>('.report-bar__fill')!;
-    expect(bar.style.width).toBe('50%');
+    expect(bar.style.width).toBe('40%');
 
-    // 总体正确率环：SVG circle，dasharray 与 62.5% 对应且携带 data-accuracy
+    // 总体正确率环：SVG circle，dasharray 与 60% 对应且携带 data-accuracy
     const donut = container.querySelector<SVGCircleElement>('[data-testid="accuracy-donut"]')!;
     expect(donut).toBeTruthy();
-    expect(donut.getAttribute('data-accuracy')).toBe('62.5');
+    expect(donut.getAttribute('data-accuracy')).toBe('60');
     expect(donut.getAttribute('stroke-dasharray')).toMatch(/^\d+(\.\d+)? \d+(\.\d+)?$/);
   });
 
   it('未练习模块显示「—」且进度条为 0%', () => {
-    renderReport(container, makeDeps());
+    renderReport(container, makeDeps(emptyStats(), emptyWrongBook(), emptyProgress()));
 
-    const listening = container.querySelector<HTMLElement>('[data-testid="module-row"][data-module="listening"]')!;
-    expect(listening.querySelector('[data-testid="module-accuracy"]')!.textContent).toContain('—');
-    expect(listening.querySelector<HTMLElement>('.report-bar__fill')!.style.width).toBe('0%');
+    const vocab = container.querySelector<HTMLElement>('[data-testid="module-row"][data-module="vocab"]')!;
+    expect(vocab.querySelector('[data-testid="module-accuracy"]')!.textContent).toContain('—');
+    expect(vocab.querySelector<HTMLElement>('.report-bar__fill')!.style.width).toBe('0%');
   });
 
   it('渲染学习建议列表与跳转入口（错题本/词汇复习）', () => {
@@ -198,5 +246,39 @@ describe('学习报告页 /report', () => {
     expect(container.querySelector('[data-testid="stat-answered"]')!.textContent).toContain('0');
     expect(container.querySelector('[data-testid="stat-accuracy"]')!.textContent).toContain('—');
     expect(container.querySelector('[data-testid="report-advice"]')!.textContent).toContain('词汇');
+  });
+
+  it('渲染按单元统计：两行 unit-row，练习/正确率/错题/词汇复习数值正确', () => {
+    renderReport(container, makeDeps());
+
+    const section = container.querySelector('[data-testid="unit-stats"]')!;
+    const rows = section.querySelectorAll('[data-testid="unit-row"]');
+    expect(rows).toHaveLength(2);
+
+    const unit1 = section.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit1"]')!;
+    expect(unit1.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('8');
+    expect(unit1.querySelector('[data-testid="unit-accuracy"]')!.textContent).toContain('62.5%');
+    expect(unit1.querySelector('[data-testid="unit-wrong"]')!.textContent).toContain('3');
+    expect(unit1.querySelector('[data-testid="unit-srs"]')!.textContent).toContain('2');
+    expect(unit1.querySelector<HTMLElement>('.report-bar__fill')!.style.width).toBe('62.5%');
+
+    const unit2 = section.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit2"]')!;
+    expect(unit2.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('2');
+    expect(unit2.querySelector('[data-testid="unit-accuracy"]')!.textContent).toContain('50%');
+    expect(unit2.querySelector('[data-testid="unit-wrong"]')!.textContent).toContain('2');
+    expect(unit2.querySelector('[data-testid="unit-srs"]')!.textContent).toContain('1');
+
+    // 每行带「去练习」入口（带单元参数）
+    expect(unit1.querySelector<HTMLAnchorElement>('a[href="/vocabulary?unit=unit1"]')).toBeTruthy();
+    expect(unit2.querySelector<HTMLAnchorElement>('a[href="/vocabulary?unit=unit2"]')).toBeTruthy();
+  });
+
+  it('渲染数据管理区（导出 / 导入）', () => {
+    renderReport(container, makeDeps());
+
+    const section = container.querySelector('[data-testid="data-management"]')!;
+    expect(section.querySelector<HTMLButtonElement>('[data-testid="export-btn"]')).toBeTruthy();
+    expect(section.querySelector<HTMLInputElement>('[data-testid="import-file"]')).toBeTruthy();
+    expect(section.textContent).toContain('合并去重');
   });
 });

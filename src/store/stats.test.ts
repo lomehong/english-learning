@@ -20,29 +20,42 @@ describe('练习统计 localStorage 持久化', () => {
     testStorage().clear();
   });
 
-  it('无记录时返回空统计：四模块 answered/correct 均为 0', () => {
+  it('无记录时返回空统计：四模块 answered/correct 均为 0，含两单元细分', () => {
     const stats = loadStats();
     expect(stats).toEqual(emptyStats());
     expect(Object.keys(stats.modules).sort()).toEqual(['grammar', 'listening', 'reading', 'vocab']);
     expect(stats.modules.grammar).toEqual({ answered: 0, correct: 0 });
+    expect(Object.keys(stats.units).sort()).toEqual(['unit1', 'unit2']);
+    expect(stats.units.unit1.vocab).toEqual({ answered: 0, correct: 0 });
+    expect(stats.units.unit2.listening).toEqual({ answered: 0, correct: 0 });
   });
 
-  it('recordAnswer 累加练习次数与答对次数（纯函数，不改原对象）', () => {
+  it('recordAnswer 同时累加模块总计与所属单元细分（纯函数，不改原对象）', () => {
     const original = emptyStats();
-    let stats = recordAnswer(original, 'grammar', true);
-    stats = recordAnswer(stats, 'grammar', false);
-    stats = recordAnswer(stats, 'grammar', true);
-    stats = recordAnswer(stats, 'reading', true);
+    let stats = recordAnswer(original, 'grammar', true, 'unit1');
+    stats = recordAnswer(stats, 'grammar', false, 'unit1');
+    stats = recordAnswer(stats, 'grammar', true, 'unit2');
+    stats = recordAnswer(stats, 'reading', true, 'unit2');
 
     expect(stats.modules.grammar).toEqual({ answered: 3, correct: 2 });
     expect(stats.modules.reading).toEqual({ answered: 1, correct: 1 });
     expect(stats.modules.vocab).toEqual({ answered: 0, correct: 0 });
+    expect(stats.units.unit1.grammar).toEqual({ answered: 2, correct: 1 });
+    expect(stats.units.unit2.grammar).toEqual({ answered: 1, correct: 1 });
+    expect(stats.units.unit2.reading).toEqual({ answered: 1, correct: 1 });
+    expect(stats.units.unit1.reading).toEqual({ answered: 0, correct: 0 });
     // 纯函数
     expect(original.modules.grammar).toEqual({ answered: 0, correct: 0 });
+    expect(original.units.unit1.grammar).toEqual({ answered: 0, correct: 0 });
   });
 
   it('保存后重新加载往返一致，写入约定键', () => {
-    const saved = recordAnswer(recordAnswer(emptyStats(), 'vocab', true), 'vocab', false);
+    const saved = recordAnswer(
+      recordAnswer(emptyStats(), 'vocab', true, 'unit2'),
+      'vocab',
+      false,
+      'unit2',
+    );
     saveStats(saved, testStorage());
 
     expect(testStorage().getItem(STORAGE_KEY)).toBeTruthy();
@@ -61,7 +74,21 @@ describe('练习统计 localStorage 持久化', () => {
     expect(loadStats(testStorage())).toEqual(emptyStats());
   });
 
-  it('脏数据防御：非有限数字、负数、correct>answered、未知模块一律归一化', () => {
+  it('旧版本数据（无 units 字段）：modules 保留累计，units 视为全 0', () => {
+    testStorage().setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        modules: { grammar: { answered: 6, correct: 4 } },
+      }),
+    );
+    const loaded = loadStats(testStorage());
+    expect(loaded.modules.grammar).toEqual({ answered: 6, correct: 4 });
+    expect(loaded.units.unit1.grammar).toEqual({ answered: 0, correct: 0 });
+    expect(loaded.units.unit2.grammar).toEqual({ answered: 0, correct: 0 });
+  });
+
+  it('脏数据防御：非有限数字、负数、correct>answered、未知模块/单元一律归一化', () => {
     testStorage().setItem(
       STORAGE_KEY,
       JSON.stringify({
@@ -73,6 +100,13 @@ describe('练习统计 localStorage 持久化', () => {
           vocab: { answered: 4, correct: 3 }, // 合法保留
           hacker: { answered: 100, correct: 100 }, // 未知模块 → 丢弃
         },
+        units: {
+          unit2: {
+            grammar: { answered: 2, correct: 1 }, // 合法保留
+            hacker: { answered: 50, correct: 50 }, // 未知模块 → 丢弃
+          },
+          unit9: { grammar: { answered: 9, correct: 9 } }, // 未知单元 → 丢弃
+        },
       }),
     );
     const loaded = loadStats(testStorage());
@@ -81,6 +115,10 @@ describe('练习统计 localStorage 持久化', () => {
     expect(loaded.modules.listening).toEqual({ answered: 0, correct: 0 });
     expect(loaded.modules.vocab).toEqual({ answered: 4, correct: 3 });
     expect(Object.keys(loaded.modules).includes('hacker')).toBe(false);
+    expect(loaded.units.unit2.grammar).toEqual({ answered: 2, correct: 1 });
+    expect(Object.keys(loaded.units.unit2).includes('hacker')).toBe(false);
+    expect(Object.keys(loaded.units).includes('unit9')).toBe(false);
+    expect(loaded.units.unit1.grammar).toEqual({ answered: 0, correct: 0 });
   });
 
   it('支持注入自定义 storage（接缝：不绑定全局 localStorage）', () => {
@@ -89,7 +127,9 @@ describe('练习统计 localStorage 持久化', () => {
       getItem: (k: string) => memory.get(k) ?? null,
       setItem: (k: string, v: string) => void memory.set(k, v),
     };
-    saveStats(recordAnswer(emptyStats(), 'listening', true), storage);
-    expect(loadStats(storage).modules.listening).toEqual({ answered: 1, correct: 1 });
+    saveStats(recordAnswer(emptyStats(), 'listening', true, 'unit2'), storage);
+    const loaded = loadStats(storage);
+    expect(loaded.modules.listening).toEqual({ answered: 1, correct: 1 });
+    expect(loaded.units.unit2.listening).toEqual({ answered: 1, correct: 1 });
   });
 });

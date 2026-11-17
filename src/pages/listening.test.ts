@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderListening } from './listening';
 import { unit1Listenings } from '../data/unit1-listening';
+import { unit2Listenings } from '../data/unit2-listening';
 import { clearWrongBook, loadWrongBook } from '../store/wrongbook';
 import { emptyStats, loadStats, saveStats } from '../store/stats';
 import type { ListeningQuestion } from '../types';
@@ -8,6 +9,7 @@ import type { PlayerState, SpeechEngine } from '../speech/tts';
 import type { ListeningDeps } from './deps';
 
 const TOTAL = unit1Listenings.reduce((n, m) => n + m.questions.length, 0);
+const TOTAL_U2 = unit2Listenings.reduce((n, m) => n + m.questions.length, 0);
 
 /* ---------- 假语音引擎（记录调用、可强制状态） ---------- */
 
@@ -286,5 +288,52 @@ describe('听力页 · 生命周期', () => {
     expect(engine.calls.destroy).toBe(1);
     // 退订后状态变化不再触发页面更新（不抛异常即可）
     expect(() => engine.force('idle', null)).not.toThrow();
+  });
+});
+
+describe('听力页 · 单元切换（Unit 2）', () => {
+  beforeEach(() => {
+    history.replaceState(null, '', '/listening?unit=unit2');
+    clearWrongBook();
+    saveStats(emptyStats());
+  });
+
+  afterEach(() => {
+    history.replaceState(null, '', '/listening');
+  });
+
+  it('?unit=unit2 直链渲染 Unit 2 材料（Travelling Around），作答计入 unit2 统计', () => {
+    const container = document.createElement('div');
+    renderListening(container, makeDeps(makeFakeEngine()));
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.textContent).toContain('Material 1 · Getting Ready for London');
+    expect(container.textContent).toContain('Talking about a Trip to Xi');
+    expect(container.querySelectorAll('.exercise--listening')).toHaveLength(TOTAL_U2);
+
+    const q = unit2Listenings[0]!.questions[0]!;
+    const buttons = [
+      ...container.querySelector(`[data-question="${q.id}"]`)!.querySelectorAll<HTMLButtonElement>('button.option'),
+    ];
+    const right = buttons.find((b) => b.textContent!.replace(/^[A-D]\.\s*/, '').trim() === q.options[q.answerIndex])!;
+    click(right);
+
+    expect(loadStats().units.unit2.listening).toEqual({ answered: 1, correct: 1 });
+    expect(loadStats().units.unit1.listening).toEqual({ answered: 0, correct: 0 });
+  });
+
+  it('点击 Unit 1 切换按钮：销毁旧引擎并重建为 Unit 1 内容，URL 保留在单元页', () => {
+    const engine = makeFakeEngine();
+    const container = document.createElement('div');
+    renderListening(container, makeDeps(engine));
+
+    const unit1Btn = container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!;
+    click(unit1Btn);
+
+    expect(engine.calls.destroy).toBe(1);
+    expect(container.textContent).toContain('Material 1 · A Busy but Interesting School Life');
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(location.search).toBe('');
   });
 });

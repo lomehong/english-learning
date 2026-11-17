@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderGrammar } from './grammar';
 import { emptyWrongBook, type WrongBook } from '../store/wrongbook';
 import { emptyStats, loadStats, saveStats } from '../store/stats';
 import { unit1Exercises } from '../data/unit1-grammar';
+import { unit2Exercises } from '../data/unit2-grammar';
 import type { McqExercise } from '../types';
 import type { GrammarDeps } from './deps';
 
@@ -230,5 +231,73 @@ describe('语法页 · 错题与统计数据源（错题本/学习报告页消�
     const entry = deps.load().entries['g1'];
     expect(entry).toBeDefined();
     expect(entry.module).toBe('grammar');
+  });
+});
+
+describe('语法页 · 单元切换（Unit 2）', () => {
+  beforeEach(() => {
+    history.replaceState(null, '', '/grammar?unit=unit2');
+    saveStats(emptyStats());
+  });
+
+  afterEach(() => {
+    history.replaceState(null, '', '/grammar');
+  });
+
+  it('?unit=unit2 直链渲染「现在完成时 / 过去进行时」讲解卡与 10 题，标题带 Unit 2', () => {
+    const container = document.createElement('div');
+    renderGrammar(container, makeDeps());
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    const cards = container.querySelectorAll('.grammar-card');
+    expect(cards).toHaveLength(2);
+    expect(container.textContent).toContain('现在完成时');
+    expect(container.textContent).toContain('过去进行时');
+    expect(container.textContent).toContain('have been to');
+    expect(container.querySelectorAll('.exercise')).toHaveLength(10);
+    expect(container.querySelector('[data-testid="drill-stat"]')!.textContent).toContain('已答 0 / 10');
+    // 讲解卡角标为 Unit 2
+    expect([...cards].every((c) => c.querySelector('.grammar-card__unit')!.textContent === 'Unit 2')).toBe(true);
+  });
+
+  it('Unit 2 作答计入 unit2 统计维度；答错错题 id 带 u2- 前缀', () => {
+    const deps = makeDeps();
+    const container = document.createElement('div');
+    renderGrammar(container, deps);
+
+    const g1 = unit2Exercises.find((e) => e.id === 'u2-g1') as McqExercise;
+    const g2 = unit2Exercises.find((e) => e.id === 'u2-g2') as McqExercise;
+    const g1Buttons = [
+      ...container.querySelectorAll<HTMLButtonElement>('.exercise[data-exercise="u2-g1"] button.option'),
+    ];
+    const g2Buttons = [
+      ...container.querySelectorAll<HTMLButtonElement>('.exercise[data-exercise="u2-g2"] button.option'),
+    ];
+    // u2-g1 答错（写错题），u2-g2 答对
+    click(g1Buttons.find((b) => !b.textContent!.includes(g1.options[g1.answerIndex]))!);
+    click(g2Buttons.find((b) => b.textContent!.includes(g2.options[g2.answerIndex]))!);
+
+    expect(loadStats().modules.grammar).toEqual({ answered: 2, correct: 1 });
+    expect(loadStats().units.unit2.grammar).toEqual({ answered: 2, correct: 1 });
+    expect(loadStats().units.unit1.grammar).toEqual({ answered: 0, correct: 0 });
+
+    const entry = deps.load().entries['u2-g1'];
+    expect(entry).toBeDefined();
+    expect(entry.module).toBe('grammar');
+  });
+
+  it('点击 Unit 1 切换按钮：内容重建为 Unit 1 讲解卡（一般现在时）', () => {
+    const deps = makeDeps();
+    const container = document.createElement('div');
+    renderGrammar(container, deps);
+
+    click(container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!);
+
+    expect(container.textContent).toContain('一般现在时');
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.querySelector('.exercise[data-exercise="g1"]')).toBeTruthy();
+    expect(container.querySelector('.exercise[data-exercise="u2-g1"]')).toBeNull();
+    expect(location.search).toBe('');
   });
 });

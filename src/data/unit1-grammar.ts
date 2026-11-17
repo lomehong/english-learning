@@ -1,4 +1,4 @@
-import type { FillExercise, GrammarExercise, GrammarPoint } from '../types';
+import type { GrammarExercise, GrammarPoint } from '../types';
 
 /** 人教2019必修一 Unit 1（Teenage Life）语法点：一般现在时 / 现在进行时 */
 
@@ -160,22 +160,4 @@ const pointById = new Map(unit1GrammarPoints.map((p) => [p.id, p]));
 
 export function getGrammarPoint(id: string): GrammarPoint | undefined {
   return pointById.get(id);
-}
-
-/** 归一化填空答案：忽略大小写、首尾空格与词间多余空格，统一撇号，去掉句末标点 */
-export function normalizeAnswer(input: string): string {
-  return input
-    .trim()
-    .toLowerCase()
-    .replace(/[\u2018\u2019]/gu, "'")
-    .replace(/[.。!！?？,，]+$/u, '')
-    .replace(/\s+/gu, ' ');
-}
-
-/** 判定填空题作答是否正确（含等价可接受形式） */
-export function checkFillAnswer(exercise: FillExercise, input: string): boolean {
-  const candidates = [exercise.answer, ...(exercise.acceptable ?? [])];
-  const normalized = normalizeAnswer(input);
-  if (normalized === '') return false;
-  return candidates.some((c) => normalizeAnswer(c) === normalized);
 }

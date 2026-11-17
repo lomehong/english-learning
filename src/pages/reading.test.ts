@@ -1,8 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderReading } from './reading';
 import { emptyProgress, type Progress } from '../store/progress';
 import { createCard } from '../srs/sm2';
-import { unit1Passages, QUESTION_TYPE_LABEL } from '../data/unit1-reading';
+import { unit1Passages } from '../data/unit1-reading';
+import { unit2Passages } from '../data/unit2-reading';
+import { QUESTION_TYPE_LABEL } from '../data/reading';
 import { clearWrongBook, loadWrongBook } from '../store/wrongbook';
 import { emptyStats, loadStats, saveStats } from '../store/stats';
 import type { ReadingQuestion } from '../types';
@@ -10,6 +12,7 @@ import type { ReadingDeps } from './deps';
 
 const NOW = Date.UTC(2026, 0, 1);
 const TOTAL = unit1Passages.reduce((n, p) => n + p.questions.length, 0);
+const TOTAL_U2 = unit2Passages.reduce((n, p) => n + p.questions.length, 0);
 
 function makeDeps(initial: Progress = emptyProgress()): ReadingDeps & { saved: Progress[] } {
   let state = initial;
@@ -206,5 +209,67 @@ describe('阅读页 · 错题与统计数据源（错题本/学习报告页消�
     click(optionButtons(container, 'r2-2').correct);
 
     expect(loadStats().modules.reading).toEqual({ answered: 2, correct: 1 });
+  });
+});
+
+describe('阅读页 · 单元切换（Unit 2）', () => {
+  beforeEach(() => {
+    history.replaceState(null, '', '/reading?unit=unit2');
+    clearWrongBook();
+    saveStats(emptyStats());
+  });
+
+  afterEach(() => {
+    history.replaceState(null, '', '/reading');
+  });
+
+  it('?unit=unit2 直链渲染 Unit 2 短文与题目，生词可收藏进词汇本', () => {
+    const deps = makeDeps();
+    const container = document.createElement('div');
+    renderReading(container, deps);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.textContent).toContain('Passage 1 · A Weekend in an Ancient Town');
+    expect(container.textContent).toContain('Before You Visit the Terracotta Army');
+    expect(container.querySelectorAll('.exercise--reading')).toHaveLength(TOTAL_U2);
+    expect(container.querySelector('[data-testid="reading-stat"]')!.textContent).toContain(`已答 0 / ${TOTAL_U2}`);
+
+    // 生词点击加入词汇本（与词汇模块共享 progress）
+    const span = container.querySelector<HTMLElement>(
+      '[data-testid="passage-body-u2-p1"] .reading-word[data-word-id="destination"]',
+    )!;
+    click(span);
+    expect(deps.load().cards['destination']).toBeDefined();
+    expect(container.querySelector('[data-testid="vocab-chip"]')!.textContent).toContain('词汇本 1 词');
+  });
+
+  it('Unit 2 作答计入 unit2 统计维度；错题 id 带 u2- 前缀', () => {
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    const q = unit2Passages[0]!.questions[0]!;
+    const buttons = [
+      ...container.querySelector(`[data-question="${q.id}"]`)!.querySelectorAll<HTMLButtonElement>('button.option'),
+    ];
+    const textOf = (b: HTMLButtonElement) => b.textContent!.replace(/^[A-D]\.\s*/, '').trim();
+    const wrong = buttons.find((b) => textOf(b) !== q.options[q.answerIndex])!;
+    click(wrong);
+
+    expect(loadStats().units.unit2.reading).toEqual({ answered: 1, correct: 0 });
+    expect(loadStats().units.unit1.reading).toEqual({ answered: 0, correct: 0 });
+    expect(loadWrongBook().entries[q.id]).toBeDefined();
+  });
+
+  it('点击 Unit 1 切换按钮：内容重建为 Unit 1 短文', () => {
+    const container = document.createElement('div');
+    renderReading(container, makeDeps());
+
+    click(container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.textContent).toContain("Passage 1 · A Freshman's First Term");
+    expect(container.querySelector('[data-question="u2-r1-1"]')).toBeNull();
+    expect(location.search).toBe('');
   });
 });

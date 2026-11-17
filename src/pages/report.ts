@@ -1,11 +1,15 @@
-import type { PracticeModule } from '../types';
+import type { PracticeModule, WrongEntry } from '../types';
+import { UNIT_IDS, UNIT_META, type UnitId } from '../data/units';
+import { getWordUnit } from '../data/words';
 import { loadWrongBook, type WrongBook } from '../store/wrongbook';
-import { loadStats, type StatsBook } from '../store/stats';
+import { loadStats, PRACTICE_MODULES, type StatsBook } from '../store/stats';
 import { loadProgress, type Progress } from '../store/progress';
 import { MODULE_LABEL, MODULE_RETRY_ROUTE, pctText, type ReportDeps } from './deps';
+import { buildDataManagement, defaultDataManagementDeps } from './data-management';
 
 /**
- * /report 学习报告页：汇总各模块练习次数 / 正确率 / 错题数与词汇 SRS 到期数。
+ * /report 学习报告页：汇总各模块练习次数 / 正确率 / 错题数与词汇 SRS 到期数，
+ * 并提供按单元统计维度与数据导出/导入。
  * 图表全部用纯 CSS（正确率条）+ 内联 SVG（正确率环）实现，不引第三方图表库。
  */
 
@@ -14,6 +18,12 @@ const MODULE_ORDER: readonly PracticeModule[] = ['vocab', 'grammar', 'reading', 
 /** 总体正确率环：viewBox 120，半径 52 */
 const DONUT_RADIUS = 52;
 const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
+
+/** 单元「去练习」入口：优先词汇（两单元都有词表可学） */
+const UNIT_RETRY_ROUTE: Record<UnitId, string> = {
+  unit1: '/vocabulary?unit=unit1',
+  unit2: '/vocabulary?unit=unit2',
+};
 
 export interface ModuleRow {
   module: PracticeModule;
@@ -24,19 +34,40 @@ export interface ModuleRow {
   wrongCount: number;
 }
 
+export interface UnitRow {
+  unit: UnitId;
+  answered: number;
+  correct: number;
+  /** 0~1；未练习为 null */
+  accuracy: number | null;
+  wrongCount: number;
+  /** 该单元已加入复习计划的单词数 */
+  srsTotal: number;
+  /** 该单元当前到期（due <= now）应复习的单词数 */
+  srsDue: number;
+}
+
 export interface ReportData {
   rows: ModuleRow[];
+  unitRows: UnitRow[];
   totalAnswered: number;
   totalCorrect: number;
   overallAccuracy: number | null;
   wrongTotal: number;
-  /** 已加入复习计划的单词数 */
+  /** 已加入复习计划的单词数（两单元合计） */
   srsTotal: number;
-  /** 当前到期（due <= now）应复习的单词数 */
+  /** 当前到期（due <= now）应复习的单词数（两单元合计） */
   srsDue: number;
 }
 
-/** 数据组装（纯函数）：统计 + 错题 + 进度三源合一 */
+/** 错题条目归属单元：u2- 前缀 → Unit 2；w:词id → 按词表归属；其余（Unit 1 旧 id）→ Unit 1 */
+export function entryUnit(entry: WrongEntry): UnitId {
+  if (entry.exerciseId.startsWith('u2-')) return 'unit2';
+  if (entry.exerciseId.startsWith('w:')) return getWordUnit(entry.exerciseId.slice(2)) ?? 'unit1';
+  return 'unit1';
+}
+
+/** 数据组装（纯函数）：统计 + 错题 + 进度三源合一，含按单元维度 */
 export function buildReportData(
   stats: StatsBook,
   book: WrongBook,
@@ -55,16 +86,40 @@ export function buildReportData(
     };
   });
 
+  const entries = Object.values(book.entries);
+  const unitRows: UnitRow[] = UNIT_IDS.map((unit) => {
+    let answered = 0;
+    let correct = 0;
+    const table = stats.units?.[unit];
+    if (table) {
+      for (const module of PRACTICE_MODULES) {
+        answered += table[module]?.answered ?? 0;
+        correct += table[module]?.correct ?? 0;
+      }
+    }
+    const srsCards = Object.values(progress.cards).filter((c) => getWordUnit(c.id) === unit);
+    return {
+      unit,
+      answered,
+      correct,
+      accuracy: answered === 0 ? null : correct / answered,
+      wrongCount: entries.filter((e) => entryUnit(e) === unit).length,
+      srsTotal: srsCards.length,
+      srsDue: srsCards.filter((c) => c.due <= now).length,
+    };
+  });
+
   const totalAnswered = rows.reduce((n, r) => n + r.answered, 0);
   const totalCorrect = rows.reduce((n, r) => n + r.correct, 0);
   const cards = Object.values(progress.cards);
 
   return {
     rows,
+    unitRows,
     totalAnswered,
     totalCorrect,
     overallAccuracy: totalAnswered === 0 ? null : totalCorrect / totalAnswered,
-    wrongTotal: Object.keys(book.entries).length,
+    wrongTotal: entries.length,
     srsTotal: cards.length,
     srsDue: cards.filter((c) => c.due <= now).length,
   };
@@ -220,6 +275,55 @@ function buildModuleRow(row: ModuleRow): HTMLElement {
   return item;
 }
 
+/** 单元统计行：练习/正确率/错题/词汇复习汇总（数据源含 stats.units 维度） */
+function buildUnitRow(row: UnitRow): HTMLElement {
+  const item = document.createElement('article');
+  item.className = 'report-row card';
+  item.setAttribute('data-testid', 'unit-row');
+  item.dataset.unit = row.unit;
+
+  const badge = document.createElement('span');
+  badge.className = `module-badge module-badge--${row.unit}`;
+  badge.textContent = `Unit ${UNIT_META[row.unit].no} · ${UNIT_META[row.unit].title}`;
+
+  const main = document.createElement('div');
+  main.className = 'report-row__main';
+
+  const numbers = document.createElement('div');
+  numbers.className = 'report-row__numbers';
+  const answered = document.createElement('span');
+  answered.setAttribute('data-testid', 'unit-answered');
+  answered.replaceChildren('练习 ', strongOf(row.answered), ' 次');
+  const accuracy = document.createElement('span');
+  accuracy.setAttribute('data-testid', 'unit-accuracy');
+  accuracy.replaceChildren('正确率 ', strongOf(pctText(row.accuracy)));
+  const wrong = document.createElement('span');
+  wrong.setAttribute('data-testid', 'unit-wrong');
+  wrong.replaceChildren('错题 ', strongOf(row.wrongCount), ' 道');
+  const srs = document.createElement('span');
+  srs.setAttribute('data-testid', 'unit-srs');
+  srs.replaceChildren('词汇已学 ', strongOf(row.srsTotal), ' · 到期 ', strongOf(row.srsDue));
+  numbers.append(answered, accuracy, wrong, srs);
+
+  const bar = document.createElement('div');
+  bar.className = 'report-bar';
+  const fill = document.createElement('div');
+  fill.className = `report-bar__fill report-bar__fill--${row.unit}`;
+  fill.style.width = row.accuracy === null ? '0%' : `${Math.round(row.accuracy * 1000) / 10}%`;
+  bar.append(fill);
+
+  main.append(numbers, bar);
+
+  const retry = document.createElement('a');
+  retry.className = 'btn btn--ghost btn--sm';
+  retry.setAttribute('data-link', '');
+  retry.href = UNIT_RETRY_ROUTE[row.unit];
+  retry.textContent = row.answered === 0 ? '去开启' : '去练习';
+
+  item.append(badge, main, retry);
+  return item;
+}
+
 function strongOf(text: string | number): HTMLElement {
   const el = document.createElement('strong');
   el.textContent = String(text);
@@ -266,7 +370,7 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   const intro = document.createElement('p');
   intro.className = 'page-intro';
   intro.textContent =
-    '汇总词汇、语法、阅读、听力四个模块的练习次数与正确率、错题沉淀，以及词汇 SM-2 间隔复习的到期情况，并给出下一步学习建议。';
+    '汇总词汇、语法、阅读、听力四个模块的练习次数与正确率、错题沉淀，以及词汇 SM-2 间隔复习的到期情况；支持按单元（Unit 1 / Unit 2）查看统计，并可导出 / 导入学习数据备份。';
 
   /* 总览卡：总练习 / 总正确率（SVG 环）/ 错题总数 / SRS 到期 */
   const cards = document.createElement('div');
@@ -304,6 +408,22 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   for (const row of data.rows) moduleList.append(buildModuleRow(row));
   moduleSection.append(moduleTitle, moduleList);
 
+  /* 按单元统计 */
+  const unitSection = document.createElement('section');
+  unitSection.className = 'report-units';
+  unitSection.setAttribute('data-testid', 'unit-stats');
+  const unitTitle = document.createElement('h2');
+  unitTitle.className = 'section-title';
+  unitTitle.textContent = '按单元统计（Unit 1 / Unit 2）';
+  const unitNote = document.createElement('p');
+  unitNote.className = 'page-intro';
+  unitNote.textContent =
+    '每个单元汇总语法 / 阅读 / 听力 / 词汇复习的练习与错题，以及该单元词表的间隔复习进度；统计自单元维度上线后开始累积。';
+  const unitList = document.createElement('div');
+  unitList.className = 'report-rows';
+  for (const row of data.unitRows) unitList.append(buildUnitRow(row));
+  unitSection.append(unitTitle, unitNote, unitList);
+
   /* 学习建议 */
   const adviceSection = document.createElement('section');
   adviceSection.className = 'report-advice';
@@ -319,6 +439,14 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   }
   adviceSection.append(adviceTitle, adviceList);
 
-  page.append(head, intro, cards, moduleSection, adviceSection);
+  /* 数据管理：导出 / 导入（导入成功后整页重渲，刷新统计） */
+  const dataManagement = buildDataManagement(defaultDataManagementDeps(), {
+    onImported: () => {
+      root.replaceChildren();
+      renderReport(root, d);
+    },
+  });
+
+  page.append(head, intro, cards, moduleSection, unitSection, adviceSection, dataManagement);
   root.append(header, page);
 }
