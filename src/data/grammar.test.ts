@@ -5,6 +5,7 @@ import {
   unit1Exercises,
 } from './unit1-grammar';
 import { unit2GrammarPoints, unit2Exercises } from './unit2-grammar';
+import { unit3GrammarPoints, unit3Exercises } from './unit3-grammar';
 import {
   getGrammarPoints,
   getGrammarExercises,
@@ -94,6 +95,8 @@ describe('语法点讲解卡数据', () => {
     expect(getGrammarPoint('simple-present')?.title).toContain('一般现在时');
     expect(getGrammarPoint('present-perfect')?.title).toContain('现在完成时');
     expect(getGrammarPoint('past-continuous')?.title).toContain('过去进行时');
+    expect(getGrammarPoint('simple-past')?.title).toContain('一般过去时');
+    expect(getGrammarPoint('simple-future')?.title).toContain('一般将来时');
     expect(getGrammarPoint('nope')).toBeUndefined();
   });
 });
@@ -128,12 +131,56 @@ describe('Unit 2 语法（Travelling Around）', () => {
 
 expectGrammarUnitValid(unit2GrammarPoints, unit2Exercises, 'Unit 2 语法');
 
+describe('Unit 3 语法（Sports and Fitness）', () => {
+  it('内置「一般过去时」与「一般将来时」两张讲解卡', () => {
+    expect(unit3GrammarPoints.map((p) => p.id).sort()).toEqual([
+      'simple-future',
+      'simple-past',
+    ]);
+    expect(unit3GrammarPoints.map((p) => p.title).join('/')).toContain('一般过去时');
+    expect(unit3GrammarPoints.map((p) => p.title).join('/')).toContain('一般将来时');
+  });
+
+  it('Unit 3 练习题 id 均带 u3- 前缀，与 Unit 1 / Unit 2 不冲突', () => {
+    const otherIds = new Set([...unit1Exercises, ...unit2Exercises].map((e) => e.id));
+    for (const exercise of unit3Exercises) {
+      expect(exercise.id.startsWith('u3-')).toBe(true);
+      expect(otherIds.has(exercise.id)).toBe(false);
+    }
+  });
+
+  it('三单元语法点 id 全局唯一（注册表不串卡）', () => {
+    const ids = [...unit1GrammarPoints, ...unit2GrammarPoints, ...unit3GrammarPoints].map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('Unit 3 填空等价形式（will tell / shall tell）', () => {
+    const willTell = unit3Exercises.find(
+      (e): e is FillExercise => e.id === 'u3-g9',
+    )!;
+    expect(checkFillAnswer(willTell, 'will tell')).toBe(true);
+    expect(checkFillAnswer(willTell, 'shall tell')).toBe(true);
+    expect(checkFillAnswer(willTell, 'WILL  TELL')).toBe(true);
+    expect(checkFillAnswer(willTell, 'told')).toBe(false);
+
+    const took = unit3Exercises.find(
+      (e): e is FillExercise => e.id === 'u3-g7',
+    )!;
+    expect(checkFillAnswer(took, 'took')).toBe(true);
+    expect(checkFillAnswer(took, 'take')).toBe(false);
+  });
+});
+
+expectGrammarUnitValid(unit3GrammarPoints, unit3Exercises, 'Unit 3 语法');
+
 describe('语法注册表（按单元取用）', () => {
   it('getGrammarPoints / getGrammarExercises 按单元返回', () => {
     expect(getGrammarPoints('unit1')).toBe(unit1GrammarPoints);
     expect(getGrammarPoints('unit2')).toBe(unit2GrammarPoints);
+    expect(getGrammarPoints('unit3')).toBe(unit3GrammarPoints);
     expect(getGrammarExercises('unit1')).toBe(unit1Exercises);
     expect(getGrammarExercises('unit2')).toBe(unit2Exercises);
+    expect(getGrammarExercises('unit3')).toBe(unit3Exercises);
   });
 });
 

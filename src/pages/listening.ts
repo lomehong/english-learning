@@ -10,7 +10,7 @@ import { recordAnswerAndSave } from '../store/stats';
 import type { ListeningMaterial, ListeningQuestion } from '../types';
 import type { SpeechEngine, PlayerState } from '../speech/tts';
 import { defaultListeningDeps, type ListeningDeps } from './deps';
-import { buildUnitSwitcher, currentUnit } from './unit-switch';
+import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /**
  * /listening 页：单元切换 + 主题听力材料 ×2，浏览器 speechSynthesis 本地朗读
@@ -246,16 +246,10 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
     title.className = 'page-head__title';
     title.textContent = `听力 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
 
-    // 单元切换：先停掉当前朗读引擎并清空页面，再按新单元重建
-    const unitSwitcher = buildUnitSwitcher('/listening', () => {
-      teardown?.();
-      root.replaceChildren();
-      mount();
-    });
-
+    // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
     const headSpacer = document.createElement('span');
     headSpacer.className = 'page-head__spacer';
-    head.append(title, unitSwitcher.el, headSpacer, statChip);
+    head.append(title, buildUnitBadge(unit), headSpacer, statChip);
 
     const intro = document.createElement('p');
     intro.className = 'page-intro';

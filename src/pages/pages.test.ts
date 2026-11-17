@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderLearn } from './learn';
 import { renderReview } from './review';
 import { renderVocabulary } from './vocabulary';
+import { setUnit, resetUnitState } from './unit-switch';
 import { createCard, DAY_MS } from '../srs/sm2';
 import { emptyProgress, loadProgress, saveProgress, type Progress } from '../store/progress';
 import { clearWrongBook, loadWrongBook, recordWrong, saveWrongBook } from '../store/wrongbook';
@@ -226,13 +227,15 @@ describe('复习页 · 错题与统计数据源（错题本/学习报告页消�
   });
 });
 
-describe('词汇页 · 单元切换（/vocabulary 容器）', () => {
+describe('词汇页 · 全局单元联动（/vocabulary 容器）', () => {
   beforeEach(() => {
+    resetUnitState();
     saveProgress(emptyProgress());
     history.replaceState(null, '', '/vocabulary');
   });
 
   afterEach(() => {
+    resetUnitState();
     history.replaceState(null, '', '/vocabulary');
     saveProgress(emptyProgress());
   });
@@ -256,18 +259,16 @@ describe('词汇页 · 单元切换（/vocabulary 容器）', () => {
     expect(progress.cards['teenage']).toBeUndefined();
   });
 
-  it('?unit=2 数字写法深链：初始加载即 Unit 2（标题 / 切换器 / 词表）', () => {
+  it('?unit=2 数字写法深链：初始加载即 Unit 2（标题 / 单元徽标 / 词表）', () => {
     history.replaceState(null, '', '/vocabulary?unit=2');
     const container = document.createElement('div');
     renderVocabulary(container);
 
     expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
     expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
-    const unit2Tab = container.querySelector<HTMLElement>(
-      '[data-testid="unit-switcher"] button[data-unit="unit2"]',
-    )!;
-    expect(unit2Tab.classList.contains('tab--active')).toBe(true);
-    expect(unit2Tab.getAttribute('aria-selected')).toBe('true');
+    const badge = container.querySelector<HTMLElement>('[data-testid="current-unit"]')!;
+    expect(badge.dataset.unit).toBe('unit2');
+    expect(badge.textContent).toContain('Travelling Around');
     const counter = container.querySelector<HTMLElement>('.card-nav__counter')!;
     expect(counter.textContent).toBe(`1 / ${getWordsByUnit('unit2').length}`);
   });
@@ -279,10 +280,7 @@ describe('词汇页 · 单元切换（/vocabulary 容器）', () => {
 
     expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
     expect(container.querySelector('h1')!.textContent).toContain('Teenage Life');
-    const unit1Tab = container.querySelector<HTMLElement>(
-      '[data-testid="unit-switcher"] button[data-unit="unit1"]',
-    )!;
-    expect(unit1Tab.classList.contains('tab--active')).toBe(true);
+    expect(container.querySelector<HTMLElement>('[data-testid="current-unit"]')!.dataset.unit).toBe('unit1');
     expect(container.querySelector<HTMLElement>('.card-nav__counter')!.textContent).toBe(
       `1 / ${getWordsByUnit('unit1').length}`,
     );
@@ -302,17 +300,18 @@ describe('词汇页 · 单元切换（/vocabulary 容器）', () => {
     expect(location.search).toContain('tab=review');
   });
 
-  it('点击单元切换按钮：URL 更新且内容切到对应单元词表（tab 参数保留）', () => {
+  it('全局单元切到 Unit 2（setUnit，首页切换器同一入口）后重挂载：内容切到 Unit 2 词表', () => {
     const container = document.createElement('div');
     renderVocabulary(container);
+    expect(container.querySelector('h1')!.textContent).toContain('Teenage Life');
 
-    const unit2Btn = container.querySelector<HTMLButtonElement>(
-      '[data-testid="unit-switcher"] button[data-unit="unit2"]',
-    )!;
-    click(unit2Btn);
+    setUnit('unit2');
+    history.replaceState(null, '', '/vocabulary'); // 模块页重挂载（无 unit 参数，读全局状态）
+    container.replaceChildren();
+    renderVocabulary(container);
 
-    expect(location.search).toContain('unit=unit2');
     expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.querySelector<HTMLElement>('[data-testid="current-unit"]')!.dataset.unit).toBe('unit2');
     const card = container.querySelector<HTMLElement>('.flip-card')!;
     expect(card.textContent).toContain(getWordsByUnit('unit2')[0]!.word);
   });

@@ -2,7 +2,7 @@ import { UNIT_META, unitTitle } from '../data/units';
 import { loadProgress, saveProgress } from '../store/progress';
 import { renderLearn } from './learn';
 import { renderReview } from './review';
-import { buildUnitSwitcher } from './unit-switch';
+import { buildUnitBadge, currentUnit } from './unit-switch';
 import type { VocabDeps } from './deps';
 
 type Tab = 'learn' | 'review';
@@ -11,7 +11,7 @@ function currentTab(): Tab {
   return new URLSearchParams(location.search).get('tab') === 'review' ? 'review' : 'learn';
 }
 
-/** /vocabulary 页：单元切换（Unit 1/Unit 2）+ 学习 / 复习 双 Tab 容器（?unit= & ?tab= 可直链） */
+/** /vocabulary 页：跟随全局单元（首页切换）+ 学习 / 复习 双 Tab 容器（?tab= 可直链） */
 export function renderVocabulary(root: HTMLElement): void {
   const deps: VocabDeps = {
     load: () => loadProgress(),
@@ -38,10 +38,9 @@ export function renderVocabulary(root: HTMLElement): void {
   const title = document.createElement('h1');
   title.className = 'page-head__title';
 
-  const unitSwitcher = buildUnitSwitcher('/vocabulary', () => {
-    syncTitle();
-    showTab(currentTab());
-  });
+  // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读取
+  const unit = currentUnit();
+  const unitBadge = buildUnitBadge(unit);
 
   const tabs = document.createElement('div');
   tabs.className = 'tabs';
@@ -60,7 +59,7 @@ export function renderVocabulary(root: HTMLElement): void {
   reviewTab.textContent = '🔁 复习';
 
   tabs.append(learnTab, reviewTab);
-  head.append(title, unitSwitcher.el, tabs);
+  head.append(title, unitBadge, tabs);
   head.insertAdjacentHTML(
     'beforeend',
     '<span class="page-head__spacer"></span><span class="stat-chip" data-testid="storage-hint">进度自动保存在本机</span>',
@@ -70,8 +69,8 @@ export function renderVocabulary(root: HTMLElement): void {
   content.style.marginTop = 'var(--space-5)';
 
   function syncTitle(): void {
-    const meta = UNIT_META[unitSwitcher.get()];
-    title.textContent = `词汇 · 必修一 ${unitTitle(unitSwitcher.get())}（${meta.titleZh}）`;
+    const meta = UNIT_META[unit];
+    title.textContent = `词汇 · 必修一 ${unitTitle(unit)}（${meta.titleZh}）`;
   }
 
   function tabUrl(tab: Tab): string {
@@ -93,7 +92,7 @@ export function renderVocabulary(root: HTMLElement): void {
     learnTab.setAttribute('aria-selected', String(tab === 'learn'));
     reviewTab.setAttribute('aria-selected', String(tab === 'review'));
     if (tab === 'learn') {
-      renderLearn(content, deps, { gotoReview: () => showTab('review'), unit: unitSwitcher.get() });
+      renderLearn(content, deps, { gotoReview: () => showTab('review'), unit });
     } else {
       renderReview(content, deps, { gotoLearn: () => showTab('learn') });
     }

@@ -120,18 +120,21 @@ describe('学习报告 · 数据组装（纯函数）', () => {
       srsTotal: 1,
       srsDue: 1,
     });
-    // 两单元合计与总量对齐
+    // 各单元合计与总量对齐（Unit 3 未练习，行为 0 不影响合计）
     expect(data.unitRows.reduce((n, r) => n + r.answered, 0)).toBe(data.totalAnswered);
     expect(data.unitRows.reduce((n, r) => n + r.wrongCount, 0)).toBe(data.wrongTotal);
     expect(data.unitRows.reduce((n, r) => n + r.srsTotal, 0)).toBe(3); // exchange 不属于任何单元词表
   });
 
-  it('entryUnit 错题归属：u2- 前缀 → Unit 2；w:词id → 按词表；其余 → Unit 1', () => {
+  it('entryUnit 错题归属：u2-/u3- 前缀按单元号归档；w:词id → 按词表；其余 → Unit 1', () => {
     const book = sampleBook();
     expect(entryUnit(book.entries['g1']!)).toBe('unit1');
     expect(entryUnit(book.entries['r1-1']!)).toBe('unit1');
     expect(entryUnit(book.entries['u2-g1']!)).toBe('unit2');
     expect(entryUnit(book.entries['w:apply']!)).toBe('unit2');
+    expect(entryUnit({ ...book.entries['u2-g1']!, exerciseId: 'u3-g1' })).toBe('unit3');
+    expect(entryUnit({ ...book.entries['u2-g1']!, exerciseId: 'u3-l1-1' })).toBe('unit3');
+    expect(entryUnit({ ...book.entries['u2-g1']!, exerciseId: 'u9-g1' })).toBe('unit1'); // 未注册前缀回退
   });
 
   it('全空数据：总计为 0、正确率 null、到期 0', () => {
@@ -248,12 +251,12 @@ describe('学习报告页 /report', () => {
     expect(container.querySelector('[data-testid="report-advice"]')!.textContent).toContain('词汇');
   });
 
-  it('渲染按单元统计：两行 unit-row，练习/正确率/错题/词汇复习数值正确', () => {
+  it('渲染按单元统计：三行 unit-row（Unit 1 / 2 / 3），练习/正确率/错题/词汇复习数值正确', () => {
     renderReport(container, makeDeps());
 
     const section = container.querySelector('[data-testid="unit-stats"]')!;
     const rows = section.querySelectorAll('[data-testid="unit-row"]');
-    expect(rows).toHaveLength(2);
+    expect(rows).toHaveLength(3);
 
     const unit1 = section.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit1"]')!;
     expect(unit1.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('8');
@@ -268,9 +271,16 @@ describe('学习报告页 /report', () => {
     expect(unit2.querySelector('[data-testid="unit-wrong"]')!.textContent).toContain('2');
     expect(unit2.querySelector('[data-testid="unit-srs"]')!.textContent).toContain('1');
 
+    // Unit 3：注册表自带行，未练习时正确率显示「—」
+    const unit3 = section.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit3"]')!;
+    expect(unit3.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('0');
+    expect(unit3.querySelector('[data-testid="unit-accuracy"]')!.textContent).toContain('—');
+    expect(unit3.textContent).toContain('Sports and Fitness');
+
     // 每行带「去练习」入口（带单元参数）
     expect(unit1.querySelector<HTMLAnchorElement>('a[href="/vocabulary?unit=unit1"]')).toBeTruthy();
     expect(unit2.querySelector<HTMLAnchorElement>('a[href="/vocabulary?unit=unit2"]')).toBeTruthy();
+    expect(unit3.querySelector<HTMLAnchorElement>('a[href="/vocabulary?unit=unit3"]')).toBeTruthy();
   });
 
   it('渲染数据管理区（导出 / 导入）', () => {

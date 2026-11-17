@@ -12,7 +12,7 @@ import { recordAnswerAndSave } from '../store/stats';
 import { createCard } from '../srs/sm2';
 import type { ReadingPassage, ReadingQuestion, Word } from '../types';
 import type { ReadingDeps } from './deps';
-import { buildUnitSwitcher, currentUnit } from './unit-switch';
+import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /**
  * /reading 页：单元切换 + 主题短文 + 阅读理解（答题即时判分 / 解析）
@@ -211,15 +211,10 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
   title.className = 'page-head__title';
   title.textContent = `阅读 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
 
-  // 单元切换：URL 已更新后整页重渲（currentUnit 从 ?unit= 读取）
-  const unitSwitcher = buildUnitSwitcher('/reading', () => {
-    root.replaceChildren();
-    renderReading(root, d);
-  });
-
+  // 全局单元：首页切换器维护（localStorage + ?unit=），此处只读展示
   const headSpacer = document.createElement('span');
   headSpacer.className = 'page-head__spacer';
-  head.append(title, unitSwitcher.el, headSpacer, vocabChip, readStat);
+  head.append(title, buildUnitBadge(unit), headSpacer, vocabChip, readStat);
 
   const intro = document.createElement('p');
   intro.className = 'page-intro';

@@ -1,34 +1,24 @@
 import type { FillExercise, GrammarExercise, GrammarPoint } from '../types';
-import { unit1GrammarPoints, unit1Exercises } from './unit1-grammar';
-import { unit2GrammarPoints, unit2Exercises } from './unit2-grammar';
-import { UNIT_IDS, type UnitId } from './units';
+import { UNIT_IDS, UNIT_REGISTRY, type UnitId } from './units';
 
 /**
- * 语法模块注册表：两单元讲解卡/练习题按单元取用；
+ * 语法模块：讲解卡/练习题按单元从注册表取用（新增单元零改动）；
  * 填空判分（normalizeAnswer / checkFillAnswer）为全单元共享的纯函数。
  */
 
-const pointsByUnit: Record<UnitId, GrammarPoint[]> = {
-  unit1: unit1GrammarPoints,
-  unit2: unit2GrammarPoints,
-};
-
-const exercisesByUnit: Record<UnitId, GrammarExercise[]> = {
-  unit1: unit1Exercises,
-  unit2: unit2Exercises,
-};
-
 /** 按单元取语法讲解卡 */
 export function getGrammarPoints(unit: UnitId): GrammarPoint[] {
-  return pointsByUnit[unit];
+  return UNIT_REGISTRY[unit].grammarPoints;
 }
 
 /** 按单元取专项练习题 */
 export function getGrammarExercises(unit: UnitId): GrammarExercise[] {
-  return exercisesByUnit[unit];
+  return UNIT_REGISTRY[unit].grammarExercises;
 }
 
-const pointById = new Map(UNIT_IDS.flatMap((u) => pointsByUnit[u].map((p) => [p.id, p] as const)));
+const pointById = new Map(
+  UNIT_IDS.flatMap((u) => UNIT_REGISTRY[u].grammarPoints.map((p) => [p.id, p] as const)),
+);
 
 /** 跨单元按 id 查讲解卡（练习题展示所属语法点标题用） */
 export function getGrammarPoint(id: string): GrammarPoint | undefined {

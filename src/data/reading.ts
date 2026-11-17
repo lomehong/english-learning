@@ -1,24 +1,19 @@
 import type { ReadingPassage, ReadingQuestion } from '../types';
-import { unit1Passages } from './unit1-reading';
-import { unit2Passages } from './unit2-reading';
-import { UNIT_IDS, type UnitId } from './units';
+import { UNIT_IDS, UNIT_REGISTRY, type UnitId } from './units';
 
 /**
- * 阅读模块注册表：两单元短文按单元取用；
+ * 阅读模块：短文按单元从注册表取用（新增单元零改动）；
  * 词数统计与题型标签为全单元共享的纯函数。
  */
 
-const passagesByUnit: Record<UnitId, ReadingPassage[]> = {
-  unit1: unit1Passages,
-  unit2: unit2Passages,
-};
-
 /** 按单元取阅读短文 */
 export function getPassagesByUnit(unit: UnitId): ReadingPassage[] {
-  return passagesByUnit[unit];
+  return UNIT_REGISTRY[unit].passages;
 }
 
-const passageById = new Map(UNIT_IDS.flatMap((u) => passagesByUnit[u].map((p) => [p.id, p] as const)));
+const passageById = new Map(
+  UNIT_IDS.flatMap((u) => UNIT_REGISTRY[u].passages.map((p) => [p.id, p] as const)),
+);
 
 /** 跨单元按 id 查短文 */
 export function getPassage(id: string): ReadingPassage | undefined {

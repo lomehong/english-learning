@@ -1,21 +1,19 @@
 import type { WritingTask } from '../types';
-import { unit1WritingTasks } from './unit1-writing';
-import { unit2WritingTasks } from './unit2-writing';
-import { UNIT_IDS, type UnitId } from './units';
+import { UNIT_IDS, UNIT_REGISTRY, type UnitId } from './units';
 
-/** 写作模块注册表：两单元任务按单元取用；词数统计为全单元共享的纯函数。 */
-
-const tasksByUnit: Record<UnitId, WritingTask[]> = {
-  unit1: unit1WritingTasks,
-  unit2: unit2WritingTasks,
-};
+/**
+ * 写作模块：任务按单元从注册表取用（新增单元零改动）；
+ * 词数统计为全单元共享的纯函数。
+ */
 
 /** 按单元取写作任务 */
 export function getWritingTasksByUnit(unit: UnitId): WritingTask[] {
-  return tasksByUnit[unit];
+  return UNIT_REGISTRY[unit].writingTasks;
 }
 
-const taskById = new Map(UNIT_IDS.flatMap((u) => tasksByUnit[u].map((t) => [t.id, t] as const)));
+const taskById = new Map(
+  UNIT_IDS.flatMap((u) => UNIT_REGISTRY[u].writingTasks.map((t) => [t.id, t] as const)),
+);
 
 /** 跨单元按 id 查写作任务 */
 export function getWritingTask(id: string): WritingTask | undefined {
