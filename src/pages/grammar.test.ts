@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderGrammar } from './grammar';
 import { emptyWrongBook, type WrongBook } from '../store/wrongbook';
+import { emptyStats, loadStats, saveStats } from '../store/stats';
 import { unit1Exercises } from '../data/unit1-grammar';
 import type { McqExercise } from '../types';
 import type { GrammarDeps } from './deps';
@@ -181,6 +182,7 @@ describe('语法页 · 错题本', () => {
     const initial = emptyWrongBook();
     initial.entries['g7'] = {
       exerciseId: 'g7',
+      module: 'grammar',
       stem: 'My sister usually ______ (study) English grammar on weekends.',
       yourAnswer: 'study',
       correctAnswer: 'studies',
@@ -195,5 +197,38 @@ describe('语法页 · 错题本', () => {
     expect(wrongbook.querySelectorAll('.wrong-item')).toHaveLength(1);
     expect(wrongbook.textContent).toContain('studies');
     expect(wrongbook.querySelector('[data-testid="wrong-count"]')!.textContent).toContain('1');
+  });
+});
+
+describe('语法页 · 错题与统计数据源（错题本/学习报告页消费）', () => {
+  beforeEach(() => {
+    // 页面统计写默认存储；此处同源重置，保证用例独立（错题本走注入 deps 无需清）
+    saveStats(emptyStats());
+  });
+
+  it('答对与答错都计入练习统计（stats.grammar），correct 仅累计答对', () => {
+    const container = document.createElement('div');
+    renderGrammar(container, makeDeps());
+
+    click(g1Options(container).correct);
+    // g2 也是单选：再答错一题（选非正确项）
+    const g2 = unit1Exercises.find((e) => e.id === 'g2') as McqExercise;
+    const buttons = [...container.querySelectorAll<HTMLButtonElement>('.exercise[data-exercise="g2"] button.option')];
+    const wrongBtn = buttons.find((b) => !b.textContent!.includes(g2.options[g2.answerIndex]))!;
+    click(wrongBtn);
+
+    expect(loadStats().modules.grammar).toEqual({ answered: 2, correct: 1 });
+  });
+
+  it('答错写入的错题条目带 module=grammar，供 /mistakes 按模块过滤', () => {
+    const deps = makeDeps();
+    const container = document.createElement('div');
+    renderGrammar(container, deps);
+
+    click(g1Options(container).wrong);
+
+    const entry = deps.load().entries['g1'];
+    expect(entry).toBeDefined();
+    expect(entry.module).toBe('grammar');
   });
 });

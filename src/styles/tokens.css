@@ -27,6 +27,12 @@
   --green-50: #f0fdf4;
   --green-600: #16a34a;
 
+  --violet-50: #f5f3ff;
+  --violet-600: #7c3aed;
+
+  --teal-50: #f0fdfa;
+  --teal-600: #0d9488;
+
   --white: #ffffff;
 
   /* ---- 语义色 ---- */
@@ -50,6 +56,21 @@
   --color-grade-good-soft: var(--indigo-50);
   --color-grade-easy: var(--green-600);
   --color-grade-easy-soft: var(--green-50);
+
+  /* 练习模块色（错题本 / 学习报告的徽标与图表） */
+  --color-module-vocab: var(--indigo-600);
+  --color-module-vocab-soft: var(--indigo-50);
+  --color-module-grammar: var(--violet-600);
+  --color-module-grammar-soft: var(--violet-50);
+  --color-module-reading: var(--amber-600);
+  --color-module-reading-soft: var(--amber-50);
+  --color-module-listening: var(--teal-600);
+  --color-module-listening-soft: var(--teal-50);
+
+  /* 图表（纯 CSS/SVG，不引图表库） */
+  --color-chart-track: var(--slate-100);
+  --color-chart-donut-track: var(--slate-200);
+  --color-chart-overall: var(--indigo-600);
 
   /* ---- 字体 ---- */
   --font-family-base: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui,

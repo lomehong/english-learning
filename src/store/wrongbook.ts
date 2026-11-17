@@ -1,4 +1,4 @@
-import type { WrongEntry } from '../types';
+import type { PracticeModule, WrongEntry } from '../types';
 import { defaultStorage, type StorageLike } from './progress';
 
 /** 错题本持久化（localStorage）——接缝：StorageLike 可注入（复用 progress 的存储接缝） */
@@ -12,9 +12,29 @@ export interface WrongBook {
 export const STORAGE_VERSION = 1;
 export const STORAGE_KEY = 'english-learning.wrongbook.v1';
 
+const MODULES: readonly PracticeModule[] = ['vocab', 'grammar', 'reading', 'listening'];
+
+function isPracticeModule(value: unknown): value is PracticeModule {
+  return typeof value === 'string' && (MODULES as readonly string[]).includes(value);
+}
+
+/**
+ * 旧版本条目（无 module 字段）加载时按 exerciseId 前缀推断所属模块：
+ * w: 前缀=词汇复习、g*=语法、r*=阅读、l*=听力；其余默认语法（历史唯一写入方）。
+ */
+export function inferModule(exerciseId: string): PracticeModule {
+  if (exerciseId.startsWith('w:')) return 'vocab';
+  const first = exerciseId[0]?.toLowerCase();
+  if (first === 'g') return 'grammar';
+  if (first === 'r') return 'reading';
+  if (first === 'l') return 'listening';
+  return 'grammar';
+}
+
 /** recordWrong 的输入（页面判分后组装） */
 export interface WrongInput {
   exerciseId: string;
+  module: PracticeModule;
   stem: string;
   yourAnswer: string;
   correctAnswer: string;
@@ -30,6 +50,8 @@ function isValidEntry(value: unknown): value is WrongEntry {
   const e = value as Record<string, unknown>;
   return (
     typeof e.exerciseId === 'string' &&
+    // module 允许缺失（旧版本数据，加载时推断补齐）；存在则必须是合法模块
+    (e.module === undefined || isPracticeModule(e.module)) &&
     typeof e.stem === 'string' &&
     typeof e.yourAnswer === 'string' &&
     typeof e.correctAnswer === 'string' &&
@@ -64,7 +86,10 @@ export function loadWrongBook(storage: StorageLike = defaultStorage()): WrongBoo
     }
     const entries: Record<string, WrongEntry> = {};
     for (const [id, entry] of Object.entries(parsed.entries)) {
-      if (isValidEntry(entry) && entry.exerciseId === id) entries[id] = entry;
+      if (isValidEntry(entry) && entry.exerciseId === id) {
+        // 旧数据无 module：按 id 前缀推断补齐，保证加载后字段完整
+        entries[id] = { ...entry, module: entry.module ?? inferModule(id) };
+      }
     }
     return { version: STORAGE_VERSION, entries };
   } catch {
@@ -81,6 +106,7 @@ export function recordWrong(book: WrongBook, input: WrongInput, at: number): Wro
   const previous = book.entries[input.exerciseId];
   const entry: WrongEntry = {
     exerciseId: input.exerciseId,
+    module: input.module,
     stem: input.stem,
     yourAnswer: input.yourAnswer,
     correctAnswer: input.correctAnswer,
@@ -92,6 +118,14 @@ export function recordWrong(book: WrongBook, input: WrongInput, at: number): Wro
     version: STORAGE_VERSION,
     entries: { ...book.entries, [input.exerciseId]: entry },
   };
+}
+
+/** 移除单条错题（纯函数）：未知 id 原样返回新引用 */
+export function removeEntry(book: WrongBook, exerciseId: string): WrongBook {
+  if (!(exerciseId in book.entries)) return { ...book };
+  const entries = { ...book.entries };
+  delete entries[exerciseId];
+  return { version: STORAGE_VERSION, entries };
 }
 
 /** 清空错题本并持久化，返回空错题本 */

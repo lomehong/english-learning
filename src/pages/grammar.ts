@@ -11,6 +11,7 @@ import {
   emptyWrongBook,
   type WrongBook,
 } from '../store/wrongbook';
+import { recordAnswerAndSave } from '../store/stats';
 import type { FillExercise, GrammarExercise, GrammarPoint, McqExercise, WrongEntry } from '../types';
 import type { GrammarDeps } from './deps';
 
@@ -301,11 +302,14 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
     answered += 1;
     if (correct) correctCount += 1;
     statChip.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
+    // 学习报告数据源：每次作答计入模块统计
+    recordAnswerAndSave('grammar', correct);
     if (!correct) {
       book = recordWrong(
         book,
         {
           exerciseId: exercise.id,
+          module: 'grammar',
           stem: exercise.stem,
           yourAnswer,
           correctAnswer: correctAnswerOf(exercise),

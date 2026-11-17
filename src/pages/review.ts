@@ -2,6 +2,8 @@ import { getWord, unit1Words } from '../data/words';
 import { scheduleCard, AGAIN_DELAY_MS } from '../srs/sm2';
 import type { Card, Grade } from '../types';
 import type { Progress } from '../store/progress';
+import { loadWrongBook, saveWrongBook, recordWrong, removeEntry } from '../store/wrongbook';
+import { recordAnswerAndSave } from '../store/stats';
 import { createFlipCard, type VocabDeps } from './deps';
 
 /** 到期队列计算：due <= now，按到期时间升序（与渲染解耦） */
@@ -9,6 +11,36 @@ export function computeDueCards(progress: Progress, now: number): Card[] {
   return Object.values(progress.cards)
     .filter((c) => c.due <= now)
     .sort((a, b) => a.due - b.due);
+}
+
+/** 词汇错题的持久化 id（w: 前缀，供错题本页按模块过滤与「去重练」跳转） */
+function vocabWrongId(wordId: string): string {
+  return `w:${wordId}`;
+}
+
+/** 复习评分的错题本联动：again=记为词汇错题；重练后非 again=掌握出本 */
+function syncVocabWrong(wordId: string, grade: Grade, at: number): void {
+  if (!getWord(wordId)) return; // 词表外脏数据不记
+  if (grade === 'again') {
+    const word = getWord(wordId)!;
+    saveWrongBook(
+      recordWrong(
+        loadWrongBook(),
+        {
+          exerciseId: vocabWrongId(wordId),
+          module: 'vocab',
+          stem: `${word.word} ${word.phonetic}`,
+          yourAnswer: '复习时未想起释义（重来）',
+          correctAnswer: word.meaning,
+          explanation: `${word.pos} ${word.meaning} · 例句：${word.example}（${word.exampleZh}）`,
+        },
+        at,
+      ),
+    );
+  } else {
+    const book = loadWrongBook();
+    if (book.entries[vocabWrongId(wordId)]) saveWrongBook(removeEntry(book, vocabWrongId(wordId)));
+  }
 }
 
 /** 复习页：到期队列 + 四档评分（again/hard/good/easy） */
@@ -99,6 +131,9 @@ export function renderReview(
         progress.cards[card.id] = scheduleCard(card, grade, deps.now());
         deps.save(progress);
         sessionDone += 1;
+        // 学习报告数据源 + 词汇错题联动（again 记错、掌握出本）
+        recordAnswerAndSave('vocab', grade !== 'again');
+        syncVocabWrong(card.id, grade, deps.now());
         render();
       });
       actions.append(btn);

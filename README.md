@@ -17,14 +17,22 @@
   - 内置 2 篇「Teenage Life」主题自编短文（约 120 词/篇，避免版权，`src/data/unit1-reading.ts`）
   - 每篇 3 道阅读理解单选题（细节理解 / 主旨大意 / 写作意图），逐题中文解析；答题即时判分并展示解析
   - 短文生词虚线标注，点击即加入词汇本（与词汇模块共享 localStorage 键 `english-learning.progress.v1`，进入 SM-2 复习队列），再次点击取消
-- **统一设计令牌**：`src/styles/tokens.css` 为唯一样式变量来源，组件样式只引用 `var(--*)`
+- **错题本**（`/mistakes`）
+  - 汇总词汇（复习评「重来」）/ 语法 / 阅读 / 听力四模块写入 localStorage 的错题（键 `english-learning.wrongbook.v1`，按题目 id 去重，重复答错累加次数）
+  - 按模块过滤（全部 / 词汇 / 语法 / 阅读 / 听力，`?module=` 可深链）、逐条移除、一键清空
+  - 每条错题可「去重练」跳回对应模块（词汇跳转到期复习队列）；词汇重练后评非「重来」即自动出本
+- **学习报告**（`/report`）
+  - 各模块练习次数 / 正确率 / 错题数 + 词汇 SM-2 到期数（练习统计键 `english-learning.stats.v1`，随语法 / 阅读 / 词汇复习每次作答自动累积）
+  - 图表全部为纯 CSS（模块正确率条）+ 内联 SVG（总体正确率环），零第三方图表库
+  - 依据数据生成学习建议：到期提醒、短板模块、错题消化、模块均衡与正向反馈
+- **统一设计令牌**：`src/styles/tokens.css` 为唯一样式变量来源（含四模块色与图表色），组件样式只引用 `var(--*)`
 
 ## 开发
 
 ```bash
 npm install
 npm run dev      # 本地开发服务器
-npm test         # 单元测试（vitest，79 例）
+npm test         # 单元测试（vitest，131 例）
 npm run build    # 生产构建（tsc 类型检查 + vite build）
 npm run preview  # 预览构建产物
 ```

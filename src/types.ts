@@ -133,9 +133,14 @@ export interface ListeningMaterial {
   questions: ListeningQuestion[];
 }
 
+/** 练习模块标识（错题与统计共用的维度） */
+export type PracticeModule = 'vocab' | 'grammar' | 'reading' | 'listening';
+
 /** 错题本条目（localStorage 持久化单元） */
 export interface WrongEntry {
   exerciseId: string;
+  /** 所属模块（旧数据缺失时由加载归一化按 id 前缀推断） */
+  module: PracticeModule;
   stem: string;
   yourAnswer: string;
   correctAnswer: string;

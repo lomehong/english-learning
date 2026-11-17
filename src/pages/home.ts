@@ -8,6 +8,8 @@ export function renderHome(root: HTMLElement): void {
         <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
         <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
         <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
+        <a class="btn btn--ghost" href="/mistakes" data-link>错题本</a>
+        <a class="btn btn--ghost" href="/report" data-link>学习报告</a>
       </nav>
     </div>`;
 
@@ -41,6 +43,14 @@ export function renderHome(root: HTMLElement): void {
         <h2 class="module-card__title">✍️ 写作</h2>
         <p class="module-card__desc">建设中，敬请期待</p>
       </div>
+      <a class="module-card" href="/mistakes" data-link>
+        <h2 class="module-card__title">📝 错题本</h2>
+        <p class="module-card__desc">四模块错题汇总：按模块过滤、逐条移除、去重练</p>
+      </a>
+      <a class="module-card" href="/report" data-link>
+        <h2 class="module-card__title">📊 学习报告</h2>
+        <p class="module-card__desc">练习次数 / 正确率 / 错题数 / 词汇复习到期与学习建议</p>
+      </a>
     </div>`;
 
   // 模块入口统一由 router 的 <a data-link> 拦截跳转
