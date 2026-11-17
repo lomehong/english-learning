@@ -2,10 +2,12 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { createRouter, navigate, type Route } from '../router';
 import { renderHome } from './home';
 import { renderVocabulary } from './vocabulary';
+import { renderGrammar } from './grammar';
 
 const routes: Route[] = [
   { path: '/', render: renderHome },
   { path: '/vocabulary', render: renderVocabulary },
+  { path: '/grammar', render: renderGrammar },
 ];
 
 describe('路由接线', () => {
@@ -18,13 +20,29 @@ describe('路由接线', () => {
     history.pushState(null, '', '/');
   });
 
-  it('/ 渲染首页（模块入口含词汇）', () => {
+  it('/ 渲染首页（模块入口含词汇与语法）', () => {
     history.pushState(null, '', '/');
     root = document.createElement('div');
     document.body.append(root);
     cleanup = createRouter(root, routes).destroy;
     expect(root.querySelector('.module-grid')).toBeTruthy();
     expect(root.querySelector('a.module-card[href="/vocabulary"]')).toBeTruthy();
+    const grammarCard = root.querySelector('a.module-card[href="/grammar"]');
+    expect(grammarCard).toBeTruthy();
+    expect(grammarCard!.classList.contains('module-card--disabled')).toBe(false);
+  });
+
+  it('/grammar 渲染语法页（讲解卡 + 10 题练习 + 错题本）', () => {
+    history.pushState(null, '', '/');
+    root = document.createElement('div');
+    document.body.append(root);
+    cleanup = createRouter(root, routes).destroy;
+
+    navigate('/grammar');
+    expect(root.textContent).toContain('语法 · 必修一 Unit 1');
+    expect(root.querySelectorAll('.grammar-card')).toHaveLength(2);
+    expect(root.querySelectorAll('.exercise')).toHaveLength(10);
+    expect(root.querySelector('[data-testid="wrongbook"]')).toBeTruthy();
   });
 
   it('/vocabulary 渲染词汇页，默认学习 Tab，可切复习 Tab', () => {

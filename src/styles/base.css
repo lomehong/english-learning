@@ -437,3 +437,389 @@ a {
   margin: 0 auto var(--space-4);
   max-width: 34rem;
 }
+
+/* ---- 语法模块 ---- */
+.section-title {
+  margin: var(--space-7) 0 var(--space-4);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.page .section-title:first-of-type {
+  margin-top: var(--space-5);
+}
+
+/* 讲解卡 */
+.grammar-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--space-4);
+}
+
+.grammar-card {
+  padding: var(--space-5);
+}
+
+.grammar-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.grammar-card__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.grammar-card__unit {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.grammar-card__tagline {
+  margin: var(--space-2) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.grammar-card__sub {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.grammar-form {
+  margin: 0;
+}
+
+.grammar-form__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+}
+
+.grammar-form__row dt {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.grammar-form__row dd {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.grammar-card__usage,
+.grammar-card__tips,
+.grammar-card__examples {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.grammar-card__usage li,
+.grammar-card__tips li {
+  font-size: var(--font-size-sm);
+}
+
+.grammar-card__markers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.marker-chip {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.grammar-card__example {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.grammar-card__example-en {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+}
+
+.grammar-card__example-zh {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.grammar-card__tips li::marker {
+  color: var(--color-grade-hard);
+}
+
+/* 练习题 */
+.exercise-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.exercise {
+  padding: var(--space-5);
+}
+
+.exercise__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.exercise__no {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.badge {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.exercise__point {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.exercise__stem {
+  margin: 0 0 var(--space-4);
+  font-weight: var(--font-weight-medium);
+}
+
+.exercise__options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.option {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.option__key {
+  flex: none;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.option:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.option--correct,
+.option--correct:disabled {
+  background: var(--color-grade-easy-soft);
+  border-color: var(--color-grade-easy);
+  color: var(--color-grade-easy);
+  opacity: 1;
+}
+
+.option--correct .option__key {
+  color: var(--color-grade-easy);
+}
+
+.option--wrong,
+.option--wrong:disabled {
+  background: var(--color-grade-again-soft);
+  border-color: var(--color-grade-again);
+  color: var(--color-grade-again);
+  opacity: 1;
+}
+
+.option--wrong .option__key {
+  color: var(--color-grade-again);
+}
+
+.exercise__fill {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.exercise__input {
+  flex: 1;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.exercise__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.exercise__input:disabled {
+  background: var(--color-surface-muted);
+}
+
+.exercise__result {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-muted);
+}
+
+.exercise--correct .exercise__result {
+  border-color: var(--color-grade-easy);
+  background: var(--color-grade-easy-soft);
+}
+
+.exercise--wrong .exercise__result {
+  border-color: var(--color-grade-again);
+  background: var(--color-grade-again-soft);
+}
+
+.exercise__verdict {
+  margin: 0 0 var(--space-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.exercise--correct .exercise__verdict {
+  color: var(--color-grade-easy);
+}
+
+.exercise--wrong .exercise__verdict {
+  color: var(--color-grade-again);
+}
+
+.exercise__yours,
+.exercise__answer {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.exercise__answer {
+  font-weight: var(--font-weight-semibold);
+}
+
+.exercise__explanation {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+}
+
+/* 错题本 */
+.wrongbook__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.wrongbook__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* display:flex 会覆盖 UA 的 [hidden]，此处显式守卫 */
+.wrongbook__list[hidden],
+.empty-state[hidden] {
+  display: none;
+}
+
+.wrong-item {
+  padding: var(--space-4) var(--space-5);
+}
+
+.wrong-item__stem {
+  margin: 0 0 var(--space-2);
+  font-weight: var(--font-weight-medium);
+}
+
+.wrong-item__answers {
+  margin: 0 0 var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.wrong-item__yours {
+  color: var(--color-grade-again);
+}
+
+.wrong-item__right {
+  color: var(--color-grade-easy);
+  font-weight: var(--font-weight-semibold);
+}
+
+.wrong-item__meta {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.wrong-item__explanation {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 40rem) {
+  .exercise__options {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise__fill {
+    flex-direction: column;
+  }
+}
