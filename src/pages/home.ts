@@ -7,6 +7,7 @@ export function renderHome(root: HTMLElement): void {
       <nav class="site-header__nav">
         <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
         <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
+        <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
       </nav>
     </div>`;
 
@@ -27,6 +28,10 @@ export function renderHome(root: HTMLElement): void {
       <a class="module-card" href="/grammar" data-link>
         <h2 class="module-card__title">📖 语法</h2>
         <p class="module-card__desc">必修一 Unit 1：一般现在时 / 现在进行时讲解与专项练习</p>
+      </a>
+      <a class="module-card" href="/reading" data-link>
+        <h2 class="module-card__title">📄 阅读</h2>
+        <p class="module-card__desc">Unit 1 主题短文 ×2：阅读理解即时判分，生词一点收进词汇本</p>
       </a>
       <div class="module-card module-card--disabled">
         <h2 class="module-card__title">🎧 听力</h2>

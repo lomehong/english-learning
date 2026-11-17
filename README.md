@@ -13,6 +13,10 @@
   - 内置人教2019必修一 Unit 1 语法点讲解卡：一般现在时 / 现在进行时（构成 / 用法要点 / 时间标志词 / 例句 / 易错点，`src/data/unit1-grammar.ts`）
   - 专项练习 10 题（6 单选 + 4 填空），逐题中文解析；答题即时判分并展示解析
   - 错题自动进入错题本，持久化在浏览器 localStorage（键 `english-learning.wrongbook.v1`），支持查看与清空
+- **阅读模块**（`/reading`）
+  - 内置 2 篇「Teenage Life」主题自编短文（约 120 词/篇，避免版权，`src/data/unit1-reading.ts`）
+  - 每篇 3 道阅读理解单选题（细节理解 / 主旨大意 / 写作意图），逐题中文解析；答题即时判分并展示解析
+  - 短文生词虚线标注，点击即加入词汇本（与词汇模块共享 localStorage 键 `english-learning.progress.v1`，进入 SM-2 复习队列），再次点击取消
 - **统一设计令牌**：`src/styles/tokens.css` 为唯一样式变量来源，组件样式只引用 `var(--*)`
 
 ## 开发
@@ -20,7 +24,7 @@
 ```bash
 npm install
 npm run dev      # 本地开发服务器
-npm test         # 单元测试（vitest，63 例）
+npm test         # 单元测试（vitest，79 例）
 npm run build    # 生产构建（tsc 类型检查 + vite build）
 npm run preview  # 预览构建产物
 ```

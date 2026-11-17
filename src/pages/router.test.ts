@@ -3,11 +3,13 @@ import { createRouter, navigate, type Route } from '../router';
 import { renderHome } from './home';
 import { renderVocabulary } from './vocabulary';
 import { renderGrammar } from './grammar';
+import { renderReading } from './reading';
 
 const routes: Route[] = [
   { path: '/', render: renderHome },
   { path: '/vocabulary', render: renderVocabulary },
   { path: '/grammar', render: renderGrammar },
+  { path: '/reading', render: renderReading },
 ];
 
 describe('路由接线', () => {
@@ -20,7 +22,7 @@ describe('路由接线', () => {
     history.pushState(null, '', '/');
   });
 
-  it('/ 渲染首页（模块入口含词汇与语法）', () => {
+  it('/ 渲染首页（模块入口含词汇 / 语法 / 阅读）', () => {
     history.pushState(null, '', '/');
     root = document.createElement('div');
     document.body.append(root);
@@ -30,6 +32,22 @@ describe('路由接线', () => {
     const grammarCard = root.querySelector('a.module-card[href="/grammar"]');
     expect(grammarCard).toBeTruthy();
     expect(grammarCard!.classList.contains('module-card--disabled')).toBe(false);
+    const readingCard = root.querySelector('a.module-card[href="/reading"]');
+    expect(readingCard).toBeTruthy();
+    expect(readingCard!.classList.contains('module-card--disabled')).toBe(false);
+  });
+
+  it('/reading 渲染阅读页（2 篇短文 + 6 题 + 可点击生词）', () => {
+    history.pushState(null, '', '/');
+    root = document.createElement('div');
+    document.body.append(root);
+    cleanup = createRouter(root, routes).destroy;
+
+    navigate('/reading');
+    expect(root.textContent).toContain('阅读 · 必修一 Unit 1');
+    expect(root.querySelectorAll('.reading-passage')).toHaveLength(2);
+    expect(root.querySelectorAll('.exercise--reading')).toHaveLength(6);
+    expect(root.querySelector('.reading-word')).toBeTruthy();
   });
 
   it('/grammar 渲染语法页（讲解卡 + 10 题练习 + 错题本）', () => {

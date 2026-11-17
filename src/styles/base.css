@@ -814,6 +814,94 @@ a {
   color: var(--color-text-secondary);
 }
 
+/* ---- 阅读模块 ---- */
+.page-intro {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+}
+
+.section-title--sub {
+  margin-top: var(--space-5);
+  font-size: var(--font-size-md);
+}
+
+.reading-passage {
+  margin-bottom: var(--space-6);
+}
+
+.passage-card {
+  padding: var(--space-5);
+}
+
+.passage__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.passage__title {
+  margin: 0 var(--space-2) 0 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.passage__body {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.passage__para {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: 2;
+}
+
+/* 可点击生词：虚线下划线 + 主色 */
+.reading-word {
+  padding: 0 var(--space-1);
+  border-bottom: 2px dashed var(--color-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.reading-word:hover,
+.reading-word:focus-visible {
+  background: var(--color-primary-soft);
+  outline: none;
+}
+
+/* 已加入词汇本：实线下划线 + 主色浅底 + ✓ */
+.reading-word--added,
+.reading-word--added:hover {
+  background: var(--color-primary-soft);
+  border-bottom-style: solid;
+}
+
+.reading-word--added::after {
+  content: '✓';
+  margin-left: var(--space-1);
+  font-size: var(--font-size-xs);
+}
+
+.passage__hint {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* 阅读理解选项为完整句子，单列展示 */
+.exercise--reading .exercise__options {
+  grid-template-columns: 1fr;
+}
+
 @media (max-width: 40rem) {
   .exercise__options {
     grid-template-columns: 1fr;
