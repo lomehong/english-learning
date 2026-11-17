@@ -12,6 +12,7 @@ import { recordAnswerAndSave } from '../store/stats';
 import { createCard } from '../srs/sm2';
 import type { ReadingPassage, ReadingQuestion, Word } from '../types';
 import type { ReadingDeps } from './deps';
+import { buildEmptyState } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
 
 /**
@@ -216,11 +217,17 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
   headSpacer.className = 'page-head__spacer';
   head.append(title, buildUnitBadge(unit), headSpacer, vocabChip, readStat);
 
-  const intro = document.createElement('p');
-  intro.className = 'page-intro';
-  intro.textContent = `${passages.length} 篇「${UNIT_META[unit].title}」主题短文（自编 · 约 120 词/篇）。完成每篇 ${passages[0]?.questions.length ?? 0} 道阅读理解，答题即时判分并附解析；正文中带虚线下划线的是生词，点击加入词汇本（与「词汇」模块共享，可在 词汇 → 复习 中巩固），再次点击可取消。`;
+  page.append(head);
 
-  page.append(head, intro);
+  // 缺 unitN-reading.ts 数据时优雅降级为「暂无内容」（不渲染短文区，也不崩溃）
+  if (passages.length === 0) {
+    page.append(buildEmptyState('本单元阅读内容暂无内容，敬请期待。'));
+  } else {
+    const intro = document.createElement('p');
+    intro.className = 'page-intro';
+    intro.textContent = `${passages.length} 篇「${UNIT_META[unit].title}」主题短文（自编 · 约 120 词/篇）。完成每篇 ${passages[0]?.questions.length ?? 0} 道阅读理解，答题即时判分并附解析；正文中带虚线下划线的是生词，点击加入词汇本（与「词汇」模块共享，可在 词汇 → 复习 中巩固），再次点击可取消。`;
+    page.append(intro);
+  }
 
   /* 生词收藏：写入与词汇模块同一份 progress（localStorage） */
   function toggleWord(wordId: string): void {

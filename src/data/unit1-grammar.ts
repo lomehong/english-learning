@@ -161,3 +161,6 @@ const pointById = new Map(unit1GrammarPoints.map((p) => [p.id, p]));
 export function getGrammarPoint(id: string): GrammarPoint | undefined {
   return pointById.get(id);
 }
+
+/** 自动发现约定：units.ts 经 import.meta.glob('./unit*-…') 读取本 default 导出（新增单元照此约定） */
+export default { points: unit1GrammarPoints, exercises: unit1Exercises };

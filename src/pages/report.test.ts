@@ -6,7 +6,7 @@ import { emptyProgress, type Progress } from '../store/progress';
 import { createCard, DAY_MS } from '../srs/sm2';
 import type { ReportDeps } from './deps';
 import type { PracticeModule } from '../types';
-import type { UnitId } from '../data/units';
+import { UNIT_IDS, type UnitId } from '../data/units';
 
 const NOW = Date.UTC(2026, 0, 1);
 
@@ -251,12 +251,12 @@ describe('学习报告页 /report', () => {
     expect(container.querySelector('[data-testid="report-advice"]')!.textContent).toContain('词汇');
   });
 
-  it('渲染按单元统计：三行 unit-row（Unit 1 / 2 / 3），练习/正确率/错题/词汇复习数值正确', () => {
+  it('渲染按单元统计：每注册单元一行（Unit 1–4），练习/正确率/错题/词汇复习数值正确', () => {
     renderReport(container, makeDeps());
 
     const section = container.querySelector('[data-testid="unit-stats"]')!;
     const rows = section.querySelectorAll('[data-testid="unit-row"]');
-    expect(rows).toHaveLength(3);
+    expect(rows).toHaveLength(UNIT_IDS.length);
 
     const unit1 = section.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit1"]')!;
     expect(unit1.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('8');
@@ -276,6 +276,12 @@ describe('学习报告页 /report', () => {
     expect(unit3.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('0');
     expect(unit3.querySelector('[data-testid="unit-accuracy"]')!.textContent).toContain('—');
     expect(unit3.textContent).toContain('Sports and Fitness');
+
+    // Unit 4：纯数据文件新增的单元同样自动出现在按单元统计（未练习 → 全 0 行）
+    const unit4 = section.querySelector<HTMLElement>('[data-testid="unit-row"][data-unit="unit4"]')!;
+    expect(unit4.querySelector('[data-testid="unit-answered"]')!.textContent).toContain('0');
+    expect(unit4.querySelector('[data-testid="unit-accuracy"]')!.textContent).toContain('—');
+    expect(unit4.textContent).toContain('Natural Disasters');
 
     // 每行带「去练习」入口（带单元参数）
     expect(unit1.querySelector<HTMLAnchorElement>('a[href="/vocabulary?unit=unit1"]')).toBeTruthy();

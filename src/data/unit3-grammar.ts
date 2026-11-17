@@ -157,3 +157,6 @@ export const unit3Exercises: GrammarExercise[] = [
       'be going to 结构中 be 动词随主语变化；主语 My friends and I 是复数，用 are。',
   },
 ];
+
+/** 自动发现约定：units.ts 经 import.meta.glob('./unit*-…') 读取本 default 导出（新增单元照此约定） */
+export default { points: unit3GrammarPoints, exercises: unit3Exercises };

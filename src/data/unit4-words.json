@@ -1,0 +1,182 @@
+[
+  {
+    "id": "disaster",
+    "word": "disaster",
+    "phonetic": "/dɪˈzɑːstə(r)/",
+    "pos": "n.",
+    "meaning": "灾难；灾害",
+    "example": "The earthquake was one of the worst disasters in the country's history.",
+    "exampleZh": "那次地震是该国历史上最严重的灾难之一。"
+  },
+  {
+    "id": "earthquake",
+    "word": "earthquake",
+    "phonetic": "/ˈɜːθkweɪk/",
+    "pos": "n.",
+    "meaning": "地震",
+    "example": "The earthquake struck the city at midnight.",
+    "exampleZh": "地震在午夜袭击了那座城市。"
+  },
+  {
+    "id": "flood",
+    "word": "flood",
+    "phonetic": "/flʌd/",
+    "pos": "n.",
+    "meaning": "洪水；水灾",
+    "example": "The flood swept away cars and bridges.",
+    "exampleZh": "洪水冲走了汽车和桥梁。"
+  },
+  {
+    "id": "drought",
+    "word": "drought",
+    "phonetic": "/draʊt/",
+    "pos": "n.",
+    "meaning": "旱灾；干旱",
+    "example": "The long drought killed most of the crops.",
+    "exampleZh": "长期的干旱使大部分农作物枯死。"
+  },
+  {
+    "id": "ruin",
+    "word": "ruin",
+    "phonetic": "/ˈruːɪn/",
+    "pos": "n.",
+    "meaning": "废墟；毁灭（in ruins 严重受损）",
+    "example": "The village lay in ruins after the storm.",
+    "exampleZh": "暴风雨过后，村庄成了一片废墟。"
+  },
+  {
+    "id": "destroy",
+    "word": "destroy",
+    "phonetic": "/dɪˈstrɔɪ/",
+    "pos": "vt.",
+    "meaning": "破坏；摧毁",
+    "example": "The fire destroyed hundreds of houses.",
+    "exampleZh": "大火摧毁了数百栋房屋。"
+  },
+  {
+    "id": "damage",
+    "word": "damage",
+    "phonetic": "/ˈdæmɪdʒ/",
+    "pos": "n.",
+    "meaning": "损失；损害",
+    "example": "The storm caused serious damage to the school.",
+    "exampleZh": "暴风雨给学校造成了严重损失。"
+  },
+  {
+    "id": "shock",
+    "word": "shock",
+    "phonetic": "/ʃɒk/",
+    "pos": "n.",
+    "meaning": "震惊；打击；休克",
+    "example": "The news of the disaster came as a great shock to us.",
+    "exampleZh": "灾祸的消息让我们大为震惊。"
+  },
+  {
+    "id": "rescue",
+    "word": "rescue",
+    "phonetic": "/ˈreskjuː/",
+    "pos": "n.",
+    "meaning": "营救；救援",
+    "example": "A rescue team arrived within an hour.",
+    "exampleZh": "救援队在一小时内赶到了。"
+  },
+  {
+    "id": "survive",
+    "word": "survive",
+    "phonetic": "/səˈvaɪv/",
+    "pos": "v.",
+    "meaning": "幸存；存活；比……活得长",
+    "example": "Amazingly, all the students survived the earthquake.",
+    "exampleZh": "令人惊奇的是，所有学生都在地震中幸存了下来。"
+  },
+  {
+    "id": "trap",
+    "word": "trap",
+    "phonetic": "/træp/",
+    "pos": "vt.",
+    "meaning": "使陷入困境；困住（n. 陷阱）",
+    "example": "Several workers were trapped under the building.",
+    "exampleZh": "几名工人被困在建筑物下面。"
+  },
+  {
+    "id": "shelter",
+    "word": "shelter",
+    "phonetic": "/ˈʃeltə(r)/",
+    "pos": "n.",
+    "meaning": "避难所；庇护处",
+    "example": "The villagers found shelter in a primary school.",
+    "exampleZh": "村民们在一所小学里找到了避难所。"
+  },
+  {
+    "id": "victim",
+    "word": "victim",
+    "phonetic": "/ˈvɪktɪm/",
+    "pos": "n.",
+    "meaning": "受害者；罹难者",
+    "example": "Medics rushed the victims to hospital.",
+    "exampleZh": "医护人员急忙把受灾群众送往医院。"
+  },
+  {
+    "id": "emergency",
+    "word": "emergency",
+    "phonetic": "/ɪˈmɜːdʒənsi/",
+    "pos": "n.",
+    "meaning": "突发事件；紧急情况",
+    "example": "In an emergency, call 119 for help.",
+    "exampleZh": "遇到紧急情况，请拨打 119 求助。"
+  },
+  {
+    "id": "aid",
+    "word": "aid",
+    "phonetic": "/eɪd/",
+    "pos": "n.",
+    "meaning": "援助；帮助（first aid 急救）",
+    "example": "The government sent aid to the flood victims.",
+    "exampleZh": "政府向洪水灾民送去了援助物资。"
+  },
+  {
+    "id": "calm",
+    "word": "calm",
+    "phonetic": "/kɑːm/",
+    "pos": "adj.",
+    "meaning": "镇静的；沉着的（v. 使平静）",
+    "example": "Stay calm and follow the teacher's instructions.",
+    "exampleZh": "保持镇静，听从老师的指令。"
+  },
+  {
+    "id": "strike",
+    "word": "strike",
+    "phonetic": "/straɪk/",
+    "pos": "v.",
+    "meaning": "侵袭；袭击；罢工（过去式 struck）",
+    "example": "A powerful typhoon struck the coast last night.",
+    "exampleZh": "昨晚强台风袭击了海岸。"
+  },
+  {
+    "id": "crash",
+    "word": "crash",
+    "phonetic": "/kræʃ/",
+    "pos": "v.",
+    "meaning": "碰撞；坠毁（n. 碰撞事故）",
+    "example": "The car crashed into a tree in the storm.",
+    "exampleZh": "暴风雨中，汽车撞到了一棵树上。"
+  },
+  {
+    "id": "sweep",
+    "word": "sweep",
+    "phonetic": "/swiːp/",
+    "pos": "v.",
+    "meaning": "席卷；横扫；打扫（过去式 swept）",
+    "example": "Floodwater swept through the streets.",
+    "exampleZh": "洪水席卷了街道。"
+  },
+  {
+    "id": "unite",
+    "word": "unite",
+    "phonetic": "/juˈnaɪt/",
+    "pos": "v.",
+    "meaning": "联合；团结",
+    "example": "People united to rebuild their hometown.",
+    "exampleZh": "人们团结起来重建家乡。"
+  }
+]

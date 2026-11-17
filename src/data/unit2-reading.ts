@@ -140,3 +140,6 @@ export const unit2Passages: ReadingPassage[] = [
     ],
   },
 ];
+
+/** 自动发现约定：units.ts 经 import.meta.glob('./unit*-…') 读取本 default 导出（新增单元照此约定） */
+export default unit2Passages;

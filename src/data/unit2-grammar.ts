@@ -159,3 +159,6 @@ export const unit2Exercises: GrammarExercise[] = [
       'when 引出的短动作（started）打断正在进行的长动作，长动作用过去进行时；主语 I 对应 was；admire 直接加 -ing，填 was admiring。',
   },
 ];
+
+/** 自动发现约定：units.ts 经 import.meta.glob('./unit*-…') 读取本 default 导出（新增单元照此约定） */
+export default { points: unit2GrammarPoints, exercises: unit2Exercises };

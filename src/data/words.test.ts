@@ -4,6 +4,7 @@ import unit2WordsJson from './unit2-words.json';
 import unit3WordsJson from './unit3-words.json';
 import type { Word } from '../types';
 import { getWord, getWordsByUnit, getWordUnit, allWords } from './words';
+import { UNIT_MANIFESTS } from './units';
 
 const unit1Words = unit1WordsJson as Word[];
 const unit2Words = unit2WordsJson as Word[];
@@ -68,26 +69,30 @@ describe('人教2019必修一 Unit3 词表（Sports and Fitness）', () => {
 });
 
 describe('词表注册表（跨单元）', () => {
-  it('getWordsByUnit 返回对应单元词表', () => {
+  it('getWordsByUnit 返回对应单元词表（含纯数据新增的 Unit 4）', () => {
     expect(getWordsByUnit('unit1')).toBe(unit1Words);
     expect(getWordsByUnit('unit2')).toBe(unit2Words);
     expect(getWordsByUnit('unit3')).toBe(unit3Words);
+    for (const m of UNIT_MANIFESTS) expect(getWordsByUnit(m.id)).toBe(m.words);
   });
 
-  it('三单元词表 id 不重叠，allWords 为三单元之和', () => {
-    const overlap12 = unit1Words.filter((w) => unit2Words.some((x) => x.id === w.id));
-    const overlap13 = unit1Words.filter((w) => unit3Words.some((x) => x.id === w.id));
-    const overlap23 = unit2Words.filter((w) => unit3Words.some((x) => x.id === w.id));
-    expect(overlap12).toEqual([]);
-    expect(overlap13).toEqual([]);
-    expect(overlap23).toEqual([]);
-    expect(allWords).toHaveLength(unit1Words.length + unit2Words.length + unit3Words.length);
+  it('各单元词表 id 不重叠，allWords 为各单元之和', () => {
+    const seen = new Set<string>();
+    for (const m of UNIT_MANIFESTS) {
+      for (const w of m.words) {
+        expect(seen.has(w.id), `${w.id} 跨单元重复`).toBe(false);
+        seen.add(w.id);
+      }
+    }
+    expect(allWords).toHaveLength(UNIT_MANIFESTS.reduce((n, m) => n + m.words.length, 0));
   });
 
   it('getWord 跨单元查词，未知 id 返回 undefined', () => {
     expect(getWord('teenage')?.meaning).toContain('青少年的');
     expect(getWord('destination')?.meaning).toContain('目的地');
     expect(getWord('marathon')?.meaning).toContain('马拉松');
+    expect(getWord('disaster')?.meaning).toContain('灾难');
+    expect(getWord('earthquake')?.meaning).toContain('地震');
     expect(getWord('nope')).toBeUndefined();
   });
 
@@ -95,6 +100,7 @@ describe('词表注册表（跨单元）', () => {
     expect(getWordUnit('teenage')).toBe('unit1');
     expect(getWordUnit('apply')).toBe('unit2');
     expect(getWordUnit('fitness')).toBe('unit3');
+    expect(getWordUnit('disaster')).toBe('unit4');
     expect(getWordUnit('ghost-word')).toBeUndefined();
   });
 });
