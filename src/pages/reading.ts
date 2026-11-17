@@ -1,4 +1,5 @@
-import { unit1Passages, countWords, QUESTION_TYPE_LABEL } from '../data/unit1-reading';
+import { getPassagesByUnit, countWords, QUESTION_TYPE_LABEL } from '../data/reading';
+import { UNIT_META, unitTitle, type UnitId } from '../data/units';
 import { getWord } from '../data/words';
 import { loadProgress, saveProgress, type Progress } from '../store/progress';
 import {
@@ -11,14 +12,14 @@ import { recordAnswerAndSave } from '../store/stats';
 import { createCard } from '../srs/sm2';
 import type { ReadingPassage, ReadingQuestion, Word } from '../types';
 import type { ReadingDeps } from './deps';
+import { buildUnitSwitcher, currentUnit } from './unit-switch';
 
 /**
- * /reading 页：Unit 1 主题短文 + 阅读理解（答题即时判分 / 解析）
+ * /reading 页：单元切换 + 主题短文 + 阅读理解（答题即时判分 / 解析）
  * + 生词点击加入词汇本（与词汇模块共享 progress 存储）
  */
 
 const OPTION_KEYS = ['A', 'B', 'C', 'D'] as const;
-const TOTAL = unit1Passages.reduce((n, p) => n + p.questions.length, 0);
 
 /* ---------- 生词渲染 ---------- */
 
@@ -170,6 +171,10 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
     now: () => Date.now(),
   };
 
+  const unit: UnitId = currentUnit();
+  const passages = getPassagesByUnit(unit);
+  const TOTAL = passages.reduce((n, p) => n + p.questions.length, 0);
+
   const progress: Progress = d.load();
   let answered = 0;
   let correctCount = 0;
@@ -189,7 +194,7 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
   const page = document.createElement('main');
   page.className = 'page';
 
-  /* 标题区：进度徽标 + 词汇本徽标 */
+  /* 标题区：单元切换 + 进度徽标 + 词汇本徽标 */
   const readStat = document.createElement('span');
   readStat.className = 'stat-chip';
   readStat.setAttribute('data-testid', 'reading-stat');
@@ -204,14 +209,21 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
   head.className = 'page-head';
   const title = document.createElement('h1');
   title.className = 'page-head__title';
-  title.textContent = '阅读 · 必修一 Unit 1';
+  title.textContent = `阅读 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
+
+  // 单元切换：URL 已更新后整页重渲（currentUnit 从 ?unit= 读取）
+  const unitSwitcher = buildUnitSwitcher('/reading', () => {
+    root.replaceChildren();
+    renderReading(root, d);
+  });
+
   const headSpacer = document.createElement('span');
   headSpacer.className = 'page-head__spacer';
-  head.append(title, headSpacer, vocabChip, readStat);
+  head.append(title, unitSwitcher.el, headSpacer, vocabChip, readStat);
 
   const intro = document.createElement('p');
   intro.className = 'page-intro';
-  intro.textContent = `${unit1Passages.length} 篇「Teenage Life」主题短文（自编 · 约 120 词/篇）。完成每篇 ${unit1Passages[0]?.questions.length ?? 0} 道阅读理解，答题即时判分并附解析；正文中带虚线下划线的是生词，点击加入词汇本（与「词汇」模块共享，可在 词汇 → 复习 中巩固），再次点击可取消。`;
+  intro.textContent = `${passages.length} 篇「${UNIT_META[unit].title}」主题短文（自编 · 约 120 词/篇）。完成每篇 ${passages[0]?.questions.length ?? 0} 道阅读理解，答题即时判分并附解析；正文中带虚线下划线的是生词，点击加入词汇本（与「词汇」模块共享，可在 词汇 → 复习 中巩固），再次点击可取消。`;
 
   page.append(head, intro);
 
@@ -241,12 +253,12 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
     vocabChip.textContent = `词汇本 ${Object.keys(progress.cards).length} 词`;
   }
 
-  /** 答题即记统计；答错另入错题本（错题本/学习报告页的数据源） */
+  /** 答题即记统计（按当前单元计入单元维度）；答错另入错题本（错题本/学习报告页的数据源） */
   const onAnswered = (correct: boolean, question: ReadingQuestion, yourAnswer: string): void => {
     answered += 1;
     if (correct) correctCount += 1;
     readStat.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
-    recordAnswerAndSave('reading', correct);
+    recordAnswerAndSave('reading', correct, unit);
     if (!correct) {
       const book: WrongBook = recordWrong(
         loadWrongBook(),
@@ -265,7 +277,7 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
   };
 
   /* 每篇：短文卡（可点击生词）+ 3 道题 */
-  unit1Passages.forEach((passage: ReadingPassage, pIndex: number) => {
+  passages.forEach((passage: ReadingPassage, pIndex: number) => {
     const section = document.createElement('section');
     section.className = 'reading-passage';
     section.dataset.passage = passage.id;

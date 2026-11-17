@@ -1,17 +1,9 @@
-import type { ReadingPassage, ReadingQuestion } from '../types';
+import type { ReadingPassage } from '../types';
 
 /**
  * 人教2019必修一 Unit 1（Teenage Life）主题阅读短文 ×2。
  * 短文为自编原创（词汇复用 Unit 1 词表），避免任何教材原文版权问题。
  */
-
-/** 题型中文标签 */
-export const QUESTION_TYPE_LABEL: Record<ReadingQuestion['type'], string> = {
-  detail: '细节理解',
-  'main-idea': '主旨大意',
-  inference: '推理判断',
-  purpose: '写作意图',
-};
 
 export const unit1Passages: ReadingPassage[] = [
   {
@@ -153,12 +145,4 @@ const passageById = new Map(unit1Passages.map((p) => [p.id, p]));
 
 export function getPassage(id: string): ReadingPassage | undefined {
   return passageById.get(id);
-}
-
-/** 词数统计：只计含字母的 token（数字、破折号等符号不计词） */
-export function countWords(paragraphs: string[]): number {
-  return paragraphs
-    .join(' ')
-    .split(/\s+/)
-    .filter((token) => /[A-Za-z]/.test(token)).length;
 }

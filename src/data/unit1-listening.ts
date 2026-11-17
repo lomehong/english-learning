@@ -1,16 +1,10 @@
-import type { ListeningMaterial, ListeningQuestion } from '../types';
+import type { ListeningMaterial } from '../types';
 
 /**
  * 人教2019必修一 Unit 1（Teenage Life）主题听力材料 ×2。
  * 文本为自编原创（词汇复用 Unit 1 词表），由浏览器 speechSynthesis 朗读，
  * 不依赖任何外部 TTS 服务，避免教材音频版权问题。
  */
-
-/** 听力题型中文标签 */
-export const LISTENING_QUESTION_TYPE_LABEL: Record<ListeningQuestion['type'], string> = {
-  detail: '细节理解',
-  inference: '推理判断',
-};
 
 export const unit1Listenings: ListeningMaterial[] = [
   {
@@ -124,12 +118,4 @@ const materialById = new Map(unit1Listenings.map((m) => [m.id, m]));
 
 export function getListening(id: string): ListeningMaterial | undefined {
   return materialById.get(id);
-}
-
-/** 词数统计：只计含字母的 token（与阅读模块同一口径） */
-export function countScriptWords(script: string[]): number {
-  return script
-    .join(' ')
-    .split(/\s+/)
-    .filter((token) => /[A-Za-z]/.test(token)).length;
 }

@@ -1,4 +1,4 @@
-import { getWord, unit1Words } from '../data/words';
+import { getWord, getWordUnit, allWords } from '../data/words';
 import { scheduleCard, AGAIN_DELAY_MS } from '../srs/sm2';
 import type { Card, Grade } from '../types';
 import type { Progress } from '../store/progress';
@@ -73,7 +73,7 @@ export function renderReview(
       empty.innerHTML = `
         <h2 class="empty-state__title">🎉 暂无到期单词</h2>
         <p class="empty-state__desc">
-          已学 ${learnedTotal} / ${unit1Words.length} 词，到期单词复习完后会在这里排队。
+          已学 ${learnedTotal} / ${allWords.length} 词（两单元合计），到期单词复习完后会在这里排队。
         </p>`;
       const goLearn = document.createElement('button');
       goLearn.type = 'button';
@@ -131,8 +131,8 @@ export function renderReview(
         progress.cards[card.id] = scheduleCard(card, grade, deps.now());
         deps.save(progress);
         sessionDone += 1;
-        // 学习报告数据源 + 词汇错题联动（again 记错、掌握出本）
-        recordAnswerAndSave('vocab', grade !== 'again');
+        // 学习报告数据源（按单词所属单元计入单元维度）+ 词汇错题联动（again 记错、掌握出本）
+        recordAnswerAndSave('vocab', grade !== 'again', getWordUnit(card.id) ?? 'unit1');
         syncVocabWrong(card.id, grade, deps.now());
         render();
       });

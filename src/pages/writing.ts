@@ -1,10 +1,12 @@
-import { unit1WritingTasks, countEssayWords } from '../data/unit1-writing';
+import { getWritingTasksByUnit, countEssayWords } from '../data/writing';
+import { UNIT_META, unitTitle } from '../data/units';
 import { putDraft, removeDraft, type WritingDrafts } from '../store/writing';
 import type { WritingTask } from '../types';
 import { defaultWritingDeps, type WritingDeps } from './deps';
+import { buildUnitSwitcher, currentUnit } from './unit-switch';
 
 /**
- * /writing 页：Unit 1 主题写作任务 ×2（邀请信 + 栏目投稿）。
+ * /writing 页：单元切换 + 主题写作任务 ×2。
  * 流程：读题目要求 → 编辑器写作（草稿自动保存 localStorage）→
  * 自评清单逐条勾选 → 展开参考范文对照修改。
  */
@@ -178,6 +180,8 @@ function buildTask(
 
 export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
   const d: WritingDeps = deps ?? defaultWritingDeps();
+  const unit = currentUnit();
+  const tasks = getWritingTasksByUnit(unit);
 
   const header = document.createElement('header');
   header.className = 'site-header';
@@ -198,17 +202,23 @@ export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
   head.className = 'page-head';
   const title = document.createElement('h1');
   title.className = 'page-head__title';
-  title.textContent = '写作 · 必修一 Unit 1';
-  head.append(title);
+  title.textContent = `写作 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
+
+  // 单元切换：URL 已更新后整页重渲（currentUnit 从 ?unit= 读取）
+  const unitSwitcher = buildUnitSwitcher('/writing', () => {
+    root.replaceChildren();
+    renderWriting(root, d);
+  });
+  head.append(title, unitSwitcher.el);
 
   const intro = document.createElement('p');
   intro.className = 'page-intro';
   intro.textContent =
-    '2 个「Teenage Life」主题写作任务（邀请信 + 栏目投稿）：先读题目要求独立完成，草稿自动保存在本机浏览器（localStorage，键 english-learning.writing.v1）；写完对照自评清单逐条检查，再展开参考范文修改润色。';
+    `${tasks.length} 个「${UNIT_META[unit].title}」主题写作任务（${tasks.map((t) => t.genre).join(' + ')}）：先读题目要求独立完成，草稿自动保存在本机浏览器（localStorage，键 english-learning.writing.v1）；写完对照自评清单逐条检查，再展开参考范文修改润色。`;
 
   page.append(head, intro);
 
-  unit1WritingTasks.forEach((task, index) => {
+  tasks.forEach((task, index) => {
     page.append(buildTask(task, index, d.load, d.save, d.now));
   });
 

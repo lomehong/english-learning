@@ -1,9 +1,10 @@
 import {
-  unit1GrammarPoints,
-  unit1Exercises,
+  getGrammarPoints,
+  getGrammarExercises,
   getGrammarPoint,
   checkFillAnswer,
-} from '../data/unit1-grammar';
+} from '../data/grammar';
+import { UNIT_META, unitTitle, type UnitId } from '../data/units';
 import {
   loadWrongBook,
   saveWrongBook,
@@ -14,10 +15,10 @@ import {
 import { recordAnswerAndSave } from '../store/stats';
 import type { FillExercise, GrammarExercise, GrammarPoint, McqExercise, WrongEntry } from '../types';
 import type { GrammarDeps } from './deps';
+import { buildUnitSwitcher, currentUnit } from './unit-switch';
 
-/** /grammar 页：语法讲解卡 + 专项练习（即时判分/解析/错题自动入本） */
+/** /grammar 页：单元切换 + 讲解卡 + 专项练习（即时判分/解析/错题自动入本） */
 
-const TOTAL = unit1Exercises.length;
 const OPTION_KEYS = ['A', 'B', 'C', 'D'] as const;
 const TYPE_LABEL: Record<GrammarExercise['type'], string> = { mcq: '单选', fill: '填空' };
 
@@ -27,14 +28,14 @@ function correctAnswerOf(exercise: GrammarExercise): string {
 
 /* ---------- 讲解卡 ---------- */
 
-function buildPointCard(point: GrammarPoint): HTMLElement {
+function buildPointCard(point: GrammarPoint, unit: UnitId): HTMLElement {
   const card = document.createElement('article');
   card.className = 'grammar-card card';
   card.dataset.point = point.id;
   card.innerHTML = `
     <div class="grammar-card__head">
       <h3 class="grammar-card__title">${point.title}</h3>
-      <span class="grammar-card__unit">Unit 1</span>
+      <span class="grammar-card__unit">Unit ${UNIT_META[unit].no}</span>
     </div>
     <p class="grammar-card__tagline">${point.tagline}</p>
     <dl class="grammar-form">
@@ -254,6 +255,11 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
     now: () => Date.now(),
   };
 
+  const unit = currentUnit();
+  const points = getGrammarPoints(unit);
+  const exercises = getGrammarExercises(unit);
+  const TOTAL = exercises.length;
+
   let book: WrongBook = d.load();
   let answered = 0;
   let correctCount = 0;
@@ -281,20 +287,27 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   head.className = 'page-head';
   const title = document.createElement('h1');
   title.className = 'page-head__title';
-  title.textContent = '语法 · 必修一 Unit 1';
+  title.textContent = `语法 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
   const headSpacer = document.createElement('span');
   headSpacer.className = 'page-head__spacer';
-  head.append(title, headSpacer, statChip);
+
+  // 单元切换：URL 已更新后整页重渲（currentUnit 从 ?unit= 读取）
+  const unitSwitcher = buildUnitSwitcher('/grammar', () => {
+    root.replaceChildren();
+    renderGrammar(root, d);
+  });
+
+  head.append(title, unitSwitcher.el, headSpacer, statChip);
 
   /* 讲解卡区 */
   const teach = document.createElement('section');
   teach.className = 'grammar-teach';
   const teachTitle = document.createElement('h2');
   teachTitle.className = 'section-title';
-  teachTitle.textContent = `讲解卡 · ${unit1GrammarPoints.map((p) => p.title).join(' / ')}`;
+  teachTitle.textContent = `讲解卡 · ${points.map((p) => p.title).join(' / ')}`;
   const cards = document.createElement('div');
   cards.className = 'grammar-cards';
-  for (const point of unit1GrammarPoints) cards.append(buildPointCard(point));
+  for (const point of points) cards.append(buildPointCard(point, unit));
   teach.append(teachTitle, cards);
 
   /* 练习区 */
@@ -302,8 +315,8 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
     answered += 1;
     if (correct) correctCount += 1;
     statChip.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
-    // 学习报告数据源：每次作答计入模块统计
-    recordAnswerAndSave('grammar', correct);
+    // 学习报告数据源：每次作答计入模块与单元统计
+    recordAnswerAndSave('grammar', correct, unit);
     if (!correct) {
       book = recordWrong(
         book,
@@ -329,7 +342,7 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   drillTitle.textContent = `专项练习 · ${TOTAL} 题（答题即时判分，错题自动进入错题本）`;
   const list = document.createElement('ol');
   list.className = 'exercise-list';
-  unit1Exercises.forEach((exercise, index) => list.append(buildExercise(exercise, index, onAnswered)));
+  exercises.forEach((exercise, index) => list.append(buildExercise(exercise, index, onAnswered)));
   drill.append(drillTitle, list);
 
   /* 错题本区 */

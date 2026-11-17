@@ -1,31 +1,34 @@
-import { unit1Words } from '../data/words';
+import { getWordsByUnit } from '../data/words';
+import type { UnitId } from '../data/units';
 import { createCard } from '../srs/sm2';
 import type { Progress } from '../store/progress';
 import { createFlipCard, type VocabDeps } from './deps';
 
-/** 学习页：浏览 Unit 1 词表（翻面卡），标记已学加入复习计划 */
+/** 学习页：浏览指定单元词表（翻面卡），标记已学加入复习计划 */
 export function renderLearn(
   container: HTMLElement,
   deps: VocabDeps,
-  options: { gotoReview?: () => void } = {},
+  options: { gotoReview?: () => void; unit?: UnitId } = {},
 ): void {
+  const unit = options.unit ?? 'unit1';
+  const words = getWordsByUnit(unit);
   const progress = deps.load();
   let index = firstUnlearnedIndex(progress);
-  let flipCard = createFlipCard(unit1Words[index]);
+  let flipCard = createFlipCard(words[index]);
 
   function firstUnlearnedIndex(p: Progress): number {
-    const i = unit1Words.findIndex((w) => !p.cards[w.id]);
+    const i = words.findIndex((w) => !p.cards[w.id]);
     return i === -1 ? 0 : i;
   }
 
   function learnedCount(p: Progress): number {
-    return unit1Words.filter((w) => p.cards[w.id]).length;
+    return words.filter((w) => p.cards[w.id]).length;
   }
 
   function render(): void {
     container.innerHTML = '';
-    const total = unit1Words.length;
-    const word = unit1Words[index];
+    const total = words.length;
+    const word = words[index];
     const learned = !!progress.cards[word.id];
 
     const chips = document.createElement('div');

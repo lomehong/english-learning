@@ -1,11 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderLearn } from './learn';
 import { renderReview } from './review';
+import { renderVocabulary } from './vocabulary';
 import { createCard, DAY_MS } from '../srs/sm2';
-import { emptyProgress, type Progress } from '../store/progress';
+import { emptyProgress, loadProgress, saveProgress, type Progress } from '../store/progress';
 import { clearWrongBook, loadWrongBook, recordWrong, saveWrongBook } from '../store/wrongbook';
 import { emptyStats, loadStats, saveStats } from '../store/stats';
-import { getWord } from '../data/words';
+import { getWord, getWordsByUnit } from '../data/words';
 import type { VocabDeps } from './deps';
 
 const NOW = Date.UTC(2026, 0, 1);
@@ -58,6 +59,27 @@ describe('学习页', () => {
     expect(card).toBeDefined();
     expect(card!.due).toBe(NOW); // 新卡立即进入到期队列
     expect([...container.querySelectorAll('button')].some((b) => b.textContent!.includes('已加入复习计划'))).toBe(true);
+  });
+
+  it('unit=unit2：渲染 Unit 2 词表（Travelling Around），标记已学写入同一份进度', () => {
+    const deps = makeDeps(emptyProgress());
+    const container = document.createElement('div');
+    renderLearn(container, deps, { unit: 'unit2' });
+
+    const words = getWordsByUnit('unit2');
+    const counter = container.querySelector<HTMLElement>('.card-nav__counter')!;
+    expect(counter.textContent).toBe(`1 / ${words.length}`);
+
+    const card = container.querySelector<HTMLElement>('.flip-card')!;
+    expect(card.textContent).toContain(words[0]!.word);
+    click(card);
+    expect(card.textContent).toContain(words[0]!.meaning);
+
+    const mark = [...container.querySelectorAll('button')].find((b) =>
+      b.textContent!.includes('标记已学'),
+    )!;
+    click(mark);
+    expect(deps.load().cards[words[0]!.id]).toBeDefined();
   });
 });
 
@@ -144,6 +166,20 @@ describe('复习页 · 错题与统计数据源（错题本/学习报告页消�
     expect(loadStats().modules.vocab).toEqual({ answered: 1, correct: 0 });
   });
 
+  it('Unit 2 单词复习评分计入 unit2 统计维度', () => {
+    const progress = emptyProgress();
+    progress.cards['apply'] = createCard('apply', NOW - 1); // Unit 2 词，已到期
+    const deps = makeDeps(progress);
+    const container = document.createElement('div');
+    renderReview(container, deps);
+
+    click(container.querySelector<HTMLButtonElement>('button[data-grade="good"]')!);
+
+    expect(loadStats().modules.vocab).toEqual({ answered: 1, correct: 1 });
+    expect(loadStats().units.unit2.vocab).toEqual({ answered: 1, correct: 1 });
+    expect(loadStats().units.unit1.vocab).toEqual({ answered: 0, correct: 0 });
+  });
+
   it('good 评分：计入统计（correct+1），并移除该词已有的词汇错题（掌握即出本）', () => {
     const progress = emptyProgress();
     progress.cards['teenage'] = createCard('teenage', NOW - 1);
@@ -187,5 +223,65 @@ describe('复习页 · 错题与统计数据源（错题本/学习报告页消�
     expect(loadWrongBook().entries['w:volunteer']).toBeDefined();
     expect(loadWrongBook().entries['w:teenage']).toBeUndefined();
     expect(loadStats().modules.vocab).toEqual({ answered: 1, correct: 1 });
+  });
+});
+
+describe('词汇页 · 单元切换（/vocabulary 容器）', () => {
+  beforeEach(() => {
+    saveProgress(emptyProgress());
+    history.replaceState(null, '', '/vocabulary');
+  });
+
+  afterEach(() => {
+    history.replaceState(null, '', '/vocabulary');
+    saveProgress(emptyProgress());
+  });
+
+  it('?unit=unit2 直链渲染 Unit 2 词表；标记已学写入共享进度', () => {
+    history.replaceState(null, '', '/vocabulary?unit=unit2');
+    const container = document.createElement('div');
+    renderVocabulary(container);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    const counter = container.querySelector<HTMLElement>('.card-nav__counter')!;
+    expect(counter.textContent).toBe('1 / 20');
+
+    const mark = [...container.querySelectorAll('button')].find((b) =>
+      b.textContent!.includes('标记已学'),
+    )!;
+    click(mark);
+    const progress = loadProgress();
+    expect(progress.cards['apply']).toBeDefined();
+    expect(progress.cards['teenage']).toBeUndefined();
+  });
+
+  it('单元与 Tab 参数共存：?unit=unit2&tab=review 直达复习队列，URL 保留单元', () => {
+    history.replaceState(null, '', '/vocabulary?unit=unit2&tab=review');
+    const progress = emptyProgress();
+    progress.cards['apply'] = createCard('apply', NOW - 1);
+    saveProgress(progress);
+
+    const container = document.createElement('div');
+    renderVocabulary(container);
+
+    expect(container.textContent).toContain('剩余 1 词');
+    expect(location.search).toContain('unit=unit2');
+    expect(location.search).toContain('tab=review');
+  });
+
+  it('点击单元切换按钮：URL 更新且内容切到对应单元词表（tab 参数保留）', () => {
+    const container = document.createElement('div');
+    renderVocabulary(container);
+
+    const unit2Btn = container.querySelector<HTMLButtonElement>(
+      '[data-testid="unit-switcher"] button[data-unit="unit2"]',
+    )!;
+    click(unit2Btn);
+
+    expect(location.search).toContain('unit=unit2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    const card = container.querySelector<HTMLElement>('.flip-card')!;
+    expect(card.textContent).toContain(getWordsByUnit('unit2')[0]!.word);
   });
 });

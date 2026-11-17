@@ -1,0 +1,182 @@
+[
+  {
+    "id": "apply",
+    "word": "apply",
+    "phonetic": "/əˈplaɪ/",
+    "pos": "vi. & vt.",
+    "meaning": "申请；请求（apply for a visa 申请签证）",
+    "example": "You can apply for a visa online before the trip.",
+    "exampleZh": "你可以在出发前在线申请签证。"
+  },
+  {
+    "id": "visa",
+    "word": "visa",
+    "phonetic": "/ˈviːzə/",
+    "pos": "n.",
+    "meaning": "签证",
+    "example": "Remember to check your visa before leaving for London.",
+    "exampleZh": "出发去伦敦前记得检查你的签证。"
+  },
+  {
+    "id": "rent",
+    "word": "rent",
+    "phonetic": "/rent/",
+    "pos": "vt. & n.",
+    "meaning": "租用；出租；租金",
+    "example": "We plan to rent a car and drive along the coast.",
+    "exampleZh": "我们计划租一辆车沿着海岸行驶。"
+  },
+  {
+    "id": "pack",
+    "word": "pack",
+    "phonetic": "/pæk/",
+    "pos": "vi. & vt.",
+    "meaning": "收拾（行李）；包装 n. 包；一群",
+    "example": "I was packing my suitcase when the phone rang.",
+    "exampleZh": "电话响起时我正在收拾行李箱。"
+  },
+  {
+    "id": "amazing",
+    "word": "amazing",
+    "phonetic": "/əˈmeɪzɪŋ/",
+    "pos": "adj.",
+    "meaning": "令人惊奇的；令人惊喜的",
+    "example": "The view from the mountain top is amazing.",
+    "exampleZh": "山顶的景色令人惊叹。"
+  },
+  {
+    "id": "narrow",
+    "word": "narrow",
+    "phonetic": "/ˈnærəʊ/",
+    "pos": "adj.",
+    "meaning": "狭窄的；（使）变窄",
+    "example": "The old town is famous for its narrow streets.",
+    "exampleZh": "这座老城以狭窄的街道而闻名。"
+  },
+  {
+    "id": "flat",
+    "word": "flat",
+    "phonetic": "/flæt/",
+    "pos": "adj. & n.",
+    "meaning": "平坦的；公寓",
+    "example": "They live in a small flat near the railway station.",
+    "exampleZh": "他们住在火车站附近的一套小公寓里。"
+  },
+  {
+    "id": "powerful",
+    "word": "powerful",
+    "phonetic": "/ˈpaʊəfl/",
+    "pos": "adj.",
+    "meaning": "强有力的；有权势的；有感染力的",
+    "example": "The powerful empire ruled the land for hundreds of years.",
+    "exampleZh": "这个强大的帝国统治这片土地数百年。"
+  },
+  {
+    "id": "empire",
+    "word": "empire",
+    "phonetic": "/ˈempaɪə(r)/",
+    "pos": "n.",
+    "meaning": "帝国",
+    "example": "The Roman Empire left many historical sites in Europe.",
+    "exampleZh": "罗马帝国在欧洲留下了许多历史遗迹。"
+  },
+  {
+    "id": "destination",
+    "word": "destination",
+    "phonetic": "/ˌdestɪˈneɪʃn/",
+    "pos": "n.",
+    "meaning": "目的地；终点",
+    "example": "Our final destination is an ancient town in the mountains.",
+    "exampleZh": "我们的最终目的地是山里的一座古镇。"
+  },
+  {
+    "id": "admire",
+    "word": "admire",
+    "phonetic": "/ədˈmaɪə(r)/",
+    "pos": "vt.",
+    "meaning": "钦佩；赞赏",
+    "example": "Visitors stop to admire the view of the lake.",
+    "exampleZh": "游客们驻足欣赏湖景。"
+  },
+  {
+    "id": "site",
+    "word": "site",
+    "phonetic": "/saɪt/",
+    "pos": "n.",
+    "meaning": "地点；位置；现场",
+    "example": "This historical site receives millions of tourists every year.",
+    "exampleZh": "这处历史遗址每年接待数百万游客。"
+  },
+  {
+    "id": "official",
+    "word": "official",
+    "phonetic": "/əˈfɪʃl/",
+    "pos": "adj.",
+    "meaning": "官方的；正式的 n. 官员",
+    "example": "You can buy tickets on the museum's official website.",
+    "exampleZh": "你可以在博物馆的官方网站上购票。"
+  },
+  {
+    "id": "currency",
+    "word": "currency",
+    "phonetic": "/ˈkʌrənsi/",
+    "pos": "n.",
+    "meaning": "通货；货币",
+    "example": "Remember to exchange some local currency at the airport.",
+    "exampleZh": "记得在机场兑换一些当地货币。"
+  },
+  {
+    "id": "economy",
+    "word": "economy",
+    "phonetic": "/ɪˈkɒnəmi/",
+    "pos": "n.",
+    "meaning": "经济；节约",
+    "example": "Tourism plays an important role in the city's economy.",
+    "exampleZh": "旅游业在这座城市的经济中占有重要地位。"
+  },
+  {
+    "id": "credit",
+    "word": "credit",
+    "phonetic": "/ˈkredɪt/",
+    "pos": "n.",
+    "meaning": "信用；学分（credit card 信用卡）",
+    "example": "You can pay by credit card in most hotels.",
+    "exampleZh": "大多数旅馆都可以用信用卡付款。"
+  },
+  {
+    "id": "request",
+    "word": "request",
+    "phonetic": "/rɪˈkwest/",
+    "pos": "n. & vt.",
+    "meaning": "（正式或礼貌的）要求；请求",
+    "example": "The hotel accepts special meal requests before 6 p.m.",
+    "exampleZh": "旅馆在下午六点前接受特殊餐食要求。"
+  },
+  {
+    "id": "view",
+    "word": "view",
+    "phonetic": "/vjuː/",
+    "pos": "n.",
+    "meaning": "视野；景色；看法",
+    "example": "The hotel room has a wonderful view of the sea.",
+    "exampleZh": "这间客房有着绝佳的海景。"
+  },
+  {
+    "id": "sight",
+    "word": "sight",
+    "phonetic": "/saɪt/",
+    "pos": "n.",
+    "meaning": "景象；风景；视力（see the sights 观光）",
+    "example": "We spent the whole day seeing the sights of the old capital.",
+    "exampleZh": "我们花了一整天游览这座古都的名胜。"
+  },
+  {
+    "id": "comment",
+    "word": "comment",
+    "phonetic": "/ˈkɒment/",
+    "pos": "n. & v.",
+    "meaning": "议论；评论；发表意见",
+    "example": "Many visitors leave comments about the guided tour online.",
+    "exampleZh": "许多游客在网上给这次跟团游留言评论。"
+  }
+]

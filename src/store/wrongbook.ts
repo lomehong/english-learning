@@ -21,10 +21,12 @@ function isPracticeModule(value: unknown): value is PracticeModule {
 /**
  * 旧版本条目（无 module 字段）加载时按 exerciseId 前缀推断所属模块：
  * w: 前缀=词汇复习、g*=语法、r*=阅读、l*=听力；其余默认语法（历史唯一写入方）。
+ * Unit 2 题目 id 带 u2- 前缀（如 u2-g1 / u2-r1-1），剥掉前缀后再按首字母判断。
  */
 export function inferModule(exerciseId: string): PracticeModule {
-  if (exerciseId.startsWith('w:')) return 'vocab';
-  const first = exerciseId[0]?.toLowerCase();
+  const id = exerciseId.startsWith('u2-') ? exerciseId.slice(3) : exerciseId;
+  if (id.startsWith('w:')) return 'vocab';
+  const first = id[0]?.toLowerCase();
   if (first === 'g') return 'grammar';
   if (first === 'r') return 'reading';
   if (first === 'l') return 'listening';

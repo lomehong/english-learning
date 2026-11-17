@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderWriting } from './writing';
-import { unit1WritingTasks, countEssayWords } from '../data/unit1-writing';
+import { unit1WritingTasks } from '../data/unit1-writing';
+import { unit2WritingTasks } from '../data/unit2-writing';
+import { countEssayWords } from '../data/writing';
 import { emptyWritingDrafts, putDraft, type WritingDrafts } from '../store/writing';
 import type { WritingDeps } from './deps';
 
@@ -137,5 +139,65 @@ describe('写作页 · 自评清单', () => {
     boxes[1]!.dispatchEvent(new Event('change', { bubbles: true }));
 
     expect(progress.textContent).toBe(`已勾选 2 / ${unit1WritingTasks[0]!.checklist.length}`);
+  });
+});
+
+describe('写作页 · 单元切换（Unit 2）', () => {
+  beforeEach(() => {
+    history.replaceState(null, '', '/writing?unit=unit2');
+  });
+
+  afterEach(() => {
+    history.replaceState(null, '', '/writing');
+  });
+
+  it('?unit=unit2 直链渲染 Unit 2 写作任务与范文，草稿独立保存', () => {
+    const deps = makeDeps();
+    const container = document.createElement('div');
+    renderWriting(container, deps);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 2');
+    expect(container.querySelector('h1')!.textContent).toContain('Travelling Around');
+    expect(container.textContent).toContain('Task 1 · Emailing a Travel Plan to a Friend');
+    expect(container.textContent).toContain('Task 2 · A Trip to Remember');
+    expect(container.textContent).toContain('应用文 · 电子邮件');
+    expect(container.textContent).toContain('记叙文 · 游记投稿');
+
+    for (const task of unit2WritingTasks) {
+      expect(container.querySelector(`[data-task="${task.id}"]`)).toBeTruthy();
+      const model = container.querySelector(`[data-testid="model-essay-${task.id}"]`)!;
+      expect(model.textContent).toContain(task.modelEssay[0]!);
+    }
+
+    // 草稿写入 u2- 任务 id，与 Unit 1 互不影响
+    const textarea = container.querySelector<HTMLTextAreaElement>('[data-testid="draft-editor-u2-w1"]')!;
+    type(textarea, 'Dear Tom, my family will travel to Xi an.');
+    expect(deps.load().drafts['u2-w1']!.content).toContain('Dear Tom');
+    expect(deps.load().drafts['w1']).toBeUndefined();
+  });
+
+  it('已有 Unit 2 草稿回显，清空按钮按任务生效', () => {
+    const deps = makeDeps(putDraft(emptyWritingDrafts(), 'u2-w2', 'A Trip to Remember draft.', NOW));
+    const container = document.createElement('div');
+    renderWriting(container, deps);
+
+    const textarea = container.querySelector<HTMLTextAreaElement>('[data-testid="draft-editor-u2-w2"]')!;
+    expect(textarea.value).toBe('A Trip to Remember draft.');
+    expect(container.querySelector('[data-testid="draft-status-u2-w2"]')!.textContent).toContain('草稿已保存');
+
+    click(container.querySelector<HTMLButtonElement>('[data-testid="draft-clear-u2-w2"]')!);
+    expect(deps.load().drafts['u2-w2']).toBeUndefined();
+  });
+
+  it('点击 Unit 1 切换按钮：内容重建为 Unit 1 任务', () => {
+    const container = document.createElement('div');
+    renderWriting(container, makeDeps());
+
+    click(container.querySelector<HTMLButtonElement>('[data-testid="unit-switcher"] button[data-unit="unit1"]')!);
+
+    expect(container.querySelector('h1')!.textContent).toContain('Unit 1');
+    expect(container.querySelector('[data-task="w1"]')).toBeTruthy();
+    expect(container.querySelector('[data-task="u2-w1"]')).toBeNull();
+    expect(location.search).toBe('');
   });
 });

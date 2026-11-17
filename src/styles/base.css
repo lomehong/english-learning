@@ -1127,6 +1127,17 @@ a {
   color: var(--color-module-listening);
 }
 
+/* ---- 单元徽标（学习报告按单元统计，复用模块色令牌） ---- */
+.module-badge--unit1 {
+  background: var(--color-module-vocab-soft);
+  color: var(--color-module-vocab);
+}
+
+.module-badge--unit2 {
+  background: var(--color-module-reading-soft);
+  color: var(--color-module-reading);
+}
+
 /* ---- 错题本页 ---- */
 
 /* 过滤 Tab 内的计数徽标 */
@@ -1278,6 +1289,15 @@ a {
 
 .report-bar__fill--listening {
   background: var(--color-module-listening);
+}
+
+/* 单元正确率条（按单元统计，复用模块色令牌） */
+.report-bar__fill--unit1 {
+  background: var(--color-module-vocab);
+}
+
+.report-bar__fill--unit2 {
+  background: var(--color-module-reading);
 }
 
 /* 学习建议 */

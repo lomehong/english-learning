@@ -1,4 +1,5 @@
-import { unit1Listenings, countScriptWords, LISTENING_QUESTION_TYPE_LABEL } from '../data/unit1-listening';
+import { getListeningsByUnit, countScriptWords, LISTENING_QUESTION_TYPE_LABEL } from '../data/listening';
+import { UNIT_META, unitTitle, type UnitId } from '../data/units';
 import {
   loadWrongBook,
   saveWrongBook,
@@ -9,17 +10,18 @@ import { recordAnswerAndSave } from '../store/stats';
 import type { ListeningMaterial, ListeningQuestion } from '../types';
 import type { SpeechEngine, PlayerState } from '../speech/tts';
 import { defaultListeningDeps, type ListeningDeps } from './deps';
+import { buildUnitSwitcher, currentUnit } from './unit-switch';
 
 /**
- * /listening 页：Unit 1 主题听力材料 ×2，浏览器 speechSynthesis 本地朗读
+ * /listening 页：单元切换 + 主题听力材料 ×2，浏览器 speechSynthesis 本地朗读
  * （播放/暂停/继续/停止 + 三档语速），答题即时判分 / 解析，
  * 错题自动入本、作答计入统计（错题本 / 学习报告页的数据源）。
  *
- * 路由离开时需停止朗读并释放订阅 → render 返回清理函数交给 router。
+ * 路由离开时需停止朗读并释放订阅 → render 返回清理函数交给 router；
+ * 单元切换时同样先停止朗读再重建内容。
  */
 
 const OPTION_KEYS = ['A', 'B', 'C', 'D'] as const;
-const TOTAL = unit1Listenings.reduce((n, m) => n + m.questions.length, 0);
 /** 三档语速（慢速跟读 / 常速考试 / 快速进阶） */
 const RATES = [0.8, 1.0, 1.2] as const;
 
@@ -205,166 +207,188 @@ function buildPlayer(material: ListeningMaterial, engine: SpeechEngine): {
 
 export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => void {
   const d: ListeningDeps = deps ?? defaultListeningDeps();
-  const engine = d.createEngine();
 
-  let book: WrongBook = loadWrongBook();
-  let answered = 0;
-  let correctCount = 0;
+  let teardown: (() => void) | null = null;
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高一英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-        <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
-        <a class="btn btn--ghost" href="/writing" data-link>写作</a>
-      </nav>
-    </div>`;
+  function mount(): void {
+    const engine = d.createEngine();
+    const unit: UnitId = currentUnit();
+    const materials = getListeningsByUnit(unit);
+    const TOTAL = materials.reduce((n, m) => n + m.questions.length, 0);
 
-  const page = document.createElement('main');
-  page.className = 'page';
+    let book: WrongBook = loadWrongBook();
+    let answered = 0;
+    let correctCount = 0;
 
-  const statChip = document.createElement('span');
-  statChip.className = 'stat-chip';
-  statChip.setAttribute('data-testid', 'listening-stat');
-  statChip.textContent = `已答 0 / ${TOTAL} · 答对 0`;
+    const header = document.createElement('header');
+    header.className = 'site-header';
+    header.innerHTML = `
+      <div class="site-header__inner">
+        <a class="site-header__brand" href="/" data-link>高一英语学习系统</a>
+        <nav class="site-header__nav">
+          <a class="btn btn--ghost" href="/" data-link>首页</a>
+          <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
+          <a class="btn btn--ghost" href="/writing" data-link>写作</a>
+        </nav>
+      </div>`;
 
-  const head = document.createElement('div');
-  head.className = 'page-head';
-  const title = document.createElement('h1');
-  title.className = 'page-head__title';
-  title.textContent = '听力 · 必修一 Unit 1';
-  const headSpacer = document.createElement('span');
-  headSpacer.className = 'page-head__spacer';
-  head.append(title, headSpacer, statChip);
+    const page = document.createElement('main');
+    page.className = 'page';
 
-  const intro = document.createElement('p');
-  intro.className = 'page-intro';
-  intro.textContent = `${unit1Listenings.length} 段「Teenage Life」主题听力材料（自编 · 浏览器本地语音合成朗读，无需外部音频）。先听音频完成每段 ${unit1Listenings[0]?.questions.length ?? 0} 道理解题（答题即时判分并附解析），听不懂再点开原文对照；错题自动进入错题本。`;
+    const statChip = document.createElement('span');
+    statChip.className = 'stat-chip';
+    statChip.setAttribute('data-testid', 'listening-stat');
+    statChip.textContent = `已答 0 / ${TOTAL} · 答对 0`;
 
-  page.append(head, intro);
+    const head = document.createElement('div');
+    head.className = 'page-head';
+    const title = document.createElement('h1');
+    title.className = 'page-head__title';
+    title.textContent = `听力 · 必修一 ${unitTitle(unit)}（${UNIT_META[unit].titleZh}）`;
 
-  /** 答题即记统计；答错另入错题本（错题本/学习报告页的数据源） */
-  const onAnswered = (correct: boolean, question: ListeningQuestion, yourAnswer: string): void => {
-    answered += 1;
-    if (correct) correctCount += 1;
-    statChip.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
-    recordAnswerAndSave('listening', correct);
-    if (!correct) {
-      book = recordWrong(
-        book,
-        {
-          exerciseId: question.id,
-          module: 'listening',
-          stem: question.stem,
-          yourAnswer,
-          correctAnswer: question.options[question.answerIndex],
-          explanation: question.explanation,
-        },
-        Date.now(),
-      );
-      saveWrongBook(book);
-    }
-  };
-
-  const syncs: Array<() => void> = [];
-
-  unit1Listenings.forEach((material: ListeningMaterial, mIndex: number) => {
-    const section = document.createElement('section');
-    section.className = 'listening-material';
-    section.dataset.material = material.id;
-
-    const materialTitle = document.createElement('h2');
-    materialTitle.className = 'section-title';
-    materialTitle.textContent = `Material ${mIndex + 1} · ${material.title}`;
-
-    const card = document.createElement('article');
-    card.className = 'listening-card card';
-
-    const cardHead = document.createElement('div');
-    cardHead.className = 'passage__head';
-    const cardTitle = document.createElement('h3');
-    cardTitle.className = 'passage__title';
-    cardTitle.textContent = material.title;
-    const genre = document.createElement('span');
-    genre.className = 'badge';
-    genre.textContent = material.genre;
-    const wordsChip = document.createElement('span');
-    wordsChip.className = 'stat-chip';
-    wordsChip.textContent = `约 ${countScriptWords(material.script)} 词`;
-    cardHead.append(cardTitle, genre, wordsChip);
-
-    const player = buildPlayer(material, engine);
-    syncs.push(player.sync);
-    if (!engine.supported) {
-      const hint = document.createElement('p');
-      hint.className = 'passage__hint';
-      hint.setAttribute('data-testid', `tts-unsupported-${material.id}`);
-      hint.textContent = '当前浏览器不支持语音合成（Web Speech API），无法朗读；可展开原文作读练。';
-      card.append(cardHead, player.el, hint);
-    } else {
-      card.append(cardHead, player.el);
-    }
-
-    /* 原文折叠：默认隐藏，听完作答后可展开对照 */
-    const scriptToggle = document.createElement('button');
-    scriptToggle.type = 'button';
-    scriptToggle.className = 'btn btn--ghost btn--sm listening-script__toggle';
-    scriptToggle.setAttribute('data-testid', `script-toggle-${material.id}`);
-    scriptToggle.setAttribute('aria-expanded', 'false');
-    scriptToggle.setAttribute('aria-controls', `script-${material.id}`);
-    scriptToggle.textContent = '查看听力原文';
-
-    const script = document.createElement('div');
-    script.className = 'listening-script';
-    script.id = `script-${material.id}`;
-    script.setAttribute('data-testid', `script-${material.id}`);
-    script.hidden = true;
-    const scriptList = document.createElement('ol');
-    scriptList.className = 'listening-script__list';
-    for (const line of material.script) {
-      const li = document.createElement('li');
-      li.className = 'listening-script__line';
-      li.textContent = line;
-      scriptList.append(li);
-    }
-    script.append(scriptList);
-
-    scriptToggle.addEventListener('click', () => {
-      const expanded = !script.hidden;
-      script.hidden = expanded;
-      scriptToggle.setAttribute('aria-expanded', String(!expanded));
-      scriptToggle.textContent = expanded ? '查看听力原文' : '收起听力原文';
+    // 单元切换：先停掉当前朗读引擎并清空页面，再按新单元重建
+    const unitSwitcher = buildUnitSwitcher('/listening', () => {
+      teardown?.();
+      root.replaceChildren();
+      mount();
     });
 
-    card.append(scriptToggle, script);
+    const headSpacer = document.createElement('span');
+    headSpacer.className = 'page-head__spacer';
+    head.append(title, unitSwitcher.el, headSpacer, statChip);
 
-    const qTitle = document.createElement('h3');
-    qTitle.className = 'section-title section-title--sub';
-    qTitle.textContent = '听力理解（答题即时判分 · 含解析）';
+    const intro = document.createElement('p');
+    intro.className = 'page-intro';
+    intro.textContent = `${materials.length} 段「${UNIT_META[unit].title}」主题听力材料（自编 · 浏览器本地语音合成朗读，无需外部音频）。先听音频完成每段 ${materials[0]?.questions.length ?? 0} 道理解题（答题即时判分并附解析），听不懂再点开原文对照；错题自动进入错题本。`;
 
-    const list = document.createElement('ol');
-    list.className = 'exercise-list';
-    material.questions.forEach((q, i) => list.append(buildQuestion(q, i, onAnswered)));
+    page.append(head, intro);
 
-    section.append(materialTitle, card, qTitle, list);
-    page.append(section);
-  });
+    /** 答题即记统计（按当前单元计入单元维度）；答错另入错题本（错题本/学习报告页的数据源） */
+    const onAnswered = (correct: boolean, question: ListeningQuestion, yourAnswer: string): void => {
+      answered += 1;
+      if (correct) correctCount += 1;
+      statChip.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
+      recordAnswerAndSave('listening', correct, unit);
+      if (!correct) {
+        book = recordWrong(
+          book,
+          {
+            exerciseId: question.id,
+            module: 'listening',
+            stem: question.stem,
+            yourAnswer,
+            correctAnswer: question.options[question.answerIndex],
+            explanation: question.explanation,
+          },
+          Date.now(),
+        );
+        saveWrongBook(book);
+      }
+    };
 
-  for (const sync of syncs) sync();
+    const syncs: Array<() => void> = [];
 
-  root.append(header, page);
+    materials.forEach((material: ListeningMaterial, mIndex: number) => {
+      const section = document.createElement('section');
+      section.className = 'listening-material';
+      section.dataset.material = material.id;
 
-  /* 引擎状态变化 → 同步所有播放器按钮文案/禁用态 */
-  const unsubscribe = engine.subscribe(() => {
+      const materialTitle = document.createElement('h2');
+      materialTitle.className = 'section-title';
+      materialTitle.textContent = `Material ${mIndex + 1} · ${material.title}`;
+
+      const card = document.createElement('article');
+      card.className = 'listening-card card';
+
+      const cardHead = document.createElement('div');
+      cardHead.className = 'passage__head';
+      const cardTitle = document.createElement('h3');
+      cardTitle.className = 'passage__title';
+      cardTitle.textContent = material.title;
+      const genre = document.createElement('span');
+      genre.className = 'badge';
+      genre.textContent = material.genre;
+      const wordsChip = document.createElement('span');
+      wordsChip.className = 'stat-chip';
+      wordsChip.textContent = `约 ${countScriptWords(material.script)} 词`;
+      cardHead.append(cardTitle, genre, wordsChip);
+
+      const player = buildPlayer(material, engine);
+      syncs.push(player.sync);
+      if (!engine.supported) {
+        const hint = document.createElement('p');
+        hint.className = 'passage__hint';
+        hint.setAttribute('data-testid', `tts-unsupported-${material.id}`);
+        hint.textContent = '当前浏览器不支持语音合成（Web Speech API），无法朗读；可展开原文作读练。';
+        card.append(cardHead, player.el, hint);
+      } else {
+        card.append(cardHead, player.el);
+      }
+
+      /* 原文折叠：默认隐藏，听完作答后可展开对照 */
+      const scriptToggle = document.createElement('button');
+      scriptToggle.type = 'button';
+      scriptToggle.className = 'btn btn--ghost btn--sm listening-script__toggle';
+      scriptToggle.setAttribute('data-testid', `script-toggle-${material.id}`);
+      scriptToggle.setAttribute('aria-expanded', 'false');
+      scriptToggle.setAttribute('aria-controls', `script-${material.id}`);
+      scriptToggle.textContent = '查看听力原文';
+
+      const script = document.createElement('div');
+      script.className = 'listening-script';
+      script.id = `script-${material.id}`;
+      script.setAttribute('data-testid', `script-${material.id}`);
+      script.hidden = true;
+      const scriptList = document.createElement('ol');
+      scriptList.className = 'listening-script__list';
+      for (const line of material.script) {
+        const li = document.createElement('li');
+        li.className = 'listening-script__line';
+        li.textContent = line;
+        scriptList.append(li);
+      }
+      script.append(scriptList);
+
+      scriptToggle.addEventListener('click', () => {
+        const expanded = !script.hidden;
+        script.hidden = expanded;
+        scriptToggle.setAttribute('aria-expanded', String(!expanded));
+        scriptToggle.textContent = expanded ? '查看听力原文' : '收起听力原文';
+      });
+
+      card.append(scriptToggle, script);
+
+      const qTitle = document.createElement('h3');
+      qTitle.className = 'section-title section-title--sub';
+      qTitle.textContent = '听力理解（答题即时判分 · 含解析）';
+
+      const list = document.createElement('ol');
+      list.className = 'exercise-list';
+      material.questions.forEach((q, i) => list.append(buildQuestion(q, i, onAnswered)));
+
+      section.append(materialTitle, card, qTitle, list);
+      page.append(section);
+    });
+
     for (const sync of syncs) sync();
-  });
+
+    root.append(header, page);
+
+    /* 引擎状态变化 → 同步所有播放器按钮文案/禁用态 */
+    const unsubscribe = engine.subscribe(() => {
+      for (const sync of syncs) sync();
+    });
+
+    teardown = () => {
+      unsubscribe();
+      engine.destroy();
+    };
+  }
+
+  mount();
 
   /* 路由离开：停止朗读并释放订阅（由 router 调用） */
   return () => {
-    unsubscribe();
-    engine.destroy();
+    teardown?.();
   };
 }

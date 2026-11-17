@@ -69,10 +69,3 @@ const taskById = new Map(unit1WritingTasks.map((t) => [t.id, t]));
 export function getWritingTask(id: string): WritingTask | undefined {
   return taskById.get(id);
 }
-
-/** 词数统计：只计含字母的 token（与阅读/听力模块同一口径） */
-export function countEssayWords(text: string): number {
-  return text
-    .split(/\s+/)
-    .filter((token) => /[A-Za-z]/.test(token)).length;
-}
