@@ -6,7 +6,7 @@ import { emptyProgress, type Progress } from '../store/progress';
 import { createCard, DAY_MS } from '../srs/sm2';
 import type { ReportDeps } from './deps';
 import type { PracticeModule } from '../types';
-import { UNIT_IDS, BOOK_IDS, type UnitId } from '../data/units';
+import { UNIT_IDS, BOOK_IDS, unitIdsOfBook, type UnitId } from '../data/units';
 
 const NOW = Date.UTC(2026, 0, 1);
 
@@ -306,14 +306,23 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(data.bookRows.map((r) => r.book)).toEqual([...BOOK_IDS]);
     const required1 = data.bookRows[0]!;
     expect(required1.label).toBe('必修一');
-    expect(required1.unitRows.map((r) => r.unit)).toEqual([...UNIT_IDS]);
+    expect(required1.unitRows.map((r) => r.unit)).toEqual([...unitIdsOfBook('required-1')]);
     expect(required1.answered).toBe(10);
     expect(required1.correct).toBe(6);
     expect(required1.accuracy).toBeCloseTo(0.6);
     expect(required1.wrongCount).toBe(5);
 
-    // 其余六册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
-    for (const row of data.bookRows.slice(1)) {
+    // 选择性必修一：unit6-10 纯数据新增自动入组（未练习全 0）
+    const elective1 = data.bookRows[3]!;
+    expect(elective1.label).toBe('选择性必修一');
+    expect(elective1.unitRows.map((r) => r.unit)).toEqual(['unit6', 'unit7', 'unit8', 'unit9', 'unit10']);
+    expect(elective1.answered).toBe(0);
+    expect(elective1.correct).toBe(0);
+    expect(elective1.accuracy).toBeNull();
+    expect(elective1.wrongCount).toBe(0);
+
+    // 其余五册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
+    for (const row of [...data.bookRows.slice(1, 3), ...data.bookRows.slice(4)]) {
       expect(row.unitRows).toEqual([]);
       expect(row.answered).toBe(0);
       expect(row.correct).toBe(0);
@@ -340,7 +349,7 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     const g1 = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="required-1"]')!;
     expect(g1.querySelector('[data-testid="book-summary"]')!.textContent).toContain('5 个单元');
     expect(g1.querySelector('[data-testid="book-summary"]')!.textContent).toContain('60%');
-    expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(UNIT_IDS.length);
+    expect(g1.querySelectorAll('[data-testid="unit-row"]')).toHaveLength(unitIdsOfBook('required-1').length);
 
     // 空册：保留分组（架构占位），册头显示「暂未收录单元」，组内是降级提示而非崩溃
     const empty = container.querySelector<HTMLElement>('[data-testid="book-group"][data-book="elective-2"]')!;

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "theme",
+    "word": "theme",
+    "phonetic": "/θiːm/",
+    "pos": "n.",
+    "meaning": "主题；题目",
+    "example": "The park is famous for its ocean theme.",
+    "exampleZh": "这座公园以海洋主题而闻名。"
+  },
+  {
+    "id": "jungle",
+    "word": "jungle",
+    "phonetic": "/ˈdʒʌŋɡl/",
+    "pos": "n.",
+    "meaning": "（热带）丛林；密林",
+    "example": "Monkeys jumped from tree to tree in the jungle.",
+    "exampleZh": "猴子在丛林里从一棵树跳到另一棵树。"
+  },
+  {
+    "id": "valley",
+    "word": "valley",
+    "phonetic": "/ˈvæli/",
+    "pos": "n.",
+    "meaning": "山谷；流域",
+    "example": "A quiet river runs through the valley.",
+    "exampleZh": "一条安静的河流穿过山谷。"
+  },
+  {
+    "id": "vast",
+    "word": "vast",
+    "phonetic": "/vɑːst/",
+    "pos": "adj.",
+    "meaning": "辽阔的；巨大的",
+    "example": "Vast grassland stretches to the horizon.",
+    "exampleZh": "辽阔的草原一直延伸到天边。"
+  },
+  {
+    "id": "glacier",
+    "word": "glacier",
+    "phonetic": "/ˈɡlæsiə(r)/",
+    "pos": "n.",
+    "meaning": "冰川",
+    "example": "The glacier has melted a little over the years.",
+    "exampleZh": "这些年冰川已经融化了一些。"
+  },
+  {
+    "id": "reindeer",
+    "word": "reindeer",
+    "phonetic": "/ˈreɪndɪə(r)/",
+    "pos": "n.",
+    "meaning": "驯鹿",
+    "example": "Reindeer move across the snow in search of food.",
+    "exampleZh": "驯鹿在雪地中迁徙觅食。"
+  },
+  {
+    "id": "territory",
+    "word": "territory",
+    "phonetic": "/ˈterətri/",
+    "pos": "n.",
+    "meaning": "领土；（动物占据的）领地；领域",
+    "example": "The park protects the territory of wild animals.",
+    "exampleZh": "公园保护野生动物的栖息领地。"
+  },
+  {
+    "id": "ban",
+    "word": "ban",
+    "phonetic": "/bæn/",
+    "pos": "vt. & n.",
+    "meaning": "禁止；禁令",
+    "example": "Visitors are banned from feeding the animals.",
+    "exampleZh": "游客被禁止投喂动物。"
+  },
+  {
+    "id": "boundary",
+    "word": "boundary",
+    "phonetic": "/ˈbaʊndri/",
+    "pos": "n.",
+    "meaning": "边界；界限",
+    "example": "A stone wall marks the boundary of the park.",
+    "exampleZh": "一堵石墙标出了公园的边界。"
+  },
+  {
+    "id": "cottage",
+    "word": "cottage",
+    "phonetic": "/ˈkɒtɪdʒ/",
+    "pos": "n.",
+    "meaning": "小屋；村舍",
+    "example": "We stayed in a wooden cottage by the lake.",
+    "exampleZh": "我们住在湖边一座木屋里。"
+  },
+  {
+    "id": "spectacle",
+    "word": "spectacle",
+    "phonetic": "/ˈspektəkl/",
+    "pos": "n.",
+    "meaning": "壮观的景象；奇观；表演",
+    "example": "The northern lights are a true spectacle.",
+    "exampleZh": "北极光是一大奇观。"
+  },
+  {
+    "id": "stretch",
+    "word": "stretch",
+    "phonetic": "/stretʃ/",
+    "pos": "v. & n.",
+    "meaning": "延伸；伸展；（一片）连续地域",
+    "example": "The beach stretches for miles.",
+    "exampleZh": "海滩绵延数英里。"
+  },
+  {
+    "id": "splendid",
+    "word": "splendid",
+    "phonetic": "/ˈsplendɪd/",
+    "pos": "adj.",
+    "meaning": "壮丽的；极好的",
+    "example": "We enjoyed a splendid view of the mountains.",
+    "exampleZh": "我们欣赏到了壮丽的山景。"
+  },
+  {
+    "id": "scenery",
+    "word": "scenery",
+    "phonetic": "/ˈsiːnəri/",
+    "pos": "n.",
+    "meaning": "风景；景色（总称）",
+    "example": "The scenery along the road changes with seasons.",
+    "exampleZh": "沿途的风景随季节变化。"
+  },
+  {
+    "id": "wilderness",
+    "word": "wilderness",
+    "phonetic": "/ˈwɪldənəs/",
+    "pos": "n.",
+    "meaning": "荒野；荒原",
+    "example": "They hiked deep into the wilderness.",
+    "exampleZh": "他们徒步走进荒野深处。"
+  },
+  {
+    "id": "hike",
+    "word": "hike",
+    "phonetic": "/haɪk/",
+    "pos": "vi. & n.",
+    "meaning": "徒步旅行；远足",
+    "example": "We hiked along the valley trail all morning.",
+    "exampleZh": "我们整个上午都在沿山谷小径徒步。"
+  },
+  {
+    "id": "trail",
+    "word": "trail",
+    "phonetic": "/treɪl/",
+    "pos": "n.",
+    "meaning": "小路；路径；踪迹",
+    "example": "Follow the trail and you will see the waterfall.",
+    "exampleZh": "沿着小路走，你就会看到瀑布。"
+  },
+  {
+    "id": "waterfall",
+    "word": "waterfall",
+    "phonetic": "/ˈwɔːtəfɔːl/",
+    "pos": "n.",
+    "meaning": "瀑布",
+    "example": "The waterfall drops thirty metres into the pool.",
+    "exampleZh": "瀑布落差三十米，直落水潭。"
+  },
+  {
+    "id": "inhabitant",
+    "word": "inhabitant",
+    "phonetic": "/ɪnˈhæbɪtənt/",
+    "pos": "n.",
+    "meaning": "居民；栖息的动物",
+    "example": "The local inhabitants sell handmade chocolate.",
+    "exampleZh": "当地居民出售手工巧克力。"
+  },
+  {
+    "id": "diverse",
+    "word": "diverse",
+    "phonetic": "/daɪˈvɜːs/",
+    "pos": "adj.",
+    "meaning": "多种多样的；不同的",
+    "example": "The park is home to diverse plants and animals.",
+    "exampleZh": "公园是多种动植物的家园。"
+  }
+]

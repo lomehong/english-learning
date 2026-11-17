@@ -1,0 +1,182 @@
+[
+  {
+    "id": "hybrid",
+    "word": "hybrid",
+    "phonetic": "/ˈhaɪbrɪd/",
+    "pos": "n. & adj.",
+    "meaning": "杂交种；杂交的",
+    "example": "The hybrid rice grows taller than the old kind.",
+    "exampleZh": "杂交水稻比旧品种长得更高。"
+  },
+  {
+    "id": "yield",
+    "word": "yield",
+    "phonetic": "/jiːld/",
+    "pos": "n. & v.",
+    "meaning": "产量；出产；产出",
+    "example": "The new seeds increased the yield greatly.",
+    "exampleZh": "新种子大幅提高了产量。"
+  },
+  {
+    "id": "conventional",
+    "word": "conventional",
+    "phonetic": "/kənˈvenʃənl/",
+    "pos": "adj.",
+    "meaning": "传统的；常规的",
+    "example": "Conventional farming depends on chemicals.",
+    "exampleZh": "传统农业依赖化肥农药。"
+  },
+  {
+    "id": "soil",
+    "word": "soil",
+    "phonetic": "/sɔɪl/",
+    "pos": "n.",
+    "meaning": "土壤；土地",
+    "example": "Healthy soil is the first step to healthy food.",
+    "exampleZh": "健康的土壤是健康食物的第一步。"
+  },
+  {
+    "id": "wheat",
+    "word": "wheat",
+    "phonetic": "/wiːt/",
+    "pos": "n.",
+    "meaning": "小麦",
+    "example": "The wheat turns golden in early summer.",
+    "exampleZh": "初夏时节小麦变成金黄色。"
+  },
+  {
+    "id": "grain",
+    "word": "grain",
+    "phonetic": "/ɡreɪn/",
+    "pos": "n.",
+    "meaning": "谷物；谷粒；颗粒",
+    "example": "Every grain of rice comes from hard work.",
+    "exampleZh": "每一粒米都来之不易。"
+  },
+  {
+    "id": "crop",
+    "word": "crop",
+    "phonetic": "/krɒp/",
+    "pos": "n.",
+    "meaning": "庄稼；作物；收成",
+    "example": "The farmers are busy harvesting the crops.",
+    "exampleZh": "农民们正忙着收庄稼。"
+  },
+  {
+    "id": "nutrition",
+    "word": "nutrition",
+    "phonetic": "/njuːˈtrɪʃn/",
+    "pos": "n.",
+    "meaning": "营养；滋养",
+    "example": "Vegetables rich in nutrition keep us healthy.",
+    "exampleZh": "营养丰富的蔬菜让我们保持健康。"
+  },
+  {
+    "id": "mineral",
+    "word": "mineral",
+    "phonetic": "/ˈmɪnərəl/",
+    "pos": "n.",
+    "meaning": "矿物质；矿物",
+    "example": "Water carries minerals from deep in the soil.",
+    "exampleZh": "水分把土壤深处的矿物质输送上来。"
+  },
+  {
+    "id": "organic",
+    "word": "organic",
+    "phonetic": "/ɔːˈɡænɪk/",
+    "pos": "adj.",
+    "meaning": "有机的；不使用化肥的",
+    "example": "Organic farms avoid chemical pesticides.",
+    "exampleZh": "有机农场避免使用化学杀虫剂。"
+  },
+  {
+    "id": "pesticide",
+    "word": "pesticide",
+    "phonetic": "/ˈpestɪsaɪd/",
+    "pos": "n.",
+    "meaning": "杀虫剂；农药",
+    "example": "Too much pesticide harms the land.",
+    "exampleZh": "过量的农药会伤害土地。"
+  },
+  {
+    "id": "fertiliser",
+    "word": "fertiliser",
+    "phonetic": "/ˈfɜːtəlaɪzə(r)/",
+    "pos": "n.",
+    "meaning": "肥料",
+    "example": "Natural fertiliser improves the soil year by year.",
+    "exampleZh": "天然肥料让土壤逐年改善。"
+  },
+  {
+    "id": "output",
+    "word": "output",
+    "phonetic": "/ˈaʊtpʊt/",
+    "pos": "n.",
+    "meaning": "产量；输出；产出",
+    "example": "The farm's output doubled in five years.",
+    "exampleZh": "农场产量五年内翻了一番。"
+  },
+  {
+    "id": "expand",
+    "word": "expand",
+    "phonetic": "/ɪkˈspænd/",
+    "pos": "v.",
+    "meaning": "扩大；增加；扩展",
+    "example": "They expanded the fields to the river.",
+    "exampleZh": "他们把田地扩展到了河边。"
+  },
+  {
+    "id": "generation",
+    "word": "generation",
+    "phonetic": "/ˌdʒenəˈreɪʃn/",
+    "pos": "n.",
+    "meaning": "一代（人）；产生",
+    "example": "The story has passed down for three generations.",
+    "exampleZh": "这个故事已传承了三代人。"
+  },
+  {
+    "id": "poverty",
+    "word": "poverty",
+    "phonetic": "/ˈpɒvəti/",
+    "pos": "n.",
+    "meaning": "贫穷；贫困",
+    "example": "Better harvests lifted whole villages out of poverty.",
+    "exampleZh": "更好的收成让整村人摆脱了贫困。"
+  },
+  {
+    "id": "leisure",
+    "word": "leisure",
+    "phonetic": "/ˈleʒə(r)/",
+    "pos": "n.",
+    "meaning": "闲暇；休闲",
+    "example": "Farm machines give people more leisure time.",
+    "exampleZh": "农业机械让人们有了更多闲暇。"
+  },
+  {
+    "id": "digest",
+    "word": "digest",
+    "phonetic": "/daɪˈdʒest/",
+    "pos": "v.",
+    "meaning": "消化；领会",
+    "example": "Our bodies digest rice into energy.",
+    "exampleZh": "我们的身体把米饭消化成能量。"
+  },
+  {
+    "id": "essential",
+    "word": "essential",
+    "phonetic": "/ɪˈsenʃl/",
+    "pos": "adj.",
+    "meaning": "必不可少的；极其重要的",
+    "example": "Water is essential to every living thing.",
+    "exampleZh": "水对一切生物都必不可少。"
+  },
+  {
+    "id": "vision",
+    "word": "vision",
+    "phonetic": "/ˈvɪʒn/",
+    "pos": "n.",
+    "meaning": "愿景；设想；视力",
+    "example": "His vision of a hunger-free world inspired millions.",
+    "exampleZh": "他让世界免于饥饿的愿景激励了数百万人。"
+  }
+]

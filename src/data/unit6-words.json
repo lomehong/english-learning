@@ -1,0 +1,182 @@
+[
+  {
+    "id": "commit",
+    "word": "commit",
+    "phonetic": "/kəˈmɪt/",
+    "pos": "vt.",
+    "meaning": "承诺，保证；（使）承担义务；犯（错、罪）",
+    "example": "He committed himself to finding a cure for the disease.",
+    "exampleZh": "他承诺要找到这种疾病的治疗方法。"
+  },
+  {
+    "id": "commitment",
+    "word": "commitment",
+    "phonetic": "/kəˈmɪtmənt/",
+    "pos": "n.",
+    "meaning": "承诺；投入，奉献",
+    "example": "Her commitment to medical research never changed.",
+    "exampleZh": "她对医学研究的投入从未改变。"
+  },
+  {
+    "id": "devote",
+    "word": "devote",
+    "phonetic": "/dɪˈvəʊt/",
+    "pos": "vt.",
+    "meaning": "献身；致力于；把（时间、精力）用于",
+    "example": "She devoted her life to medical research.",
+    "exampleZh": "她毕生致力于医学研究。"
+  },
+  {
+    "id": "devotion",
+    "word": "devotion",
+    "phonetic": "/dɪˈvəʊʃn/",
+    "pos": "n.",
+    "meaning": "奉献；深爱；忠诚",
+    "example": "His devotion to his students moved everyone.",
+    "exampleZh": "他对学生的挚爱感动了每一个人。"
+  },
+  {
+    "id": "acknowledge",
+    "word": "acknowledge",
+    "phonetic": "/əkˈnɒlɪdʒ/",
+    "pos": "vt.",
+    "meaning": "承认（事实）；答谢；（公开）感谢",
+    "example": "She acknowledged that the discovery was a team effort.",
+    "exampleZh": "她承认这项发现是团队共同努力的结果。"
+  },
+  {
+    "id": "analyse",
+    "word": "analyse",
+    "phonetic": "/ˈænəlaɪz/",
+    "pos": "vt.",
+    "meaning": "分析；剖析",
+    "example": "Scientists analyse the data again and again.",
+    "exampleZh": "科学家们反复分析这些数据。"
+  },
+  {
+    "id": "apparently",
+    "word": "apparently",
+    "phonetic": "/əˈpærəntli/",
+    "pos": "adv.",
+    "meaning": "据说；看来，显然",
+    "example": "Apparently, the experiment began in 1971.",
+    "exampleZh": "据说，这项实验始于 1971 年。"
+  },
+  {
+    "id": "insist",
+    "word": "insist",
+    "phonetic": "/ɪnˈsɪst/",
+    "pos": "vi. & vt.",
+    "meaning": "坚持；坚决要求；坚持认为",
+    "example": "He insisted on testing the medicine himself first.",
+    "exampleZh": "他坚持先在自己身上试验这种药。"
+  },
+  {
+    "id": "remarkable",
+    "word": "remarkable",
+    "phonetic": "/rɪˈmɑːkəbl/",
+    "pos": "adj.",
+    "meaning": "非凡的；不寻常的；显著的",
+    "example": "She made remarkable progress in a short time.",
+    "exampleZh": "她在短时间内取得了非凡的进步。"
+  },
+  {
+    "id": "outstanding",
+    "word": "outstanding",
+    "phonetic": "/aʊtˈstændɪŋ/",
+    "pos": "adj.",
+    "meaning": "杰出的；突出的；未解决的",
+    "example": "Yuan Longping was an outstanding scientist.",
+    "exampleZh": "袁隆平是一位杰出的科学家。"
+  },
+  {
+    "id": "extraordinary",
+    "word": "extraordinary",
+    "phonetic": "/ɪkˈstrɔːdnri/",
+    "pos": "adj.",
+    "meaning": "非凡的；特别的；令人惊奇的",
+    "example": "It was an extraordinary achievement for the whole team.",
+    "exampleZh": "对整个团队来说，这是一项非凡的成就。"
+  },
+  {
+    "id": "genius",
+    "word": "genius",
+    "phonetic": "/ˈdʒiːniəs/",
+    "pos": "n.",
+    "meaning": "天才；天赋；天才人物",
+    "example": "People call her a genius of great modesty.",
+    "exampleZh": "人们称她为一位非常谦虚的天才。"
+  },
+  {
+    "id": "passion",
+    "word": "passion",
+    "phonetic": "/ˈpæʃn/",
+    "pos": "n.",
+    "meaning": "热爱，激情；强烈爱好",
+    "example": "His passion for the stars began in childhood.",
+    "exampleZh": "他对星空的热爱始于童年。"
+  },
+  {
+    "id": "patent",
+    "word": "patent",
+    "phonetic": "/ˈpætnt/",
+    "pos": "n.",
+    "meaning": "专利；专利证书",
+    "example": "The company applied for a patent for the new device.",
+    "exampleZh": "公司为这种新装置申请了专利。"
+  },
+  {
+    "id": "substance",
+    "word": "substance",
+    "phonetic": "/ˈsʌbstəns/",
+    "pos": "n.",
+    "meaning": "物质；材料；要旨",
+    "example": "They extracted a useful substance from the herb.",
+    "exampleZh": "他们从这种草药中提取出一种有用的物质。"
+  },
+  {
+    "id": "gradually",
+    "word": "gradually",
+    "phonetic": "/ˈɡrædʒuəli/",
+    "pos": "adv.",
+    "meaning": "逐渐地，逐步地",
+    "example": "The medicine gradually became known around the world.",
+    "exampleZh": "这种药逐渐为世人所知。"
+  },
+  {
+    "id": "consequence",
+    "word": "consequence",
+    "phonetic": "/ˈkɒnsɪkwəns/",
+    "pos": "n.",
+    "meaning": "结果；后果；重要性",
+    "example": "Every choice we make has its consequences.",
+    "exampleZh": "我们做出的每个选择都有其后果。"
+  },
+  {
+    "id": "institute",
+    "word": "institute",
+    "phonetic": "/ˈɪnstɪtjuːt/",
+    "pos": "n.",
+    "meaning": "研究所；学院；协会",
+    "example": "She joined a famous institute of medicine in Beijing.",
+    "exampleZh": "她进入了北京一家著名的医学研究所。"
+  },
+  {
+    "id": "professor",
+    "word": "professor",
+    "phonetic": "/prəˈfesə(r)/",
+    "pos": "n.",
+    "meaning": "教授；（大学的）教师",
+    "example": "The professor led a small team of young researchers.",
+    "exampleZh": "这位教授带领着一支年轻的研究者队伍。"
+  },
+  {
+    "id": "device",
+    "word": "device",
+    "phonetic": "/dɪˈvaɪs/",
+    "pos": "n.",
+    "meaning": "装置；设备；手段",
+    "example": "He invented a simple device to save energy.",
+    "exampleZh": "他发明了一种节能的简单装置。"
+  }
+]

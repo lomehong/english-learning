@@ -107,7 +107,7 @@ describe('练习统计 localStorage 持久化', () => {
             grammar: { answered: 2, correct: 1 }, // 合法保留
             hacker: { answered: 50, correct: 50 }, // 未知模块 → 丢弃
           },
-          unit9: { grammar: { answered: 9, correct: 9 } }, // 未知单元 → 丢弃
+          unit88: { grammar: { answered: 9, correct: 9 } }, // 未知单元 → 丢弃
         },
       }),
     );
@@ -119,7 +119,7 @@ describe('练习统计 localStorage 持久化', () => {
     expect(Object.keys(loaded.modules).includes('hacker')).toBe(false);
     expect(loaded.units.unit2.grammar).toEqual({ answered: 2, correct: 1 });
     expect(Object.keys(loaded.units.unit2).includes('hacker')).toBe(false);
-    expect(Object.keys(loaded.units).includes('unit9')).toBe(false);
+    expect(Object.keys(loaded.units).includes('unit88')).toBe(false);
     expect(loaded.units.unit1.grammar).toEqual({ answered: 0, correct: 0 });
   });
 
