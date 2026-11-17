@@ -1,0 +1,182 @@
+[
+  {
+    "id": "teenage",
+    "word": "teenage",
+    "phonetic": "/ˈtiːneɪdʒ/",
+    "pos": "adj.",
+    "meaning": "青少年的；十几岁的（13 至 19 岁的）",
+    "example": "Teenage problems worry many parents.",
+    "exampleZh": "青少年问题让许多家长忧心。"
+  },
+  {
+    "id": "teenager",
+    "word": "teenager",
+    "phonetic": "/ˈtiːneɪdʒə(r)/",
+    "pos": "n.",
+    "meaning": "（13 至 19 岁之间的）青少年",
+    "example": "My brother is a teenager who loves basketball.",
+    "exampleZh": "我弟弟是个热爱篮球的青少年。"
+  },
+  {
+    "id": "ballet",
+    "word": "ballet",
+    "phonetic": "/ˈbæleɪ/",
+    "pos": "n.",
+    "meaning": "芭蕾舞；芭蕾舞剧",
+    "example": "She has practised ballet since she was five.",
+    "exampleZh": "她从五岁起就练习芭蕾舞。"
+  },
+  {
+    "id": "volunteer",
+    "word": "volunteer",
+    "phonetic": "/ˌvɒlənˈtɪə(r)/",
+    "pos": "n.",
+    "meaning": "志愿者",
+    "example": "The volunteers help old people every weekend.",
+    "exampleZh": "志愿者们每个周末都去帮助老人。"
+  },
+  {
+    "id": "debate",
+    "word": "debate",
+    "phonetic": "/dɪˈbeɪt/",
+    "pos": "n. & v.",
+    "meaning": "辩论；争论",
+    "example": "We had a heated debate about school uniforms.",
+    "exampleZh": "我们就校服问题进行了一场激烈的辩论。"
+  },
+  {
+    "id": "prefer",
+    "word": "prefer",
+    "phonetic": "/prɪˈfɜː(r)/",
+    "pos": "vt.",
+    "meaning": "更喜欢；选择某事物（而不选择其他事物）",
+    "example": "I prefer reading English novels at home.",
+    "exampleZh": "我更喜欢在家读英文小说。"
+  },
+  {
+    "id": "content",
+    "word": "content",
+    "phonetic": "/ˈkɒntent/",
+    "pos": "n.",
+    "meaning": "内容；目录",
+    "example": "The content of the book is easy to understand.",
+    "exampleZh": "这本书的内容通俗易懂。"
+  },
+  {
+    "id": "movement",
+    "word": "movement",
+    "phonetic": "/ˈmuːvmənt/",
+    "pos": "n.",
+    "meaning": "运动；动作",
+    "example": "The Green Planet movement started in our school.",
+    "exampleZh": "\"绿色星球\"运动是从我们学校发起的。"
+  },
+  {
+    "id": "greenhouse",
+    "word": "greenhouse",
+    "phonetic": "/ˈɡriːnhaʊs/",
+    "pos": "n.",
+    "meaning": "温室；暖房",
+    "example": "They grow vegetables in the greenhouse in winter.",
+    "exampleZh": "冬天他们在温室里种植蔬菜。"
+  },
+  {
+    "id": "suitable",
+    "word": "suitable",
+    "phonetic": "/ˈsuːtəbl/",
+    "pos": "adj.",
+    "meaning": "合适的；适用的",
+    "example": "This film is not suitable for young children.",
+    "exampleZh": "这部电影不适合幼儿观看。"
+  },
+  {
+    "id": "actually",
+    "word": "actually",
+    "phonetic": "/ˈæktʃuəli/",
+    "pos": "adv.",
+    "meaning": "事实上；的确",
+    "example": "Actually, I prefer the blue one.",
+    "exampleZh": "事实上，我更喜欢那个蓝色的。"
+  },
+  {
+    "id": "challenge",
+    "word": "challenge",
+    "phonetic": "/ˈtʃælɪndʒ/",
+    "pos": "n.",
+    "meaning": "挑战；艰巨任务",
+    "example": "Learning English well is a big challenge for him.",
+    "exampleZh": "学好英语对他来说是个很大的挑战。"
+  },
+  {
+    "id": "title",
+    "word": "title",
+    "phonetic": "/ˈtaɪtl/",
+    "pos": "n.",
+    "meaning": "标题；题目；头衔",
+    "example": "The title of the passage is \"Teenage Life\".",
+    "exampleZh": "这篇短文的标题是《青少年生活》。"
+  },
+  {
+    "id": "topic",
+    "word": "topic",
+    "phonetic": "/ˈtɒpɪk/",
+    "pos": "n.",
+    "meaning": "话题；主题",
+    "example": "Let's choose a topic for our class debate.",
+    "exampleZh": "我们为班级辩论选一个话题吧。"
+  },
+  {
+    "id": "freshman",
+    "word": "freshman",
+    "phonetic": "/ˈfreʃmən/",
+    "pos": "n.",
+    "meaning": "（中学）九年级学生；（大学）一年级新生",
+    "example": "My sister is a freshman at Peking University.",
+    "exampleZh": "我姐姐是北京大学的一年级新生。"
+  },
+  {
+    "id": "confusing",
+    "word": "confusing",
+    "phonetic": "/kənˈfjuːzɪŋ/",
+    "pos": "adj.",
+    "meaning": "难以理解的；不清楚的",
+    "example": "The grammar rules are confusing to beginners.",
+    "exampleZh": "这些语法规则让初学者感到困惑。"
+  },
+  {
+    "id": "fluent",
+    "word": "fluent",
+    "phonetic": "/ˈfluːənt/",
+    "pos": "adj.",
+    "meaning": "流利的；流畅的",
+    "example": "She is fluent in three languages.",
+    "exampleZh": "她能流利地说三种语言。"
+  },
+  {
+    "id": "graduate",
+    "word": "graduate",
+    "phonetic": "/ˈɡrædʒuət/",
+    "pos": "vi. & vt.",
+    "meaning": "毕业；（使）毕业",
+    "example": "He will graduate from high school next year.",
+    "exampleZh": "他明年将从高中毕业。"
+  },
+  {
+    "id": "recommend",
+    "word": "recommend",
+    "phonetic": "/ˌrekəˈmend/",
+    "pos": "vt.",
+    "meaning": "建议；推荐；介绍",
+    "example": "Can you recommend a good dictionary to me?",
+    "exampleZh": "你能给我推荐一本好词典吗？"
+  },
+  {
+    "id": "recommendation",
+    "word": "recommendation",
+    "phonetic": "/ˌrekəmenˈdeɪʃn/",
+    "pos": "n.",
+    "meaning": "推荐；介绍信",
+    "example": "I bought the book on my teacher's recommendation.",
+    "exampleZh": "我在老师的推荐下买了这本书。"
+  }
+]

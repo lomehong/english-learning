@@ -1,7 +1,26 @@
 {
+<<<<<<< HEAD
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ]
+=======
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vitest/globals"]
+  },
+  "include": ["src", "vite.config.ts"]
+>>>>>>> c2ccdf5 (sa(ticket-6-1794887919813735): 实现词汇模块（词表/SRS/学习与复习页）)
 }
