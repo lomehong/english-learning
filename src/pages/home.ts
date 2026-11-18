@@ -14,7 +14,7 @@ export function renderHome(root: HTMLElement): void {
   header.className = 'site-header';
   header.innerHTML = `
     <div class="site-header__inner">
-      <span class="site-header__brand">高一英语学习系统</span>
+      <span class="site-header__brand">高中英语学习系统</span>
       <nav class="site-header__nav">
         <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
         <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
@@ -30,9 +30,10 @@ export function renderHome(root: HTMLElement): void {
   page.className = 'page';
   page.innerHTML = `
     <h1 style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);margin:var(--space-5) 0 var(--space-2);">
-      高一英语学习系统 · 人教2019
+      高中英语学习系统 · 人教2019
     </h1>
     <p style="color:var(--color-text-secondary);margin:0 0 var(--space-3);">
+      覆盖整个高中阶段：人教2019 必修一 ~ 必修三 + 选择性必修一 ~ 四共 7 册 35 单元。
       词汇 / 语法 / 阅读 / 听力 / 写作五大模块专项练习，错题自动沉淀、报告随时可查，进度保存在本机浏览器。
     </p>`;
 

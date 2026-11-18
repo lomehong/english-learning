@@ -25,7 +25,7 @@ export default function App() {
           <div className="brand-mark" aria-hidden="true" />
           <div>
             <div className="brand-name">英语学习</div>
-            <div className="brand-sub">高一 · 人教2019</div>
+            <div className="brand-sub">高中 · 人教2019</div>
           </div>
         </div>
         <nav className="nav" aria-label="主导航">
