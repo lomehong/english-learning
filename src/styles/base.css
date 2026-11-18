@@ -64,6 +64,8 @@ textarea:focus-visible {
 }
 
 .site-header__brand {
+  white-space: nowrap;
+  flex-shrink: 0;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
@@ -74,7 +76,7 @@ textarea:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 /* ---- 通用组件 ---- */
@@ -1648,7 +1650,7 @@ a.streak-badge:hover {
 /* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
 .theme-switcher {
   position: fixed;
-  right: var(--space-4);
+  left: var(--space-4);
   bottom: var(--space-4);
   z-index: 100;
   display: inline-flex;
