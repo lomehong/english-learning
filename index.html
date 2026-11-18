@@ -4,7 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="高中英语学习系统（人教2019）· 覆盖必修一~三 + 选择性必修一~四共 7 册 35 单元 · 词汇 / 语法 / 阅读 / 听力 / 写作专项练习与间隔重复复习" />
+    <meta name="color-scheme" content="light dark" />
     <title>高中英语学习系统 · 人教2019</title>
+    <script>
+      // 首帧前应用持久化主题（localStorage 键与 src/theme/theme.ts 一致），
+      // 深色用户直链打开时不闪白；读取失败按浅色，随后由 main.ts 的 initTheme 兜底
+      (function () {
+        var raw = null;
+        var value = 'auto';
+        try {
+          raw = localStorage.getItem('english-learning.theme.v1');
+        } catch (e) {
+          raw = null;
+        }
+        try {
+          value = raw == null ? 'auto' : JSON.parse(raw);
+        } catch (e) {
+          value = raw; // 兼容历史裸字符串写法
+        }
+        if (value !== 'light' && value !== 'dark' && value !== 'auto') value = 'auto';
+        var dark =
+          value === 'dark' ||
+          (value === 'auto' &&
+            typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

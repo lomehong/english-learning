@@ -1,8 +1,11 @@
 /* ============================================================
    设计令牌（Design Tokens）· 全站唯一样式变量来源
    页面/组件样式只允许引用 var(--*)，不允许硬编码颜色/字号
+   三档主题：浅色（:root 默认）/ 深色（[data-theme='dark']）/
+   跟随系统（由 src/theme 解析为前两者后写入 <html data-theme>）
    ============================================================ */
 :root {
+  color-scheme: light;
   /* ---- 色彩原语 ---- */
   --indigo-50: #eef2ff;
   --indigo-100: #e0e7ff;
@@ -42,6 +45,8 @@
   --color-border: var(--slate-200);
   --color-text: var(--slate-900);
   --color-text-secondary: var(--slate-500);
+  /* 弱化元信息（题号来源 / 错题时间等 xs 级小字）：比 secondary 再弱一档，白底 ≥4.5:1 */
+  --color-text-muted: #5c6b80;
   --color-primary: var(--indigo-600);
   --color-primary-hover: var(--indigo-700);
   --color-primary-soft: var(--indigo-50);
@@ -71,6 +76,13 @@
   --color-chart-track: var(--slate-100);
   --color-chart-donut-track: var(--slate-200);
   --color-chart-overall: var(--indigo-600);
+
+  /* streak / 今日高亮（amber 语义化，暗色下换更亮的 amber-400） */
+  --color-streak: var(--amber-600);
+  --color-streak-soft: var(--amber-50);
+
+  /* 键盘焦点环（输入框 focus 的 3px 光圈；暗色下换半透明 indigo） */
+  --color-focus-ring: var(--indigo-100);
 
   /* ---- 字体 ---- */
   --font-family-base: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui,
@@ -116,4 +128,61 @@
   /* ---- 布局 ---- */
   --page-max-width: 64rem;
   --flip-card-height: 22rem;
+}
+
+/* ============================================================
+   深色主题：按 [data-theme='dark'] 覆盖语义令牌（原语色不重定义，
+   深色专用值直接写入语义层）。正文 / 图标前景对 #1e293b 表面与
+   #0f172a 背景均满足 WCAG AA（≥4.5:1，大字 / 加重 ≥3:1）
+   ============================================================ */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* ---- 语义色 ---- */
+  --color-bg: #0f172a; /* slate-900 */
+  --color-surface: #1e293b; /* slate-800 */
+  --color-surface-muted: #263449; /* slate-800~700 之间，保证与表面有一档差 */
+  --color-border: #3b4a63; /* slate-700 提亮一档，边框在深表面上可辨 */
+  --color-text: #e2e8f0; /* slate-200 */
+  --color-text-secondary: #a5b4c8;
+  --color-text-muted: #8b9bb0;
+  --color-primary: #818cf8; /* indigo-400 */
+  --color-primary-hover: #a5b4fc; /* indigo-300：hover 提亮 */
+  --color-primary-soft: rgb(129 140 248 / 0.18);
+  --color-on-primary: #1e1b4b; /* indigo-950：浅底深字，对比 ≥4.5:1 */
+
+  /* SRS 四档评分色（400 系前景 + 低透明度软底，软底叠深色表面） */
+  --color-grade-again: #f87171;
+  --color-grade-again-soft: rgb(248 113 113 / 0.16);
+  --color-grade-hard: #fbbf24;
+  --color-grade-hard-soft: rgb(251 191 36 / 0.14);
+  --color-grade-good: #818cf8;
+  --color-grade-good-soft: rgb(129 140 248 / 0.18);
+  --color-grade-easy: #4ade80;
+  --color-grade-easy-soft: rgb(74 222 128 / 0.16);
+
+  /* 练习模块色（300/400 系前景 + 低透明度软底） */
+  --color-module-vocab: #a5b4fc;
+  --color-module-vocab-soft: rgb(165 180 252 / 0.16);
+  --color-module-grammar: #c4b5fd;
+  --color-module-grammar-soft: rgb(196 181 253 / 0.16);
+  --color-module-reading: #fcd34d;
+  --color-module-reading-soft: rgb(252 211 77 / 0.14);
+  --color-module-listening: #5eead4;
+  --color-module-listening-soft: rgb(94 234 212 / 0.14);
+
+  /* 图表 */
+  --color-chart-track: #263449;
+  --color-chart-donut-track: #3b4a63;
+  --color-chart-overall: #818cf8;
+
+  /* streak / 焦点环 */
+  --color-streak: #fbbf24;
+  --color-streak-soft: rgb(251 191 36 / 0.14);
+  --color-focus-ring: rgb(129 140 248 / 0.4);
+
+  /* 阴影：深色下用黑色高透明度，保持层次可辨 */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.55);
 }

@@ -30,6 +30,16 @@ a {
   text-decoration: none;
 }
 
+/* 键盘可达性：Tab 聚焦统一主色焦点环（鼠标点击不走 :focus-visible，不显环） */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* ---- 页面骨架 ---- */
 .page {
   flex: 1;
@@ -298,7 +308,7 @@ a {
 .vocab-search__input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .vocab-search__count {
@@ -849,7 +859,7 @@ a {
 .exercise__input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .exercise__input:disabled {
@@ -1172,7 +1182,7 @@ a {
 .writing-editor__area:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .writing-editor__bar {
@@ -1528,10 +1538,18 @@ a {
 .goal-form__field input {
   width: 5.5rem;
   padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--slate-300, #cbd5e1);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
   font: inherit;
   text-align: center;
+}
+
+.goal-form__field input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .goal-form__save {
@@ -1560,8 +1578,8 @@ a {
   border-radius: var(--radius-full);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  background: var(--amber-50);
-  color: var(--amber-600);
+  background: var(--color-streak-soft);
+  color: var(--color-streak);
   text-decoration: none;
 }
 
@@ -1604,7 +1622,7 @@ a.streak-badge:hover {
 }
 
 .activity-chart__day[data-today='true'] .activity-chart__bar {
-  background: var(--amber-600);
+  background: var(--color-streak);
 }
 
 .activity-chart__label {
@@ -1613,7 +1631,7 @@ a.streak-badge:hover {
 }
 
 .activity-chart__day[data-today='true'] .activity-chart__label {
-  color: var(--amber-600);
+  color: var(--color-streak);
   font-weight: var(--font-weight-bold);
 }
 
@@ -1625,6 +1643,44 @@ a.streak-badge:hover {
   gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   margin-bottom: var(--space-4);
+}
+
+/* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
+.theme-switcher {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 100;
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.theme-switcher__btn {
+  padding: var(--space-1) var(--space-3);
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.theme-switcher__btn:hover {
+  color: var(--color-primary);
+}
+
+.theme-switcher__btn[aria-pressed='true'] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 @media (max-width: 40rem) {
@@ -1639,5 +1695,39 @@ a.streak-badge:hover {
   .report-row {
     grid-template-columns: 1fr;
     justify-items: start;
+  }
+
+  /* 小屏：页面左右留白收紧，页头允许换行，四档评分条可折行 */
+  .page {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
+  .site-header__inner {
+    flex-wrap: wrap;
+  }
+
+  .grade-actions {
+    flex-wrap: wrap;
+  }
+
+  .theme-switcher {
+    right: var(--space-2);
+    bottom: var(--space-2);
+  }
+}
+
+/* 减动效偏好：关闭过渡 / 翻面动画，仅保留状态切换 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .flip-card__inner {
+    transition: none;
   }
 }
