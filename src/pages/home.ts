@@ -5,8 +5,6 @@ import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：全局「册 + 单元」两级切换器（localStorage + ?book=&unit= 双向同步）+ 模块入口 */
 
-/** 单元号列表文案：Unit 1 / 2 / …（随自动发现的注册表扩展） */
-const UNIT_NO_TEXT = UNIT_IDS.map((id) => UNIT_META[id].no).join(' / ');
 
 /** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
 const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
@@ -117,7 +115,7 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   grid.innerHTML = `
     <a class="module-card" href="/vocabulary" data-link>
       <h2 class="module-card__title">📚 词汇</h2>
-      <p class="module-card__desc">Unit ${UNIT_NO_TEXT} 词表学习（翻面卡）与四档间隔复习</p>
+      <p class="module-card__desc">${BOOKS.length} 册 · ${UNIT_IDS.length} 单元词表学习（翻面卡）与四档间隔复习</p>
     </a>
     <a class="module-card" href="/grammar" data-link>
       <h2 class="module-card__title">📖 语法</h2>
