@@ -338,14 +338,27 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(bookStorageValue()).toBe('required-1');
   });
 
-  it('?book=elective-3 深链首页（空册）：册选中 + 单元空态，单元回退 Unit 1', () => {
+  it('?book=elective-4 深链首页（空册）：册选中 + 单元空态，单元回退 Unit 1', () => {
+    history.replaceState(null, '', '/?book=elective-4');
+    const root = document.createElement('div');
+    renderHome(root);
+
+    expect(bookButton(root, 'elective-4').classList.contains('tab--active')).toBe(true);
+    expect(root.querySelector('[data-testid="unit-empty"]')).toBeTruthy();
+    expect(storageValue()).toBe('unit1'); // 空册深链的单元回退落存储
+    expect(bookStorageValue()).toBe('elective-4');
+  });
+
+  it('?book=elective-3 深链首页（已收录单元）：册选中 + 第二级渲染该册 5 个单元并落到册内首个单元', () => {
     history.replaceState(null, '', '/?book=elective-3');
     const root = document.createElement('div');
     renderHome(root);
 
     expect(bookButton(root, 'elective-3').classList.contains('tab--active')).toBe(true);
-    expect(root.querySelector('[data-testid="unit-empty"]')).toBeTruthy();
-    expect(storageValue()).toBe('unit1'); // 空册深链的单元回退落存储
+    expect(root.querySelector('[data-testid="unit-empty"]')).toBeNull();
+    expect(unitButtons(root)).toEqual([...unitIdsOfBook('elective-3')]);
+    expect(switcherButton(root, 'unit26').classList.contains('tab--active')).toBe(true);
+    expect(storageValue()).toBe('unit26');
     expect(bookStorageValue()).toBe('elective-3');
   });
 });

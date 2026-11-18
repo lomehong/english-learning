@@ -321,8 +321,23 @@ describe('学习报告 · 按册 + 单元统计（册维度分组聚合）', () 
     expect(elective1.accuracy).toBeNull();
     expect(elective1.wrongCount).toBe(0);
 
-    // 其余五册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
-    for (const row of [...data.bookRows.slice(1, 3), ...data.bookRows.slice(4)]) {
+    // 选择性必修三：unit26-30 纯数据新增自动入组（未练习全 0）
+    const elective3 = data.bookRows[5]!;
+    expect(elective3.label).toBe('选择性必修三');
+    expect(elective3.unitRows.map((r) => r.unit)).toEqual([
+      'unit26',
+      'unit27',
+      'unit28',
+      'unit29',
+      'unit30',
+    ]);
+    expect(elective3.answered).toBe(0);
+    expect(elective3.correct).toBe(0);
+    expect(elective3.accuracy).toBeNull();
+    expect(elective3.wrongCount).toBe(0);
+
+    // 其余四册：尚无单元（缺册降级为空分组），合计为 0 且正确率 null
+    for (const row of [data.bookRows[1]!, data.bookRows[2]!, data.bookRows[4]!, data.bookRows[6]!]) {
       expect(row.unitRows).toEqual([]);
       expect(row.answered).toBe(0);
       expect(row.correct).toBe(0);

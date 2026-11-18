@@ -1,0 +1,182 @@
+[
+  {
+    "id": "gallery",
+    "word": "gallery",
+    "phonetic": "/ˈɡæləri/",
+    "pos": "n.",
+    "meaning": "画廊，美术馆；画廊顶层",
+    "example": "The gallery will open a new exhibition next week.",
+    "exampleZh": "这家美术馆下周将开放一个新展览。"
+  },
+  {
+    "id": "sculpture",
+    "word": "sculpture",
+    "phonetic": "/ˈskʌlptʃə(r)/",
+    "pos": "n.",
+    "meaning": "雕塑；雕刻艺术",
+    "example": "A stone sculpture of a lion stands in front of the school gate.",
+    "exampleZh": "校门前立着一座石狮雕塑。"
+  },
+  {
+    "id": "abstract",
+    "word": "abstract",
+    "phonetic": "/ˈæbstrækt/",
+    "pos": "adj.",
+    "meaning": "抽象的；抽象派的",
+    "example": "Abstract paintings often use shapes and colours instead of real objects.",
+    "exampleZh": "抽象画常用图形和色彩而非常物。"
+  },
+  {
+    "id": "exhibition",
+    "word": "exhibition",
+    "phonetic": "/ˌeksɪˈbɪʃn/",
+    "pos": "n.",
+    "meaning": "展览（会）；展出",
+    "example": "The exhibition of young artists' works attracted many visitors.",
+    "exampleZh": "青年艺术家作品展吸引了众多参观者。"
+  },
+  {
+    "id": "painter",
+    "word": "painter",
+    "phonetic": "/ˈpeɪntə(r)/",
+    "pos": "n.",
+    "meaning": "画家；油漆匠",
+    "example": "The old painter spends every sunny morning by the lake.",
+    "exampleZh": "老画家每个晴朗的早晨都在湖边度过。"
+  },
+  {
+    "id": "masterpiece",
+    "word": "masterpiece",
+    "phonetic": "/ˈmɑːstəpiːs/",
+    "pos": "n.",
+    "meaning": "杰作；代表作",
+    "example": "The museum keeps this masterpiece behind protective glass.",
+    "exampleZh": "博物馆把这件杰作保存在防护玻璃后面。"
+  },
+  {
+    "id": "realistic",
+    "word": "realistic",
+    "phonetic": "/ˌrɪəˈlɪstɪk/",
+    "pos": "adj.",
+    "meaning": "逼真的；现实（主义）的",
+    "example": "Her realistic drawings of birds look almost alive.",
+    "exampleZh": "她那些逼真的鸟类素描看上去栩栩如生。"
+  },
+  {
+    "id": "artistic",
+    "word": "artistic",
+    "phonetic": "/ɑːˈtɪstɪk/",
+    "pos": "adj.",
+    "meaning": "艺术（家）的；有艺术天赋的",
+    "example": "He shows great artistic talent even at a young age.",
+    "exampleZh": "他年纪虽小就展现出极高的艺术天赋。"
+  },
+  {
+    "id": "vivid",
+    "word": "vivid",
+    "phonetic": "/ˈvɪvɪd/",
+    "pos": "adj.",
+    "meaning": "鲜艳的；生动的",
+    "example": "The artist used vivid colours to paint the sunset.",
+    "exampleZh": "这位画家用鲜艳的色彩描绘日落。"
+  },
+  {
+    "id": "visual",
+    "word": "visual",
+    "phonetic": "/ˈvɪʒuəl/",
+    "pos": "adj.",
+    "meaning": "视觉的；看得见的",
+    "example": "The film gives us a strong visual experience of the ancient city.",
+    "exampleZh": "这部电影给我们带来关于古城的强烈视觉体验。"
+  },
+  {
+    "id": "aesthetic",
+    "word": "aesthetic",
+    "phonetic": "/iːsˈθetɪk/",
+    "pos": "adj.",
+    "meaning": "美学的；审美的",
+    "example": "The design of the garden reflects a simple aesthetic sense.",
+    "exampleZh": "这座花园的设计体现出简约的审美趣味。"
+  },
+  {
+    "id": "bronze",
+    "word": "bronze",
+    "phonetic": "/brɒnz/",
+    "pos": "n.",
+    "meaning": "青铜；青铜色",
+    "example": "The statue was cast in bronze more than three hundred years ago.",
+    "exampleZh": "这座雕像三百多年前用青铜铸成。"
+  },
+  {
+    "id": "carve",
+    "word": "carve",
+    "phonetic": "/kɑːv/",
+    "pos": "vt.",
+    "meaning": "雕，刻；雕刻成",
+    "example": "Grandpa can carve lovely birds out of small pieces of wood.",
+    "exampleZh": "爷爷能用小块木头刻出可爱的鸟。"
+  },
+  {
+    "id": "sketch",
+    "word": "sketch",
+    "phonetic": "/sketʃ/",
+    "pos": "n.",
+    "meaning": "素描；速写；草图",
+    "example": "She made a quick sketch of the mountains before sunset.",
+    "exampleZh": "日落前她迅速画了一幅山的速写。"
+  },
+  {
+    "id": "watercolour",
+    "word": "watercolour",
+    "phonetic": "/ˈwɔːtəkʌlə(r)/",
+    "pos": "n.",
+    "meaning": "水彩画；水彩颜料",
+    "example": "He painted the quiet lake with soft watercolours.",
+    "exampleZh": "他用柔和的水彩描绘宁静的湖水。"
+  },
+  {
+    "id": "calligraphy",
+    "word": "calligraphy",
+    "phonetic": "/kəˈlɪɡrəfi/",
+    "pos": "n.",
+    "meaning": "书法；笔迹",
+    "example": "Students practise calligraphy with brushes every Friday afternoon.",
+    "exampleZh": "学生们每周五下午用毛笔练习书法。"
+  },
+  {
+    "id": "ceramic",
+    "word": "ceramic",
+    "phonetic": "/səˈræmɪk/",
+    "pos": "n. & adj.",
+    "meaning": "陶瓷制品；陶瓷的",
+    "example": "The ceramic bowl was painted with blue flowers.",
+    "exampleZh": "这只陶瓷碗上绘着蓝色的花。"
+  },
+  {
+    "id": "portrait",
+    "word": "portrait",
+    "phonetic": "/ˈpɔːtreɪt/",
+    "pos": "n.",
+    "meaning": "肖像，画像；描写",
+    "example": "The queen's portrait hangs in the long hall.",
+    "exampleZh": "女王的画像挂在长廊里。"
+  },
+  {
+    "id": "delicate",
+    "word": "delicate",
+    "phonetic": "/ˈdelɪkət/",
+    "pos": "adj.",
+    "meaning": "精致的；易碎的；微妙的",
+    "example": "Be careful with the delicate glass animals on the shelf.",
+    "exampleZh": "小心架子上的易碎玻璃动物。"
+  },
+  {
+    "id": "mural",
+    "word": "mural",
+    "phonetic": "/ˈmjʊərəl/",
+    "pos": "n.",
+    "meaning": "壁画",
+    "example": "The huge mural on the wall shows the history of the town.",
+    "exampleZh": "墙上的巨幅壁画展示了小镇的历史。"
+  }
+]
