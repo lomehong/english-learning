@@ -1,5 +1,6 @@
 import './styles/tokens.css';
 import './styles/base.css';
+import { initTheme, mountThemeSwitcher } from './theme/switcher';
 import { createRouter } from './router';
 import { renderHome } from './pages/home';
 import { renderVocabulary } from './pages/vocabulary';
@@ -12,6 +13,11 @@ import { renderReport } from './pages/report';
 
 const app = document.getElementById('app');
 if (!app) throw new Error('未找到 #app 挂载点');
+
+// 三档主题：应用持久化主题（index.html 内联脚本已预置首帧，此处兜底），
+// 再挂全局切换入口（body 级，路由重渲染页面不丢失）
+initTheme();
+mountThemeSwitcher();
 
 createRouter(app, [
   { path: '/', render: renderHome },
