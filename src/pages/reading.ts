@@ -9,6 +9,7 @@ import {
   type WrongBook,
 } from '../store/wrongbook';
 import { recordAnswerAndSave } from '../store/stats';
+import { recordActivityAndSave } from '../store/daily';
 import { createCard } from '../srs/sm2';
 import type { ReadingPassage, ReadingQuestion, Word } from '../types';
 import type { ReadingDeps } from './deps';
@@ -235,6 +236,8 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
       delete progress.cards[wordId];
     } else {
       progress.cards[wordId] = createCard(wordId, d.now());
+      // 学习计划数据源：阅读生词收藏 = 当日新学词汇 +1（与词汇模块同口径）
+      recordActivityAndSave('vocab', d.now());
     }
     d.save(progress);
     syncWordStates();
@@ -261,6 +264,8 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
     if (correct) correctCount += 1;
     readStat.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
     recordAnswerAndSave('reading', correct, unit);
+    // 学习计划数据源：当日练习题 +1
+    recordActivityAndSave('exercises', d.now());
     if (!correct) {
       const book: WrongBook = recordWrong(
         loadWrongBook(),

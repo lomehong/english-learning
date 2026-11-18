@@ -2,6 +2,7 @@ import { getWordsByUnit } from '../data/words';
 import type { UnitId } from '../data/units';
 import { createCard } from '../srs/sm2';
 import type { Progress } from '../store/progress';
+import { recordActivityAndSave } from '../store/daily';
 import { buildEmptyState, createFlipCard, type VocabDeps } from './deps';
 
 /** 学习页：浏览指定单元词表（翻面卡），标记已学加入复习计划 */
@@ -57,6 +58,8 @@ export function renderLearn(
         delete progress.cards[word.id];
       } else {
         progress.cards[word.id] = createCard(word.id, deps.now());
+        // 学习计划数据源：当日新学词汇 +1
+        recordActivityAndSave('vocab', deps.now());
       }
       deps.save(progress);
       render();

@@ -1358,6 +1358,166 @@ a {
   left: 0;
 }
 
+/* ---- 学习计划 · 今日目标与连续学习（streak） ---- */
+.report-plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-4);
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.plan-card--wide {
+  grid-column: 1 / -1;
+}
+
+.plan-card__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.plan-card__text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.plan-card__text--strong {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* 目标设置表单（每日词汇 / 练习题） */
+.goal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.goal-form__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.goal-form__field input {
+  width: 5.5rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--slate-300, #cbd5e1);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  text-align: center;
+}
+
+.goal-form__save {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.goal-form__saved {
+  font-size: var(--font-size-sm);
+  color: var(--color-module-listening);
+}
+
+/* 今日总进度条（复用 report-bar 轨道，目标色用总览色令牌） */
+.report-bar__fill--goal {
+  background: var(--color-chart-overall);
+}
+
+/* streak 徽标 */
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  background: var(--amber-50);
+  color: var(--amber-600);
+  text-decoration: none;
+}
+
+a.streak-badge:hover {
+  filter: brightness(0.95);
+}
+
+/* 近 7 天活动图（纯 CSS 柱状） */
+.activity-chart {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-3);
+  min-height: 7rem;
+  padding-top: var(--space-2);
+}
+
+.activity-chart__day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.activity-chart__track {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  background: var(--color-chart-track);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.activity-chart__bar {
+  width: 100%;
+  background: var(--color-module-vocab);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height var(--transition-fast);
+}
+
+.activity-chart__day[data-today='true'] .activity-chart__bar {
+  background: var(--amber-600);
+}
+
+.activity-chart__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.activity-chart__day[data-today='true'] .activity-chart__label {
+  color: var(--amber-600);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 首页 · 今日进度 + streak 徽标条 */
+.home-today {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
 @media (max-width: 40rem) {
   .exercise__options {
     grid-template-columns: 1fr;

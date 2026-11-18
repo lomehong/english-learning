@@ -1,5 +1,7 @@
 import { BOOK_LABELS, BOOKS, UNIT_IDS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
 import { buildBookSwitcher, buildUnitSwitcher, currentUnit } from './unit-switch';
+import { computeStreak, goalCompletion } from '../store/daily';
+import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：全局「册 + 单元」两级切换器（localStorage + ?book=&unit= 双向同步）+ 模块入口 */
 
@@ -9,7 +11,7 @@ const UNIT_NO_TEXT = UNIT_IDS.map((id) => UNIT_META[id].no).join(' / ');
 /** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
 const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
 
-export function renderHome(root: HTMLElement): void {
+export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()): void {
   const header = document.createElement('header');
   header.className = 'site-header';
   header.innerHTML = `
@@ -81,6 +83,35 @@ export function renderHome(root: HTMLElement): void {
   intro.style.cssText = 'color:var(--color-text-secondary);margin:0 0 var(--space-4);';
   intro.textContent = `先选册（${BOOK_TEXT}），再选该册单元：词汇 / 语法 / 阅读 / 听力 / 写作将统一跟随当前册 + 单元（选择保存在本机，并同步到地址栏 ?book=&unit=；尚未收录单元的册先显示空态，后续新增数据文件即自动出现）。`;
 
+  /* 今日进度 + streak 徽标（数据源：每日活动/目标 localStorage；点徽标去学习报告调整目标） */
+  const today = document.createElement('div');
+  today.className = 'home-today card';
+  today.setAttribute('data-testid', 'home-today');
+
+  const goal = deps.loadGoal();
+  const daily = deps.loadDaily();
+  const now = deps.now();
+  const completion = goalCompletion(goal, daily, now);
+  const streak = computeStreak(daily, now);
+  const goalTotal = goal.vocab + goal.exercises;
+
+  const progressChip = document.createElement('span');
+  progressChip.className = 'stat-chip';
+  progressChip.setAttribute('data-testid', 'home-today-progress');
+  const strong = document.createElement('strong');
+  strong.textContent = `${completion.vocab + completion.exercises}/${goalTotal}`;
+  progressChip.append('今日 ', strong, `（${Math.round(completion.overall * 1000) / 10}%）`, `· 词汇 ${completion.vocab}/${goal.vocab} · 练习 ${completion.exercises}/${goal.exercises}`);
+  if (completion.done) progressChip.append(' · 目标已达成 ✓');
+
+  const streakBadge = document.createElement('a');
+  streakBadge.className = 'streak-badge';
+  streakBadge.setAttribute('data-testid', 'home-streak');
+  streakBadge.setAttribute('data-link', '');
+  streakBadge.href = '/report';
+  streakBadge.textContent = `🔥 连续 ${streak} 天`;
+
+  today.append(progressChip, streakBadge);
+
   const grid = document.createElement('div');
   grid.className = 'module-grid';
   grid.innerHTML = `
@@ -113,7 +144,7 @@ export function renderHome(root: HTMLElement): void {
       <p class="module-card__desc">按册 + 单元统计 / 错题 / 复习到期与学习建议，支持数据导出导入</p>
     </a>`;
 
-  page.append(unitHead, intro, grid);
+  page.append(unitHead, intro, today, grid);
   // 模块入口统一由 router 的 <a data-link> 拦截跳转
   root.append(header, page);
   syncUnitHint();

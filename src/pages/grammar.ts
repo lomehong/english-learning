@@ -13,6 +13,7 @@ import {
   type WrongBook,
 } from '../store/wrongbook';
 import { recordAnswerAndSave } from '../store/stats';
+import { recordActivityAndSave } from '../store/daily';
 import type { FillExercise, GrammarExercise, GrammarPoint, McqExercise, WrongEntry } from '../types';
 import type { GrammarDeps } from './deps';
 import { buildEmptyState } from './deps';
@@ -315,6 +316,8 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
     statChip.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
     // 学习报告数据源：每次作答计入模块与单元统计
     recordAnswerAndSave('grammar', correct, unit);
+    // 学习计划数据源：当日练习题 +1
+    recordActivityAndSave('exercises', d.now());
     if (!correct) {
       book = recordWrong(
         book,
