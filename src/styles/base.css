@@ -259,6 +259,18 @@ a {
   text-align: center;
 }
 
+/* 单词卡朗读按钮（正面读单词 / 背面读例句；朗读中高亮，再次点击停止） */
+.flip-card__speak {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.flip-card__speak[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
 /* ---- 词汇学习页：单元内搜索 ---- */
 .vocab-search {
   max-width: 34rem;

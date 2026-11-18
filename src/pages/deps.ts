@@ -97,6 +97,12 @@ export interface ListeningDeps {
 }
 
 /**
+ * 朗读引擎注入点（听力页 / 词汇单词卡朗读共用同一 speechSynthesis 接缝）。
+ * 默认实现见 defaultSpeechDeps；测试注入假引擎。
+ */
+export type SpeechDeps = ListeningDeps;
+
+/**
  * 写作模块页面依赖：草稿读写走 localStorage
  * （键 english-learning.writing.v1）；测试可注入假实现。
  */
@@ -115,8 +121,11 @@ export function defaultWritingDeps(): WritingDeps {
   };
 }
 
-/** 默认依赖：浏览器 speechSynthesis 本地朗读 */
-export function defaultListeningDeps(): ListeningDeps {
+/**
+ * 默认依赖：浏览器 speechSynthesis 本地朗读
+ *（听力页播放器与词汇单词卡朗读共用同一默认实现）。
+ */
+export function defaultSpeechDeps(): SpeechDeps {
   const supported =
     typeof window !== 'undefined' &&
     'speechSynthesis' in window &&
@@ -132,11 +141,32 @@ export function defaultListeningDeps(): ListeningDeps {
   };
 }
 
+/** 听力页默认依赖（与词汇卡朗读共用同一 speechSynthesis 默认实现） */
+export function defaultListeningDeps(): ListeningDeps {
+  return defaultSpeechDeps();
+}
+
+/** 单词卡朗读按钮类型：正面朗读单词，背面朗读例句 */
+type SpeakKind = 'word' | 'example';
+
+/** 单词卡朗读语速（常速；与听力页默认档一致） */
+const SPEAK_RATE = 1;
+
+export interface FlipCardOptions {
+  /**
+   * 朗读引擎（页面层创建并负责销毁）；缺省或引擎 supported=false 时
+   * 不渲染朗读按钮（浏览器不支持 speechSynthesis 时静默降级）。
+   */
+  speech?: SpeechEngine;
+}
+
 export interface FlipCard {
   el: HTMLElement;
   flip: () => void;
   reset: () => void;
   isFlipped: () => boolean;
+  /** 释放朗读订阅（卡片被翻页 / 重渲染丢弃前调用，避免监听泄漏） */
+  dispose: () => void;
 }
 
 /** 模块空数据降级提示：该单元缺此模块数据文件时显示「暂无内容」，而不是崩溃或空白 */
@@ -148,8 +178,13 @@ export function buildEmptyState(text: string, testId = 'module-empty'): HTMLPara
   return el;
 }
 
-/** 翻面卡片：正面=单词+音标，背面=词性/释义/例句；点击翻面 */
-export function createFlipCard(word: Word): FlipCard {
+/**
+ * 翻面卡片：正面=单词+音标（+「朗读单词」），背面=词性/释义/例句（+「朗读例句」）；
+ * 点击卡片翻面。传入朗读引擎时，正反面各加一个朗读按钮：点击朗读对应文本、
+ * 朗读中再次点击停止、切换卡片时由页面层停止，且点击 / 回车不冒泡触发翻面。
+ */
+export function createFlipCard(word: Word, options: FlipCardOptions = {}): FlipCard {
+  const { speech } = options;
   const el = document.createElement('div');
   el.className = 'flip-card';
   el.setAttribute('role', 'button');
@@ -170,6 +205,49 @@ export function createFlipCard(word: Word): FlipCard {
       </div>
     </div>`;
 
+  /** 引擎订阅退订函数（卡片丢弃时统一释放） */
+  const unsubscribes: Array<() => void> = [];
+
+  /**
+   * 朗读按钮：独立于卡片翻面（click / 键盘事件都不冒泡到卡片）。
+   * 同一段正在朗读 / 暂停时再点击 → 停止；否则从头朗读该段。
+   */
+  function buildSpeakButton(kind: SpeakKind): HTMLButtonElement {
+    const id = `${word.id}:${kind}`;
+    const text = kind === 'word' ? word.word : word.example;
+    const label = kind === 'word' ? '🔊 朗读单词' : '🔊 朗读例句';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn--ghost btn--sm flip-card__speak';
+    button.setAttribute('data-testid', `speak-${kind}`);
+    button.setAttribute('aria-label', `${label}（${word.word}），再次点击停止`);
+    button.textContent = label;
+
+    function sync(): void {
+      if (!speech) return;
+      const active = speech.currentId === id && speech.state !== 'idle';
+      button.textContent = active ? '⏹ 停止' : label;
+      button.setAttribute('aria-pressed', String(active));
+    }
+
+    button.addEventListener('click', (event: MouseEvent) => {
+      // 朗读按钮点击不应冒泡到卡片（否则会顺带翻面）
+      event.stopPropagation();
+      if (!speech) return;
+      if (speech.currentId === id && speech.state !== 'idle') speech.stop();
+      else speech.play(id, text, SPEAK_RATE);
+    });
+    // 键盘回车 / 空格同样不冒泡：卡片本体监听 keydown 翻面
+    button.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter' || event.key === ' ') event.stopPropagation();
+    });
+
+    if (speech) unsubscribes.push(speech.subscribe(sync));
+    sync();
+    return button;
+  }
+
   const flip = (): void => {
     el.classList.toggle('flipped');
   };
@@ -181,10 +259,23 @@ export function createFlipCard(word: Word): FlipCard {
     }
   });
 
+  // 朗读按钮：正面（单词）在提示语之前，背面（例句）在例句译文之后
+  if (speech?.supported) {
+    el.querySelector('.flip-card__face--front')!.insertBefore(
+      buildSpeakButton('word'),
+      el.querySelector('.flip-card__hint'),
+    );
+    el.querySelector('.flip-card__face--back')!.append(buildSpeakButton('example'));
+  }
+
   return {
     el,
     flip,
     reset: () => el.classList.remove('flipped'),
     isFlipped: () => el.classList.contains('flipped'),
+    dispose: () => {
+      for (const unsubscribe of unsubscribes) unsubscribe();
+      unsubscribes.length = 0;
+    },
   };
 }
