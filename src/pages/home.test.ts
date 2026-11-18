@@ -356,3 +356,37 @@ describe('首页 · 两级切换器（第一级册别 / 第二级该册单元）
     expect(bookStorageValue()).toBe(EMPTY_BOOK!);
   });
 });
+
+describe('首页 · 全站命名（高中英语学习系统）', () => {
+  it('banner 品牌与首屏 heading 为「高中英语学习系统」，不再出现「高一」限定', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    expect(root.querySelector('.site-header__brand')!.textContent).toBe('高中英语学习系统');
+    const h1 = root.querySelector('h1')!;
+    expect(h1.textContent).toContain('高中英语学习系统');
+    expect(h1.textContent).toContain('人教2019');
+    expect(root.textContent).not.toContain('高一');
+  });
+
+  it('首屏文案强调覆盖整个高中阶段：必修一 ~ 三 + 选择性必修一 ~ 四共 7 册 35 单元', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    const text = root.querySelector('main p')!.textContent ?? '';
+    expect(text).toContain('整个高中阶段');
+    expect(text).toContain('必修一');
+    expect(text).toContain('必修三');
+    expect(text).toContain('选择性必修一 ~ 四');
+    expect(text).toContain('7 册 35 单元');
+  });
+
+  it('各模块页顶部品牌同样为「高中英语学习系统」', () => {
+    const hosts = [document.createElement('div'), document.createElement('div')];
+    renderVocabulary(hosts[0]!);
+    renderGrammar(hosts[1]!);
+    for (const host of hosts) {
+      expect(host.querySelector('.site-header__brand')!.textContent).toBe('高中英语学习系统');
+    }
+  });
+});

@@ -224,7 +224,7 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
     header.className = 'site-header';
     header.innerHTML = `
       <div class="site-header__inner">
-        <a class="site-header__brand" href="/" data-link>高一英语学习系统</a>
+        <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
         <nav class="site-header__nav">
           <a class="btn btn--ghost" href="/" data-link>首页</a>
           <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
