@@ -259,6 +259,103 @@ a {
   text-align: center;
 }
 
+/* ---- 词汇学习页：单元内搜索 ---- */
+.vocab-search {
+  max-width: 34rem;
+  margin: 0 auto var(--space-4);
+}
+
+.vocab-search__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.vocab-search__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.vocab-search__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.vocab-search__count {
+  flex: none;
+  white-space: nowrap;
+}
+
+.vocab-search__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: var(--space-1);
+  max-height: 14rem;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.vocab-search__result {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.vocab-search__result:hover {
+  background: var(--color-surface-muted);
+}
+
+.vocab-search__result--active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.vocab-search__word {
+  flex: none;
+  font-weight: var(--font-weight-semibold);
+}
+
+.vocab-search__pos {
+  flex: none;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.vocab-search__meaning {
+  color: var(--color-text-secondary);
+}
+
+.vocab-search__empty {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
 /* ---- Tab ---- */
 .tabs {
   display: inline-flex;
