@@ -10,6 +10,7 @@
   - 内置人教2019全七册词表（每单元 20 词，含音标 / 词性 / 中文释义 / 例句，`src/data/unit{n}-words.json`）
   - 跟随全局单元（首页切换或 `?unit=unit2&tab=review` 深链），与学习 / 复习双 Tab 共存
   - 学习页：翻面卡片浏览词表，一键「标记已学」加入复习计划
+  - 学习页单元内搜索：按**英文拼写或中文释义**实时过滤当前单元词表并显示匹配数，点击结果或按回车跳到该词卡片，支持一键清空与 `?q=` 深链（如 `/vocabulary?unit=unit2&q=apply`）；过滤逻辑为纯函数（`src/pages/vocab-search.ts`）
   - 复习页：到期队列 + 简化 SM-2 四档评分（重来 / 困难 / 良好 / 简单，更新 ease / interval / due）
   - 进度持久化在浏览器 localStorage（键 `english-learning.progress.v1`，全部单元共享一份词汇本）
 - **语法模块**（`/grammar`）
