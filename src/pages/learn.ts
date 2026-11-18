@@ -5,6 +5,7 @@ import { createCard } from '../srs/sm2';
 import type { Progress } from '../store/progress';
 import { recordActivityAndSave } from '../store/daily';
 import { buildEmptyState, createFlipCard, type VocabDeps } from './deps';
+import type { SpeechEngine } from '../speech/tts';
 import { filterVocabWords, firstMatchIndex, hasVocabQuery } from './vocab-search';
 
 /** ?q= 单元内搜索关键词（学习 Tab 可深链；缺省 / 存储不可用时为空串） */
@@ -31,19 +32,24 @@ function syncSearchUrl(query: string): void {
 
 /**
  * 学习页：浏览指定单元词表（翻面卡），标记已学加入复习计划；
+ * 卡片正反面各带一个朗读按钮（复用 speechSynthesis 引擎，切换词 / 翻页停止上一段）；
  * 顶部「单元内搜索」按英文拼写或中文释义实时过滤当前词表，
  * 显示匹配数，点击结果 / 回车跳到该词卡片，一键清空并支持 ?q= 深链。
  */
 export function renderLearn(
   container: HTMLElement,
   deps: VocabDeps,
-  options: { gotoReview?: () => void; unit?: UnitId } = {},
+  options: { gotoReview?: () => void; unit?: UnitId; speech?: SpeechEngine } = {},
 ): void {
+  const { speech } = options;
   const unit = options.unit ?? 'unit1';
   const words = getWordsByUnit(unit);
+  /** 当前卡片的朗读订阅释放函数（翻页 / 重渲染前调用） */
+  let cardDispose: (() => void) | null = null;
 
   // 该单元缺词表数据（unitN-words.json 未提供）：优雅降级显示暂无内容，不渲染翻面卡
   if (words.length === 0) {
+    speech?.stop();
     container.replaceChildren(buildEmptyState('本单元词表暂无内容，敬请期待。'));
     return;
   }
@@ -184,6 +190,10 @@ export function renderLearn(
   clearBtn.addEventListener('click', clearQuery);
 
   function render(): void {
+    // 翻页 / 切词 / 标记已学重渲染：先停止上一段朗读并释放旧卡片的朗读订阅
+    cardDispose?.();
+    cardDispose = null;
+    speech?.stop();
     // 重渲染会摘掉搜索区元素，先记录焦点，挂回后恢复（回车跳转后仍可继续输入）
     const keepFocus = document.activeElement === input;
     container.innerHTML = '';
@@ -199,7 +209,8 @@ export function renderLearn(
       <span class="stat-chip">已学 <strong>${learnedCount(progress)}</strong></span>
       <span class="stat-chip">待学 <strong>${total - learnedCount(progress)}</strong></span>`;
 
-    const flipCard = createFlipCard(word);
+    const flipCard = createFlipCard(word, { speech });
+    cardDispose = flipCard.dispose;
     const markBtn = document.createElement('button');
     markBtn.type = 'button';
     markBtn.className = 'btn btn--primary';

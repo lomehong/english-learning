@@ -6,6 +6,7 @@ import { loadWrongBook, saveWrongBook, recordWrong, removeEntry } from '../store
 import { recordAnswerAndSave } from '../store/stats';
 import { recordActivityAndSave } from '../store/daily';
 import { createFlipCard, type VocabDeps } from './deps';
+import type { SpeechEngine } from '../speech/tts';
 
 /** 到期队列计算：due <= now，按到期时间升序（与渲染解耦） */
 export function computeDueCards(progress: Progress, now: number): Card[] {
@@ -44,15 +45,18 @@ function syncVocabWrong(wordId: string, grade: Grade, at: number): void {
   }
 }
 
-/** 复习页：到期队列 + 四档评分（again/hard/good/easy） */
+/** 复习页：到期队列 + 四档评分（again/hard/good/easy），单词卡正反面可朗读 */
 export function renderReview(
   container: HTMLElement,
   deps: VocabDeps,
-  options: { gotoLearn?: () => void } = {},
+  options: { gotoLearn?: () => void; speech?: SpeechEngine } = {},
 ): void {
+  const { speech } = options;
   const progress = deps.load();
   const sessionTotal = computeDueCards(progress, deps.now()).length;
   let sessionDone = 0;
+  /** 当前卡片的朗读订阅释放函数（评分切换下一张前调用） */
+  let cardDispose: (() => void) | null = null;
 
   /** 按钮副标题：该档之后的下次复习时间预览 */
   function intervalLabel(grade: Grade, card: Card): string {
@@ -63,6 +67,10 @@ export function renderReview(
   }
 
   function render(): void {
+    // 评分进入下一张 / 队列清空：先停止上一段朗读并释放旧卡片的朗读订阅
+    cardDispose?.();
+    cardDispose = null;
+    speech?.stop();
     container.innerHTML = '';
     const now = deps.now();
     const queue = computeDueCards(progress, now);
@@ -112,7 +120,8 @@ export function renderReview(
       return;
     }
 
-    const flipCard = createFlipCard(word);
+    const flipCard = createFlipCard(word, { speech });
+    cardDispose = flipCard.dispose;
 
     const actions = document.createElement('div');
     actions.className = 'grade-actions';

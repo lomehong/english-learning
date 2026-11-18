@@ -3,7 +3,7 @@ import { loadProgress, saveProgress } from '../store/progress';
 import { renderLearn } from './learn';
 import { renderReview } from './review';
 import { buildUnitBadge, currentUnit } from './unit-switch';
-import type { VocabDeps } from './deps';
+import { defaultSpeechDeps, type SpeechDeps, type VocabDeps } from './deps';
 
 type Tab = 'learn' | 'review';
 
@@ -11,8 +11,14 @@ function currentTab(): Tab {
   return new URLSearchParams(location.search).get('tab') === 'review' ? 'review' : 'learn';
 }
 
-/** /vocabulary 页：跟随全局单元（首页切换）+ 学习 / 复习 双 Tab 容器（?tab= 可直链） */
-export function renderVocabulary(root: HTMLElement): void {
+/**
+ * /vocabulary 页：跟随全局单元（首页切换）+ 学习 / 复习 双 Tab 容器（?tab= 可直链）。
+ * 两个 Tab 的学习 / 复习单词卡共用同一个 speechSynthesis 引擎（朗读单词 / 例句）；
+ * 路由离开时由 router 调用返回的清理函数销毁引擎（停止朗读、释放订阅）。
+ */
+export function renderVocabulary(root: HTMLElement, speechDeps?: SpeechDeps): () => void {
+  const speech = (speechDeps ?? defaultSpeechDeps()).createEngine();
+
   const deps: VocabDeps = {
     load: () => loadProgress(),
     save: (p) => saveProgress(p),
@@ -92,9 +98,9 @@ export function renderVocabulary(root: HTMLElement): void {
     learnTab.setAttribute('aria-selected', String(tab === 'learn'));
     reviewTab.setAttribute('aria-selected', String(tab === 'review'));
     if (tab === 'learn') {
-      renderLearn(content, deps, { gotoReview: () => showTab('review'), unit });
+      renderLearn(content, deps, { gotoReview: () => showTab('review'), unit, speech });
     } else {
-      renderReview(content, deps, { gotoLearn: () => showTab('learn') });
+      renderReview(content, deps, { gotoLearn: () => showTab('learn'), speech });
     }
   }
 
@@ -105,4 +111,7 @@ export function renderVocabulary(root: HTMLElement): void {
   root.append(header, page);
   syncTitle();
   showTab(currentTab());
+
+  /* 路由离开：销毁朗读引擎（停止正在进行的朗读并释放订阅） */
+  return () => speech.destroy();
 }
