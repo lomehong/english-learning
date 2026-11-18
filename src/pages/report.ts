@@ -4,6 +4,17 @@ import { getWordUnit } from '../data/words';
 import { loadWrongBook, type WrongBook } from '../store/wrongbook';
 import { loadStats, PRACTICE_MODULES, type StatsBook } from '../store/stats';
 import { loadProgress, type Progress } from '../store/progress';
+import {
+  buildLast7Days,
+  computeStreak,
+  goalCompletion,
+  loadDaily,
+  loadGoal,
+  normalizeGoal,
+  saveGoal,
+  GOAL_MAX,
+  GOAL_MIN,
+} from '../store/daily';
 import { MODULE_LABEL, MODULE_RETRY_ROUTE, pctText, buildEmptyState, type ReportDeps } from './deps';
 import { buildDataManagement, defaultDataManagementDeps } from './data-management';
 
@@ -207,6 +218,189 @@ export function buildAdvice(data: ReportData): string[] {
 
 /* ---------- DOM 渲染 ---------- */
 
+/** 百分比宽度文案：40% / 62.5%（与 pctText 同一舍入口径） */
+function pctWidth(ratio: number): string {
+  return `${Math.round(ratio * 1000) / 10}%`;
+}
+
+/** 今日目标输入框（每日词汇 / 练习题两维） */
+function buildGoalField(label: string, testid: string, value: number): HTMLElement {
+  const field = document.createElement('label');
+  field.className = 'goal-form__field';
+  const text = document.createElement('span');
+  text.textContent = label;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.min = String(GOAL_MIN);
+  input.max = String(GOAL_MAX);
+  input.step = '1';
+  input.setAttribute('data-testid', testid);
+  input.value = String(value);
+  field.append(text, input);
+  return field;
+}
+
+/**
+ * 学习计划区：今日目标（可设每日词汇/练习题数，localStorage）+ 今日完成度 +
+ * 连续学习天数（断签归零）+ 近 7 天活动图（纯 CSS 柱状，不引第三方库）。
+ * 保存目标后就地刷新完成度 / streak / 活动图三块派生视图。
+ */
+function buildPlanSection(d: Required<ReportDeps>): HTMLElement {
+  const section = document.createElement('section');
+  section.className = 'report-plan';
+  section.setAttribute('data-testid', 'daily-plan');
+
+  const title = document.createElement('h2');
+  title.className = 'section-title';
+  title.textContent = '学习计划 · 今日目标与连续学习';
+
+  const grid = document.createElement('div');
+  grid.className = 'plan-grid';
+
+  /* --- 目标设置卡 --- */
+  const goalCard = document.createElement('div');
+  goalCard.className = 'card plan-card';
+  const goalTitle = document.createElement('h3');
+  goalTitle.className = 'plan-card__title';
+  goalTitle.textContent = '今日目标';
+  const goalForm = document.createElement('form');
+  goalForm.className = 'goal-form';
+  goalForm.setAttribute('data-testid', 'goal-form');
+
+  let goal = d.loadGoal();
+  const vocabField = buildGoalField('每日词汇（新学）', 'goal-vocab-input', goal.vocab);
+  const vocabInput = vocabField.querySelector('input')!;
+  const exercisesField = buildGoalField('每日练习题', 'goal-exercises-input', goal.exercises);
+  const exercisesInput = exercisesField.querySelector('input')!;
+
+  const saveRow = document.createElement('div');
+  saveRow.className = 'goal-form__save';
+  const saveBtn = document.createElement('button');
+  saveBtn.type = 'button';
+  saveBtn.className = 'btn btn--primary btn--sm';
+  saveBtn.setAttribute('data-testid', 'goal-save');
+  saveBtn.textContent = '保存目标';
+  const savedHint = document.createElement('span');
+  savedHint.className = 'goal-form__saved';
+  savedHint.setAttribute('data-testid', 'goal-saved-hint');
+  savedHint.textContent = '';
+  saveRow.append(saveBtn, savedHint);
+  goalForm.append(vocabField, exercisesField, saveRow);
+  goalCard.append(goalTitle, goalForm);
+
+  /* --- 派生视图容器（保存目标后整体重建） --- */
+  const derived = document.createElement('div');
+  derived.className = 'plan-derived';
+
+  function refresh(): void {
+    const daily = d.loadDaily();
+    const now = d.now();
+    const completion = goalCompletion(d.loadGoal(), daily, now);
+    const streak = computeStreak(daily, now);
+    const week = buildLast7Days(daily, now);
+    section.dataset.state = completion.done ? 'done' : 'in-progress';
+
+    /* 今日完成度卡 */
+    const todayCard = document.createElement('div');
+    todayCard.className = 'card plan-card';
+    const todayTitle = document.createElement('h3');
+    todayTitle.className = 'plan-card__title';
+    todayTitle.textContent = '今日完成度';
+    const todayText = document.createElement('p');
+    todayText.setAttribute('data-testid', 'today-completion');
+    todayText.className = 'plan-card__text';
+    todayText.textContent = `词汇 ${completion.vocab}/${completion.vocabGoal} · 练习 ${completion.exercises}/${completion.exercisesGoal}${completion.done ? ' · 已达成 ✓' : ''}`;
+    const overall = document.createElement('p');
+    overall.setAttribute('data-testid', 'today-overall');
+    overall.className = 'plan-card__text plan-card__text--strong';
+    overall.textContent = `总进度 ${pctWidth(completion.overall)}`;
+    const bar = document.createElement('div');
+    bar.className = 'report-bar';
+    const fill = document.createElement('div');
+    fill.className = 'report-bar__fill report-bar__fill--goal';
+    fill.setAttribute('data-testid', 'today-bar');
+    fill.style.width = pctWidth(completion.overall);
+    bar.append(fill);
+    todayCard.append(todayTitle, todayText, overall, bar);
+
+    /* 连续学习卡（streak） */
+    const streakCard = document.createElement('div');
+    streakCard.className = 'card plan-card';
+    const streakTitle = document.createElement('h3');
+    streakTitle.className = 'plan-card__title';
+    streakTitle.textContent = '连续学习';
+    const streakBadge = document.createElement('div');
+    streakBadge.className = 'streak-badge';
+    streakBadge.setAttribute('data-testid', 'streak-days');
+    streakBadge.textContent = `🔥 连续 ${streak} 天`;
+    const streakHint = document.createElement('p');
+    streakHint.className = 'plan-card__text';
+    streakHint.textContent = '每天记 1 个词或答 1 道题即算打卡；中断一天立即归零。今天还没学不打断，今天结束仍未学习则断签。';
+    streakCard.append(streakTitle, streakBadge, streakHint);
+
+    /* 近 7 天活动图（纯 CSS 柱状） */
+    const weekCard = document.createElement('div');
+    weekCard.className = 'card plan-card plan-card--wide';
+    const weekTitle = document.createElement('h3');
+    weekTitle.className = 'plan-card__title';
+    weekTitle.textContent = '近 7 天活动';
+    const chart = document.createElement('div');
+    chart.className = 'activity-chart';
+    chart.setAttribute('data-testid', 'activity-chart');
+    const maxTotal = Math.max(...week.map((day) => day.total));
+    if (maxTotal === 0) {
+      chart.append(buildEmptyState('近 7 天暂无学习记录，今天记 1 个词或答 1 道题就开始积累。', 'activity-empty'));
+    } else {
+      for (const day of week) {
+        const col = document.createElement('div');
+        col.className = 'activity-chart__day';
+        col.setAttribute('data-testid', 'activity-day');
+        col.dataset.day = day.key;
+        col.dataset.count = String(day.total);
+        col.dataset.today = String(day.isToday);
+        col.title = `${day.key} · 词汇 ${day.vocab} · 练习 ${day.exercises}`;
+        const track = document.createElement('div');
+        track.className = 'activity-chart__track';
+        const barEl = document.createElement('div');
+        barEl.className = 'activity-chart__bar';
+        barEl.setAttribute('data-testid', 'activity-bar');
+        barEl.style.height = pctWidth(day.total / maxTotal);
+        track.append(barEl);
+        const label = document.createElement('span');
+        label.className = 'activity-chart__label';
+        label.textContent = day.isToday ? '今' : day.label;
+        col.append(track, label);
+        chart.append(col);
+      }
+    }
+    weekCard.append(weekTitle, chart);
+
+    derived.replaceChildren(todayCard, streakCard, weekCard);
+  }
+
+  saveBtn.addEventListener('click', () => {
+    // 空输入（NaN）沿用原值；normalizeGoal 统一收敛到 [1,500] 整数
+    const vocab = Number(vocabInput.value);
+    const exercises = Number(exercisesInput.value);
+    goal = normalizeGoal({
+      version: 1,
+      vocab: Number.isFinite(vocab) ? vocab : goal.vocab,
+      exercises: Number.isFinite(exercises) ? exercises : goal.exercises,
+    });
+    d.saveGoal(goal);
+    const saved = d.loadGoal(); // 回读归一化后的目标（clamp 后的真值）
+    vocabInput.value = String(saved.vocab);
+    exercisesInput.value = String(saved.exercises);
+    savedHint.textContent = '已保存 ✓';
+    refresh();
+  });
+
+  refresh();
+  grid.append(goalCard, derived);
+  section.append(title, grid);
+  return section;
+}
+
 function buildDonut(accuracy: number | null): SVGSVGElement {
   const NS = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(NS, 'svg');
@@ -370,11 +564,14 @@ function strongOf(text: string | number): HTMLElement {
 }
 
 export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
-  const d: ReportDeps = deps ?? {
-    loadStats: () => loadStats(),
-    loadWrong: () => loadWrongBook(),
-    loadProgress: () => loadProgress(),
-    now: () => Date.now(),
+  const d: Required<ReportDeps> = {
+    loadStats: deps?.loadStats ?? (() => loadStats()),
+    loadWrong: deps?.loadWrong ?? (() => loadWrongBook()),
+    loadProgress: deps?.loadProgress ?? (() => loadProgress()),
+    now: deps?.now ?? (() => Date.now()),
+    loadDaily: deps?.loadDaily ?? (() => loadDaily()),
+    loadGoal: deps?.loadGoal ?? (() => loadGoal()),
+    saveGoal: deps?.saveGoal ?? ((goal) => saveGoal(goal)),
   };
 
   const data = buildReportData(d.loadStats(), d.loadWrong(), d.loadProgress(), d.now());
@@ -410,6 +607,9 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   intro.className = 'page-intro';
   intro.textContent =
     '汇总词汇、语法、阅读、听力四个模块的练习次数与正确率、错题沉淀，以及词汇 SM-2 间隔复习的到期情况；支持按单元查看统计，并可导出 / 导入学习数据备份。';
+
+  /* 学习计划：今日目标 / 完成度 / streak / 近 7 天活动图 */
+  const planSection = buildPlanSection(d);
 
   /* 总览卡：总练习 / 总正确率（SVG 环）/ 错题总数 / SRS 到期 */
   const cards = document.createElement('div');
@@ -514,6 +714,6 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
     },
   });
 
-  page.append(head, intro, cards, moduleSection, unitSection, adviceSection, dataManagement);
+  page.append(head, intro, planSection, cards, moduleSection, unitSection, adviceSection, dataManagement);
   root.append(header, page);
 }

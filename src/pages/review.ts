@@ -4,6 +4,7 @@ import type { Card, Grade } from '../types';
 import type { Progress } from '../store/progress';
 import { loadWrongBook, saveWrongBook, recordWrong, removeEntry } from '../store/wrongbook';
 import { recordAnswerAndSave } from '../store/stats';
+import { recordActivityAndSave } from '../store/daily';
 import { createFlipCard, type VocabDeps } from './deps';
 
 /** 到期队列计算：due <= now，按到期时间升序（与渲染解耦） */
@@ -133,6 +134,8 @@ export function renderReview(
         sessionDone += 1;
         // 学习报告数据源（按单词所属单元计入单元维度）+ 词汇错题联动（again 记错、掌握出本）
         recordAnswerAndSave('vocab', grade !== 'again', getWordUnit(card.id) ?? 'unit1');
+        // 学习计划数据源：当日练习题 +1
+        recordActivityAndSave('exercises', deps.now());
         syncVocabWrong(card.id, grade, deps.now());
         render();
       });

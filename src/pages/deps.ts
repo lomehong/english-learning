@@ -3,6 +3,8 @@ import type { WrongBook } from '../store/wrongbook';
 import type { StatsBook } from '../store/stats';
 import type { Progress } from '../store/progress';
 import type { WritingDrafts } from '../store/writing';
+import type { DailyActivity, DailyGoal } from '../store/daily';
+import { loadDaily, loadGoal } from '../store/daily';
 import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
 import { loadWritingDrafts, saveWritingDrafts } from '../store/writing';
 
@@ -32,6 +34,29 @@ export interface ReportDeps {
   loadWrong: () => WrongBook;
   loadProgress: () => Progress;
   now: () => number;
+  /** 学习计划接缝（可选：默认走每日活动/目标真实存储；测试可注入） */
+  loadDaily?: () => DailyActivity;
+  loadGoal?: () => DailyGoal;
+  saveGoal?: (goal: DailyGoal) => void;
+}
+
+/**
+ * 首页依赖：今日进度与 streak 徽标的数据源
+ * （可选注入；默认走每日活动/目标真实存储 + 当前时间）。
+ */
+export interface HomeDeps {
+  loadDaily: () => DailyActivity;
+  loadGoal: () => DailyGoal;
+  now: () => number;
+}
+
+/** 首页默认依赖：真实 localStorage 每日活动/目标 */
+export function defaultHomeDeps(): HomeDeps {
+  return {
+    loadDaily: () => loadDaily(),
+    loadGoal: () => loadGoal(),
+    now: () => Date.now(),
+  };
 }
 
 /* ---------- 模块维度共享常量（错题本 / 学习报告页共用） ---------- */

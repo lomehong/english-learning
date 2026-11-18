@@ -7,6 +7,7 @@ import {
   type WrongBook,
 } from '../store/wrongbook';
 import { recordAnswerAndSave } from '../store/stats';
+import { recordActivityAndSave } from '../store/daily';
 import type { ListeningMaterial, ListeningQuestion } from '../types';
 import type { SpeechEngine, PlayerState } from '../speech/tts';
 import { buildEmptyState, defaultListeningDeps, type ListeningDeps } from './deps';
@@ -269,6 +270,8 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
       if (correct) correctCount += 1;
       statChip.textContent = `已答 ${answered} / ${TOTAL} · 答对 ${correctCount}`;
       recordAnswerAndSave('listening', correct, unit);
+      // 学习计划数据源：当日练习题 +1
+      recordActivityAndSave('exercises', Date.now());
       if (!correct) {
         book = recordWrong(
           book,
