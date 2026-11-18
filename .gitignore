@@ -2,3 +2,8 @@ node_modules/
 dist/
 .npm-cache/
 *.local
+
+# 本地构建配置（prepare 注入的 npm 缓存路径，机器相关，不入库）
+.npmrc
+.build.log
+.baseline-build.log
