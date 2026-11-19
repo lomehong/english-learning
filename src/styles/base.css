@@ -486,9 +486,11 @@ textarea:focus-visible {
 }
 
 /* ---- 首页模块入口 ---- */
+/* 桌面 4+3 两行均衡：12 轨网格，前 4 卡各占 3 轨（4 卡/行）、后 3 卡各占 4 轨（3 卡/行），
+   两行都正好铺满 12 轨 → 7 卡无「末行孤卡」；minmax(0,…) 防长内容把轨道撑出容器 */
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--space-4);
   margin-top: var(--space-4);
 }
@@ -497,6 +499,7 @@ textarea:focus-visible {
   position: relative;
   display: flex;
   flex-direction: column;
+  grid-column: span 3;
   padding: var(--space-5);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
@@ -571,6 +574,11 @@ textarea:focus-visible {
 
 .module-card:hover .module-card__arrow {
   transform: translateX(4px);
+}
+
+/* 第二行 3 卡各占 4 轨（与首行 4×3 轨正好都铺满 12 轨，构成 4+3 布局） */
+.module-card:nth-child(n + 5) {
+  grid-column: span 4;
 }
 
 /* ---- 空状态 ---- */
@@ -1931,6 +1939,23 @@ a.streak-badge:hover {
   }
 }
 
+/* 中屏（≤56rem）：模块入口降为两列，末卡跨满整行 → 2+2+2+1(满行)，同样无孤卡；
+   跨列规则需复位桌面档的 span 3 / span 4，再单独放大末卡 */
+@media (max-width: 56rem) {
+  .module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .module-card,
+  .module-card:nth-child(n + 5) {
+    grid-column: auto;
+  }
+
+  .module-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 40rem) {
   .exercise__options {
     grid-template-columns: 1fr;
@@ -1975,8 +2000,15 @@ a.streak-badge:hover {
     padding: var(--space-4);
   }
 
+  /* 小屏（≤40rem）：模块卡单列；跨列全部归位，minmax(0,1fr) 单轨贴容器宽 → 390px 无横向溢出 */
   .module-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .module-card,
+  .module-card:nth-child(n + 5),
+  .module-card:last-child {
+    grid-column: auto;
   }
 
   .grade-actions {
