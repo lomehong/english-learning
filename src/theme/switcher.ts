@@ -10,7 +10,7 @@ import {
 } from './theme';
 
 /**
- * 主题 DOM 侧：<html data-theme> 应用 + 全局右下角三档切换入口。
+ * 主题 DOM 侧：<html data-theme> 应用 + 全局右上角三档切换入口。
  * 切换器挂在 <body> 上（#app 之外），SPA 路由重渲染页面时不丢失；
  * 「跟随系统」档监听系统偏好变化实时重算，固定档位不受影响。
  */

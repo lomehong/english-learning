@@ -1888,8 +1888,8 @@ a.streak-badge:hover {
 /* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
 .theme-switcher {
   position: fixed;
-  left: var(--space-4);
-  bottom: var(--space-4);
+  top: var(--space-4);
+  right: var(--space-4);
   z-index: 100;
   display: inline-flex;
   gap: var(--space-1);
@@ -1921,6 +1921,14 @@ a.streak-badge:hover {
 .theme-switcher__btn[aria-pressed='true'] {
   background: var(--color-primary);
   color: var(--color-on-primary);
+}
+
+/* 切换器固定在右上角后与页头同行：视口右侧留白放不下切换器时（< 91rem），
+   为页头导航预留让位区，避免固定定位的切换器盖住页头右侧的导航按钮 */
+@media (max-width: 91rem) {
+  .site-header__inner {
+    padding-right: 13.5rem;
+  }
 }
 
 @media (max-width: 40rem) {
@@ -1976,8 +1984,8 @@ a.streak-badge:hover {
   }
 
   .theme-switcher {
+    top: var(--space-2);
     right: var(--space-2);
-    bottom: var(--space-2);
   }
 }
 
