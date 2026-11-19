@@ -58,11 +58,13 @@ textarea:focus-visible {
   background: var(--color-surface);
 }
 
-.site-header__inner {
+ .site-header__inner {
+  width: 100%;
   max-width: var(--page-max-width);
   margin: 0 auto;
   padding: var(--space-3) var(--space-4);
   display: flex;
+  min-width: 0;
   /* 窄屏（768 一档）品牌 + 八项导航放不下时自动折行，禁止横向溢出 */
   flex-wrap: wrap;
   align-items: center;
@@ -166,8 +168,10 @@ textarea:focus-visible {
 
 .hero__title {
   margin: 0 0 var(--space-2);
-  font-size: var(--font-size-xl);
+  font-size: clamp(1.45rem, 1.1rem + 1.2vw, var(--font-size-xl));
+  line-height: 1.25;
   font-weight: var(--font-weight-bold);
+  overflow-wrap: anywhere;
 }
 
 .hero__desc {
@@ -1475,6 +1479,7 @@ textarea:focus-visible {
 .report-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  align-items: start;
   gap: var(--space-4);
 }
 
@@ -1483,7 +1488,7 @@ textarea:focus-visible {
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-2);
-  padding: var(--space-5);
+  padding: var(--space-4);
 }
 
 .report-card__label {
@@ -1504,8 +1509,8 @@ textarea:focus-visible {
 
 /* 总体正确率环（内联 SVG） */
 .report-donut {
-  width: 5rem;
-  height: 5rem;
+  width: 4.25rem;
+  height: 4.25rem;
 }
 
 .report-donut__track {
@@ -1654,7 +1659,14 @@ textarea:focus-visible {
 .plan-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  align-items: start;
   gap: var(--space-4);
+}
+
+.plan-derived {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .plan-card {
@@ -1813,18 +1825,21 @@ a.streak-badge:hover {
 }
 
 /* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
+.site-header__theme {
+  display: flex;
+  align-items: center;
+  margin-left: var(--space-1);
+}
+
+/* 主题切换器固定在顶栏内（由 site-chrome 搬入），不再浮动遮挡正文/页脚 */
 .theme-switcher {
-  position: fixed;
-  left: var(--space-4);
-  bottom: var(--space-4);
-  z-index: 100;
+  position: static;
   display: inline-flex;
   gap: var(--space-1);
-  padding: var(--space-1);
+  padding: 2px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lg);
+  background: var(--color-surface-muted);
 }
 
 .theme-switcher__btn {
@@ -1885,9 +1900,41 @@ a.streak-badge:hover {
   }
 
   .site-header__nav {
+    order: 3;
     margin-left: 0;
     flex: 1 1 100%;
+    min-width: 0;
     justify-content: flex-start;
+  }
+  .site-nav__link {
+    flex: none;
+  }
+  .site-header__theme {
+    order: 2;
+    margin-left: auto;
+  }
+  /* 册 / 单元芯片条：单行横向滑动，避免手机上堆成多行 */
+  .page-head,
+  .unit-switch-group,
+  .unit-switch-group > div {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .unit-switch-group .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .unit-switch-group .tabs .tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .unit-switch-group .tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .site-nav__link {
@@ -1924,12 +1971,6 @@ a.streak-badge:hover {
     justify-content: center;
   }
 
-  .theme-switcher {
-    right: var(--space-2);
-    bottom: var(--space-2);
-    /* 异形屏安全区：不让切换器压进系统手势条 */
-    margin-bottom: env(safe-area-inset-bottom, 0);
-  }
 }
 
 /* 触屏设备：导航与主题切换加大触达面积（≥44px 命中区） */
