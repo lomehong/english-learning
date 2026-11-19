@@ -143,7 +143,17 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
     </a>`;
 
   page.append(unitHead, intro, today, grid);
+
+  /* 页脚：单行版本标记（静态文案，测试以其为锚点做回归） */
+  const footer = document.createElement('footer');
+  footer.className = 'site-footer';
+  footer.setAttribute('data-testid', 'footer-version');
+  footer.style.cssText =
+    'max-width:var(--page-max-width);margin:0 auto;padding:var(--space-3) var(--space-4);' +
+    'border-top:1px solid var(--color-border);color:var(--color-text-secondary);font-size:var(--font-size-sm);';
+  footer.textContent = '高中英语学习系统 · v2026.11';
+
   // 模块入口统一由 router 的 <a data-link> 拦截跳转
-  root.append(header, page);
+  root.append(header, page, footer);
   syncUnitHint();
 }
