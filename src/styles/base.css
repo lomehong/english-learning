@@ -51,6 +51,7 @@ textarea:focus-visible {
 
 .site-header {
   border-bottom: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary); /* 品牌主色顶条 */
   background: var(--color-surface);
 }
 
@@ -66,9 +67,22 @@ textarea:focus-visible {
 .site-header__brand {
   white-space: nowrap;
   flex-shrink: 0;
+  font-family: var(--font-family-serif); /* 品牌名走中文衬线 */
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
+}
+
+/* 品牌印章式方块标记（伪元素不进入 textContent） */
+.site-header__brand::before {
+  content: '';
+  display: inline-block;
+  width: 0.58em;
+  height: 0.58em;
+  margin-right: var(--space-2);
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  transform: translateY(-0.04em);
 }
 
 .site-header__nav {
@@ -383,6 +397,8 @@ textarea:focus-visible {
 /* ---- Tab ---- */
 .tabs {
   display: inline-flex;
+  flex-wrap: wrap; /* 册别七按钮在窄屏折行，避免 390px 横向溢出 */
+  max-width: 100%;
   gap: var(--space-1);
   padding: var(--space-1);
   background: var(--color-surface);
@@ -474,15 +490,18 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: var(--space-4);
-  margin-top: var(--space-5);
+  margin-top: var(--space-4);
 }
 
 .module-card {
-  display: block;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   padding: var(--space-5);
   border-radius: var(--radius-lg);
-  background: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary); /* 品牌色顶条 */
+  background: var(--color-surface);
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition-fast), transform var(--transition-fast),
     border-color var(--transition-fast);
@@ -499,10 +518,31 @@ textarea:focus-visible {
   pointer-events: none;
 }
 
+/* 编号（01~07，衬线，右上角） */
+.module-card__no {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-4);
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+
+.module-card__icon {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-xl);
+  line-height: 1;
+}
+
 .module-card__title {
   margin: 0 0 var(--space-2);
+  font-family: var(--font-family-serif);
   font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text);
 }
 
@@ -510,6 +550,27 @@ textarea:focus-visible {
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+}
+
+/* 入口行：贴卡片底部，箭头随 hover 右移 */
+.module-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  padding-top: var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+}
+
+.module-card__arrow {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+}
+
+.module-card:hover .module-card__arrow {
+  transform: translateX(4px);
 }
 
 /* ---- 空状态 ---- */
@@ -1637,14 +1698,191 @@ a.streak-badge:hover {
   font-weight: var(--font-weight-bold);
 }
 
-/* 首页 · 今日进度 + streak 徽标条 */
-.home-today {
+/* ---- 首页 · Hero 分区（品牌大标题 + 教材统计） ---- */
+.home-hero {
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  margin-bottom: var(--space-5);
+  background: radial-gradient(
+      120% 150% at 100% 0%,
+      var(--color-primary-soft) 0%,
+      transparent 55%
+    ),
+    var(--color-surface);
+  overflow: hidden;
+}
+
+.home-hero__kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.08em;
+}
+
+.home-hero__title {
+  margin: var(--space-3) 0 var(--space-2);
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.home-hero__edition {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
+}
+
+.home-hero__lead {
+  max-width: 40rem;
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.home-hero__stats {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--color-border);
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.hero-stat__value {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  color: var(--color-primary);
+}
+
+.hero-stat__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* ---- 首页 · 分区标题（中文衬线层级） ---- */
+.home-section {
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.home-section .page-head {
+  margin-bottom: var(--space-3);
+}
+
+.home-section__title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.home-section__hint {
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+}
+
+/* ---- 首页 · 今日进度（环形）+ streak 徽标 ---- */
+.home-today {
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-5);
   padding: var(--space-4) var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.home-today__ring {
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex: none;
+}
+
+.home-ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home-ring__track {
+  fill: none;
+  stroke: var(--color-chart-donut-track);
+  stroke-width: 8;
+}
+
+.home-ring__fill {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 36px 36px;
+  transition: stroke-dasharray var(--transition-fast);
+}
+
+.home-today__pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.home-today__pct small {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.home-today__main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0; /* 允许 chip 内部折行而不是撑破容器 */
+}
+
+.home-today__title {
+  margin: 0;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.home-today__sub {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.home-today__main .stat-chip {
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
 /* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
@@ -1703,10 +1941,34 @@ a.streak-badge:hover {
   .page {
     padding-left: var(--space-3);
     padding-right: var(--space-3);
+    min-width: 0;
   }
 
   .site-header__inner {
     flex-wrap: wrap;
+  }
+
+  /* 首页 390px：Hero 收紧留白、统计折行；今日进度环形换到首行；模块卡单列 */
+  .home-hero {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .home-hero__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .home-today {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    padding: var(--space-4);
+  }
+
+  .home-section {
+    padding: var(--space-4);
+  }
+
+  .module-grid {
+    grid-template-columns: 1fr;
   }
 
   .grade-actions {

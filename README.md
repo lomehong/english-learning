@@ -54,7 +54,7 @@ npm install
 npm run dev      # 本地开发服务器
 npm test         # 单元测试（vitest）
 npm run build    # 生产构建（tsc 类型检查 + vite build）
-npm run preview  # 预览构建产物
+npm run preview  # 预览构建产物（固定 4174 端口，IPv4/IPv6 回环均可访问）
 ```
 
 路由为 SPA：`/vocabulary` `/grammar` `/reading` `/listening` `/writing` `/mistakes` `/report` 均可深链直达（dev / preview 服务器带 SPA fallback 回退 index.html）。**站点按域名根路径部署**：构建 `base` 固定为 `/`（产物引用 `/assets/*` 根绝对路径），因此 `/vocabulary/?unit=unit1`、`/grammar/` 等深链直接打开也能正确加载脚本与样式；若改回相对 `base: './'`，深链会去请求 `/vocabulary/assets/*` 而 404 白屏（`npm run build` 收尾的 `scripts/check-dist.mjs` 与 `src/deploy-base.test.ts` 会拦住该回归）。册 + 单元维度为**全局状态**：首页两级切换器写入 localStorage 并同步 `?book=&unit=`（如 `/grammar?unit=unit3`、`/?book=必修二`，册参数亦可用 slug 写法 `required-1` ~ `elective-4`，单元参数支持 `unit3` 全拼或数字写法 `3`——数字写法为单册时代遗留兼容，跨册同号时**固定解析为默认册（必修一）的对应单元**）；带参深链优先并被记住（`?unit=` 与 `?book=` 冲突时以单元为准、册随单元归属），之后无参地址沿用最近选择，非法值回退必修一 Unit 1，空册沿用最近有效单元不崩溃。
