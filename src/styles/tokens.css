@@ -36,6 +36,12 @@
   --teal-50: #f0fdfa;
   --teal-600: #0d9488;
 
+  /* 品牌主色原语 · 辰砂红（教材封面红系；蓝紫仅保留为工具/图表色） */
+  --vermilion-50: #fef3f0;
+  --vermilion-100: #fbdcd2;
+  --vermilion-600: #bf3b23;
+  --vermilion-700: #9e2f1b;
+
   --white: #ffffff;
 
   /* ---- 语义色 ---- */
@@ -47,9 +53,10 @@
   --color-text-secondary: var(--slate-500);
   /* 弱化元信息（题号来源 / 错题时间等 xs 级小字）：比 secondary 再弱一档，白底 ≥4.5:1 */
   --color-text-muted: #5c6b80;
-  --color-primary: var(--indigo-600);
-  --color-primary-hover: var(--indigo-700);
-  --color-primary-soft: var(--indigo-50);
+  /* 品牌主色：辰砂红（浅色 #bf3b23 对白底对比 ≈5.4:1，满足 AA） */
+  --color-primary: var(--vermilion-600);
+  --color-primary-hover: var(--vermilion-700);
+  --color-primary-soft: var(--vermilion-50);
   --color-on-primary: var(--white);
 
   /* SRS 四档评分色 */
@@ -81,12 +88,15 @@
   --color-streak: var(--amber-600);
   --color-streak-soft: var(--amber-50);
 
-  /* 键盘焦点环（输入框 focus 的 3px 光圈；暗色下换半透明 indigo） */
-  --color-focus-ring: var(--indigo-100);
+  /* 键盘焦点环（输入框 focus 的 3px 光圈；暗色下换半透明辰砂） */
+  --color-focus-ring: var(--vermilion-100);
 
   /* ---- 字体 ---- */
   --font-family-base: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui,
     -apple-system, sans-serif;
+  /* 中文衬线（标题层级专用；Windows 落宋体，macOS 落华文中宋，装了思源宋体更佳） */
+  --font-family-serif: 'Noto Serif SC', 'Source Han Serif SC', 'STZhongsong',
+    'SimSun', Georgia, serif;
   --font-family-phonetic: 'Segoe UI', 'Charis SIL', 'Doulos SIL', serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -146,10 +156,10 @@
   --color-text: #e2e8f0; /* slate-200 */
   --color-text-secondary: #a5b4c8;
   --color-text-muted: #8b9bb0;
-  --color-primary: #818cf8; /* indigo-400 */
-  --color-primary-hover: #a5b4fc; /* indigo-300：hover 提亮 */
-  --color-primary-soft: rgb(129 140 248 / 0.18);
-  --color-on-primary: #1e1b4b; /* indigo-950：浅底深字，对比 ≥4.5:1 */
+  --color-primary: #ffab8f; /* 辰砂亮调：对 #1e293b 表面对比 ≈6.2:1 */
+  --color-primary-hover: #ffc4b0; /* hover 提亮一档 */
+  --color-primary-soft: rgb(255 171 143 / 0.16);
+  --color-on-primary: #4a1408; /* 深枣红：浅底深字，对比 ≥4.5:1 */
 
   /* SRS 四档评分色（400 系前景 + 低透明度软底，软底叠深色表面） */
   --color-grade-again: #f87171;
@@ -179,7 +189,7 @@
   /* streak / 焦点环 */
   --color-streak: #fbbf24;
   --color-streak-soft: rgb(251 191 36 / 0.14);
-  --color-focus-ring: rgb(129 140 248 / 0.4);
+  --color-focus-ring: rgb(255 171 143 / 0.38);
 
   /* 阴影：深色下用黑色高透明度，保持层次可辨 */
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
