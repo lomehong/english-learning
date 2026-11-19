@@ -59,6 +59,8 @@ textarea:focus-visible {
   margin: 0 auto;
   padding: var(--space-3) var(--space-4);
   display: flex;
+  /* 窄屏（768 一档）品牌 + 七项导航放不下时自动折行，禁止横向溢出 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-4);
 }
@@ -381,6 +383,9 @@ textarea:focus-visible {
 /* ---- Tab ---- */
 .tabs {
   display: inline-flex;
+  /* 册别切换器（七册，选择性必修一~四标签较宽）在窄屏放不下时折行，
+     而不是撑破容器产生横向滚动；宽屏放得下时不折行，视觉不变 */
+  flex-wrap: wrap;
   gap: var(--space-1);
   padding: var(--space-1);
   background: var(--color-surface);
@@ -1015,6 +1020,8 @@ textarea:focus-visible {
   margin: 0;
   font-size: var(--font-size-md);
   line-height: 2;
+  /* 舒适行宽：宽屏内容区拉宽后，长文行宽不随容器无限拉长 */
+  max-width: var(--prose-max-width);
 }
 
 /* 可点击生词：虚线下划线 + 主色 */
@@ -1242,6 +1249,7 @@ textarea:focus-visible {
 .writing-model__para {
   margin: 0;
   line-height: 1.9;
+  max-width: var(--prose-max-width);
 }
 
 /* ---- 小号按钮（错题本条目操作等紧凑场景） ---- */
@@ -1259,6 +1267,10 @@ textarea:focus-visible {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
+  /* 兜底底色：未显式着色的变体（如按单元统计的 --unitN）不透明裸奔；
+     下方模块色 / 单元维度规则的特异性或顺序都在其上，正常覆盖 */
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
 }
 
 .module-badge--vocab {
@@ -1281,15 +1293,12 @@ textarea:focus-visible {
   color: var(--color-module-listening);
 }
 
-/* ---- 单元徽标（学习报告按单元统计，复用模块色令牌） ---- */
-.module-badge--unit1 {
-  background: var(--color-module-vocab-soft);
-  color: var(--color-module-vocab);
-}
-
-.module-badge--unit2 {
-  background: var(--color-module-reading-soft);
-  color: var(--color-module-reading);
+/* ---- 单元徽标（学习报告按单元统计） ---- */
+/* 单元维度统一用主色软底（区别于四模块色的模块徽标）；
+   作用域选择器按行维度着色，不随单元数量（35+）逐个枚举 class */
+.report-row[data-testid='unit-row'] .module-badge {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 /* ---- 错题本页 ---- */
@@ -1426,6 +1435,9 @@ textarea:focus-visible {
 .report-bar__fill {
   height: 100%;
   border-radius: var(--radius-full);
+  /* 兜底色：单元行（--unitN 不再逐个枚举）与未来变体默认可见；
+     四模块色 / 目标色变体在其后同特异性覆盖 */
+  background: var(--color-chart-overall);
   transition: width var(--transition-fast);
 }
 
@@ -1443,15 +1455,6 @@ textarea:focus-visible {
 
 .report-bar__fill--listening {
   background: var(--color-module-listening);
-}
-
-/* 单元正确率条（按单元统计，复用模块色令牌） */
-.report-bar__fill--unit1 {
-  background: var(--color-module-vocab);
-}
-
-.report-bar__fill--unit2 {
-  background: var(--color-module-reading);
 }
 
 /* 学习建议 */
@@ -1697,14 +1700,11 @@ a.streak-badge:hover {
     justify-items: start;
   }
 
-  /* 小屏：页面左右留白收紧，页头允许换行，四档评分条可折行 */
+  /* 小屏：页面左右留白收紧，四档评分条可折行
+     （页头 / Tab 折行已提升为全局规则：只在放不下时才折） */
   .page {
     padding-left: var(--space-3);
     padding-right: var(--space-3);
-  }
-
-  .site-header__inner {
-    flex-wrap: wrap;
   }
 
   .grade-actions {
