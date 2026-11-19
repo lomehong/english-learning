@@ -103,7 +103,7 @@ export function mountThemeSwitcher(
 
   for (const option of THEME_SETTINGS) {
     const btn = doc.createElement('button');
-    btn.type = 'button';
+    btn.setAttribute('type', 'button');
     btn.className = 'theme-switcher__btn';
     btn.textContent = THEME_LABELS[option];
     btn.addEventListener('click', () => select(option));
