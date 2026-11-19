@@ -49,7 +49,11 @@ textarea:focus-visible {
   padding: var(--space-5) var(--space-4) var(--space-7);
 }
 
+/* 顶栏常驻视口顶部：长页面（阅读 / 报告）随时可跨模块跳转 */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
 }
@@ -59,10 +63,10 @@ textarea:focus-visible {
   margin: 0 auto;
   padding: var(--space-3) var(--space-4);
   display: flex;
-  /* 窄屏（768 一档）品牌 + 七项导航放不下时自动折行，禁止横向溢出 */
+  /* 窄屏（768 一档）品牌 + 八项导航放不下时自动折行，禁止横向溢出 */
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
 }
 
 .site-header__brand {
@@ -71,12 +75,104 @@ textarea:focus-visible {
   color: var(--color-text);
 }
 
+.site-header__brand:hover {
+  color: var(--color-primary);
+}
+
 .site-header__nav {
   margin-left: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: var(--space-2);
+  gap: var(--space-1);
+}
+
+/* 导航链接（统一胶囊形态；当前页高亮 = 类 + aria-current 双指示） */
+.site-nav__link {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.site-nav__link:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.site-nav__link:active {
+  transform: scale(0.96);
+}
+
+.site-nav__link--current,
+.site-nav__link--current:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ---- 页脚（次级导航 + 数据说明，闭合整页视觉层级） ---- */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  margin-top: var(--space-6);
+}
+
+.site-footer__inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+.site-footer__link {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.site-footer__link:hover {
+  color: var(--color-primary);
+}
+
+.site-footer__meta {
+  margin: 0 0 0 auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ---- 首屏 hero（首页视觉层级第一层：站名 + 覆盖范围） ---- */
+.hero {
+  margin-bottom: var(--space-5);
+  padding: var(--space-5) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.hero__desc {
+  margin: 0;
+  max-width: var(--prose-max-width);
+  color: var(--color-text-secondary);
+  line-height: 1.8;
 }
 
 /* ---- 通用组件 ---- */
@@ -497,6 +593,11 @@ textarea:focus-visible {
   border-color: var(--color-primary);
 }
 
+.module-card:active {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
 .module-card--disabled {
   opacity: 0.6;
   pointer-events: none;
@@ -597,6 +698,37 @@ textarea:focus-visible {
   gap: var(--space-3);
   margin: 0 auto var(--space-4);
   max-width: 34rem;
+}
+
+/* ---- 词汇学习 / 复习共用工具类（替代历史内联样式） ---- */
+/* 词汇页 Tab 之下的内容区（与页头拉开一档间距） */
+.page-content {
+  margin-top: var(--space-5);
+}
+
+/* 学习页统计徽标行 */
+.card-chips {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+  justify-content: center;
+}
+
+/* 学习页 / 复习页卡片的操作按钮行 */
+.card-actions {
+  text-align: center;
+  margin-top: var(--space-4);
+}
+
+.card-actions__more {
+  margin-left: var(--space-2);
+}
+
+/* 复习页评分提示（居中弱化） */
+.review-hint {
+  text-align: center;
+  margin-top: var(--space-3);
 }
 
 /* ---- 语法模块 ---- */
@@ -1480,6 +1612,36 @@ textarea:focus-visible {
   left: 0;
 }
 
+/* ---- 数据管理（导出 / 导入） ---- */
+.data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+/* 「选择备份文件导入」标签：徽标形态但可点击（包裹隐藏的 file input） */
+.import-label {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.import-label:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.import-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* ---- 学习计划 · 今日目标与连续学习（streak） ---- */
 .report-plan {
   display: flex;
@@ -1686,7 +1848,15 @@ a.streak-badge:hover {
   color: var(--color-on-primary);
 }
 
-@media (max-width: 40rem) {
+/* ============================================================
+   响应式分层：
+   - ≤48rem（768 档）：平板 / 大屏手机。题目选项收单列、报告行堆叠、
+     顶栏导航换行铺满、四档评分改 2×2 网格（保证按钮可读可点）。
+   - ≤30rem（480 档）：手机。页面留白收紧、hero 内边距收紧、
+     词汇本 / 学习统计徽标行保持居中折行、页脚信息堆叠。
+   页头 / Tab / 顶栏导航的折行已提升为全局规则：只在放不下时才折。
+   ============================================================ */
+@media (max-width: 48rem) {
   .exercise__options {
     grid-template-columns: 1fr;
   }
@@ -1700,20 +1870,74 @@ a.streak-badge:hover {
     justify-items: start;
   }
 
-  /* 小屏：页面左右留白收紧，四档评分条可折行
-     （页头 / Tab 折行已提升为全局规则：只在放不下时才折） */
+  /* 四档评分：2×2 网格，替代挤压成条的 flex */
+  .grade-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+
+  /* 顶栏：导航整行铺满、左对齐折行（八个入口全部可见，不出横向滚动） */
+  .site-header__inner {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .site-header__nav {
+    margin-left: 0;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+
+  .site-nav__link {
+    padding: var(--space-1) var(--space-2);
+  }
+
+  /* 页脚：说明文字另起一行，不与链接挤在一行 */
+  .site-footer__meta {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+
+  .hero {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 30rem) {
   .page {
     padding-left: var(--space-3);
     padding-right: var(--space-3);
   }
 
-  .grade-actions {
+  .hero {
+    padding: var(--space-3);
+  }
+
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-nav {
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .theme-switcher {
     right: var(--space-2);
     bottom: var(--space-2);
+    /* 异形屏安全区：不让切换器压进系统手势条 */
+    margin-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+
+/* 触屏设备：导航与主题切换加大触达面积（≥44px 命中区） */
+@media (pointer: coarse) {
+  .site-nav__link {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .theme-switcher__btn {
+    padding: var(--space-2) var(--space-3);
   }
 }
 

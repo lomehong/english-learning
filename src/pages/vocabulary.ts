@@ -4,6 +4,7 @@ import { renderLearn } from './learn';
 import { renderReview } from './review';
 import { buildUnitBadge, currentUnit } from './unit-switch';
 import { defaultSpeechDeps, type SpeechDeps, type VocabDeps } from './deps';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 type Tab = 'learn' | 'review';
 
@@ -25,15 +26,8 @@ export function renderVocabulary(root: HTMLElement, speechDeps?: SpeechDeps): ()
     now: () => Date.now(),
   };
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/vocabulary');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
@@ -72,7 +66,7 @@ export function renderVocabulary(root: HTMLElement, speechDeps?: SpeechDeps): ()
   );
 
   const content = document.createElement('div');
-  content.style.marginTop = 'var(--space-5)';
+  content.className = 'page-content';
 
   function syncTitle(): void {
     const meta = UNIT_META[unit];
@@ -108,7 +102,7 @@ export function renderVocabulary(root: HTMLElement, speechDeps?: SpeechDeps): ()
   reviewTab.addEventListener('click', () => showTab('review'));
 
   page.append(head, content);
-  root.append(header, page);
+  root.append(header, page, footer);
   syncTitle();
   showTab(currentTab());
 

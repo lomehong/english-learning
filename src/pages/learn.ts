@@ -202,8 +202,7 @@ export function renderLearn(
     const learned = !!progress.cards[word.id];
 
     const chips = document.createElement('div');
-    chips.style.cssText =
-      'display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-4);justify-content:center;';
+    chips.className = 'card-chips';
     chips.innerHTML = `
       <span class="stat-chip">本单元 <strong>${total}</strong> 词</span>
       <span class="stat-chip">已学 <strong>${learnedCount(progress)}</strong></span>
@@ -257,13 +256,12 @@ export function renderLearn(
     nav.append(prev, counter, next);
 
     const actions = document.createElement('div');
-    actions.style.cssText = 'text-align:center;margin-top:var(--space-4);';
+    actions.className = 'card-actions';
     actions.append(markBtn);
     if (learnedCount(progress) > 0 && options.gotoReview) {
       const toReview = document.createElement('button');
       toReview.type = 'button';
-      toReview.className = 'btn btn--ghost';
-      toReview.style.marginLeft = 'var(--space-2)';
+      toReview.className = 'btn btn--ghost card-actions__more';
       toReview.textContent = '去复习 →';
       toReview.addEventListener('click', options.gotoReview);
       actions.append(toReview);

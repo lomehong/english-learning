@@ -15,6 +15,7 @@ import type { ReadingPassage, ReadingQuestion, Word } from '../types';
 import type { ReadingDeps } from './deps';
 import { buildEmptyState } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /**
  * /reading 页：单元切换 + 主题短文 + 阅读理解（答题即时判分 / 解析）
@@ -181,17 +182,8 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
   let answered = 0;
   let correctCount = 0;
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-        <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
-        <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/reading');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
@@ -354,5 +346,5 @@ export function renderReading(root: HTMLElement, deps?: ReadingDeps): void {
 
   syncWordStates();
 
-  root.append(header, page);
+  root.append(header, page, footer);
 }

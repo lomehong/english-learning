@@ -17,6 +17,7 @@ import {
 } from '../store/daily';
 import { MODULE_LABEL, MODULE_RETRY_ROUTE, pctText, buildEmptyState, type ReportDeps } from './deps';
 import { buildDataManagement, defaultDataManagementDeps } from './data-management';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /**
  * /report 学习报告页：汇总各模块练习次数 / 正确率 / 错题数与词汇 SRS 到期数，
@@ -577,16 +578,8 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   const data = buildReportData(d.loadStats(), d.loadWrong(), d.loadProgress(), d.now());
   const advice = buildAdvice(data);
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-        <a class="btn btn--ghost" href="/mistakes" data-link>错题本</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/report');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
@@ -715,5 +708,5 @@ export function renderReport(root: HTMLElement, deps?: ReportDeps): void {
   });
 
   page.append(head, intro, planSection, cards, moduleSection, unitSection, adviceSection, dataManagement);
-  root.append(header, page);
+  root.append(header, page, footer);
 }

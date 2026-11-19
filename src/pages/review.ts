@@ -152,8 +152,7 @@ export function renderReview(
     }
 
     const hint = document.createElement('p');
-    hint.className = 'flip-card__hint';
-    hint.style.cssText = 'text-align:center;margin-top:var(--space-3);';
+    hint.className = 'flip-card__hint review-hint';
     hint.textContent = '先翻面回忆，再选择掌握程度';
     hint.dataset.hint = 'grade-hint';
 

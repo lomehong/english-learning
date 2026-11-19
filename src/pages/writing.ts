@@ -4,6 +4,7 @@ import { putDraft, removeDraft, type WritingDrafts } from '../store/writing';
 import type { WritingTask } from '../types';
 import { buildEmptyState, defaultWritingDeps, type WritingDeps } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /**
  * /writing 页：单元切换 + 主题写作任务 ×2。
@@ -183,17 +184,8 @@ export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
   const unit = currentUnit();
   const tasks = getWritingTasksByUnit(unit);
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-        <a class="btn btn--ghost" href="/listening" data-link>听力</a>
-        <a class="btn btn--ghost" href="/mistakes" data-link>错题本</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/writing');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
@@ -224,5 +216,5 @@ export function renderWriting(root: HTMLElement, deps?: WritingDeps): void {
     page.append(buildTask(task, index, d.load, d.save, d.now));
   });
 
-  root.append(header, page);
+  root.append(header, page, footer);
 }

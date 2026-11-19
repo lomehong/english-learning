@@ -83,11 +83,7 @@ export function buildDataManagement(
   fileInput.setAttribute('aria-label', '选择要导入的 JSON 备份文件');
 
   const importLabel = document.createElement('label');
-  importLabel.className = 'stat-chip';
-  importLabel.style.cursor = 'pointer';
-  importLabel.style.display = 'inline-flex';
-  importLabel.style.alignItems = 'center';
-  importLabel.style.gap = 'var(--space-2)';
+  importLabel.className = 'stat-chip import-label';
   importLabel.textContent = '⬆ 选择备份文件导入';
   importLabel.append(fileInput);
 
@@ -138,7 +134,7 @@ export function buildDataManagement(
   });
 
   const actions = document.createElement('div');
-  actions.style.cssText = 'display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;';
+  actions.className = 'data-actions';
   actions.append(exportBtn, importLabel);
 
   section.append(title, intro, actions, status);
