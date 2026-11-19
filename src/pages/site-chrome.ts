@@ -58,14 +58,9 @@ export function buildSiteHeader(currentPath: string): HTMLElement {
     nav.append(link);
   }
 
-  const themeSlot = document.createElement('div');
-  themeSlot.className = 'site-header__theme';
-  const themeSwitcher = document.querySelector('.theme-switcher');
-  if (themeSwitcher) themeSlot.append(themeSwitcher);
-
   const inner = document.createElement('div');
   inner.className = 'site-header__inner';
-  inner.append(brand, nav, themeSlot);
+  inner.append(brand, nav);
   header.append(inner);
   return header;
 }
