@@ -390,3 +390,14 @@ describe('首页 · 全站命名（高中英语学习系统）', () => {
     }
   });
 });
+
+describe('首页 · 页脚版本标记', () => {
+  it('页脚渲染单行版本标记「高中英语学习系统 · v2026.11」', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    const footer = root.querySelector('footer.site-footer');
+    expect(footer, '首页应有 footer.site-footer 页脚').toBeTruthy();
+    expect(footer!.textContent).toBe('高中英语学习系统 · v2026.11');
+  });
+});
