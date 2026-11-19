@@ -71,7 +71,9 @@ export function mountThemeSwitcher(
 ): ThemeSwitcherHandle {
   const storage = opts.storage ?? defaultStorage();
   const media = opts.media === undefined ? defaultMedia() : opts.media;
-  const doc = opts.doc ?? document;
+  // 全局 document 需显式收窄为 DocumentLike：否则 doc 变量为 DocumentLike | Document 联合，
+  // createElement('button') 的返回值会并入 HTMLElement，导致 btn.type 等按钮属性无法访问
+  const doc: DocumentLike = opts.doc ?? (document as DocumentLike);
 
   let setting: ThemeSetting = loadThemeSetting(storage);
 

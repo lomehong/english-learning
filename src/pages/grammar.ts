@@ -18,6 +18,7 @@ import type { FillExercise, GrammarExercise, GrammarPoint, McqExercise, WrongEnt
 import type { GrammarDeps } from './deps';
 import { buildEmptyState } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /** /grammar 页：单元切换 + 讲解卡 + 专项练习（即时判分/解析/错题自动入本） */
 
@@ -266,16 +267,8 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   let answered = 0;
   let correctCount = 0;
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-        <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/grammar');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
@@ -401,5 +394,5 @@ export function renderGrammar(root: HTMLElement, deps?: GrammarDeps): void {
   renderWrongbook();
 
   page.append(head, teach, drill, wrongbook);
-  root.append(header, page);
+  root.append(header, page, footer);
 }

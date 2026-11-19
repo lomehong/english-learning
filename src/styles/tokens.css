@@ -126,7 +126,10 @@
   --perspective: 1200px;
 
   /* ---- 布局 ---- */
-  --page-max-width: 64rem;
+  /* 宽屏（≥1280）充分利用横向空间：内容区 72rem，卡片网格多列展开；
+     长文（阅读短文 / 范文段落）另有 46rem 舒适行宽约束，不随容器拉满 */
+  --page-max-width: 72rem;
+  --prose-max-width: 46rem;
   --flip-card-height: 22rem;
 }
 

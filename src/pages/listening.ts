@@ -12,6 +12,7 @@ import type { ListeningMaterial, ListeningQuestion } from '../types';
 import type { SpeechEngine, PlayerState } from '../speech/tts';
 import { buildEmptyState, defaultListeningDeps, type ListeningDeps } from './deps';
 import { buildUnitBadge, currentUnit } from './unit-switch';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /**
  * /listening 页：单元切换 + 主题听力材料 ×2，浏览器 speechSynthesis 本地朗读
@@ -221,17 +222,8 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
     let answered = 0;
     let correctCount = 0;
 
-    const header = document.createElement('header');
-    header.className = 'site-header';
-    header.innerHTML = `
-      <div class="site-header__inner">
-        <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-        <nav class="site-header__nav">
-          <a class="btn btn--ghost" href="/" data-link>首页</a>
-          <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
-          <a class="btn btn--ghost" href="/writing" data-link>写作</a>
-        </nav>
-      </div>`;
+    const header = buildSiteHeader('/listening');
+    const footer = buildSiteFooter();
 
     const page = document.createElement('main');
     page.className = 'page';
@@ -375,7 +367,7 @@ export function renderListening(root: HTMLElement, deps?: ListeningDeps): () => 
 
     for (const sync of syncs) sync();
 
-    root.append(header, page);
+    root.append(header, page, footer);
 
     /* 引擎状态变化 → 同步所有播放器按钮文案/禁用态 */
     const unsubscribe = engine.subscribe(() => {

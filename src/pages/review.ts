@@ -82,7 +82,7 @@ export function renderReview(
       empty.innerHTML = `
         <h2 class="empty-state__title">🎉 暂无到期单词</h2>
         <p class="empty-state__desc">
-          已学 ${learnedTotal} / ${allWords.length} 词（两单元合计），到期单词复习完后会在这里排队。
+          已学 ${learnedTotal} / ${allWords.length} 词（全部单元合计），到期单词复习完后会在这里排队。
         </p>`;
       const goLearn = document.createElement('button');
       goLearn.type = 'button';
@@ -152,8 +152,7 @@ export function renderReview(
     }
 
     const hint = document.createElement('p');
-    hint.className = 'flip-card__hint';
-    hint.style.cssText = 'text-align:center;margin-top:var(--space-3);';
+    hint.className = 'flip-card__hint review-hint';
     hint.textContent = '先翻面回忆，再选择掌握程度';
     hint.dataset.hint = 'grade-hint';
 

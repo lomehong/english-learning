@@ -1,6 +1,7 @@
 import type { PracticeModule, WrongEntry } from '../types';
 import { loadWrongBook, saveWrongBook, removeEntry, emptyWrongBook, type WrongBook } from '../store/wrongbook';
 import { MODULE_LABEL, MODULE_RETRY_ROUTE, type MistakesDeps } from './deps';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /**
  * /mistakes 错题本页：汇总词汇（复习）/ 语法 / 阅读 / 听力各模块写入
@@ -37,16 +38,8 @@ export function renderMistakes(root: HTMLElement, deps?: MistakesDeps): void {
   let book: WrongBook = d.load();
   let filter: Filter = currentFilter();
 
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="/" data-link>高中英语学习系统</a>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/" data-link>首页</a>
-        <a class="btn btn--ghost" href="/report" data-link>学习报告</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/mistakes');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
@@ -226,5 +219,5 @@ export function renderMistakes(root: HTMLElement, deps?: MistakesDeps): void {
   renderList();
 
   page.append(head, intro, tabBar, list, empty);
-  root.append(header, page);
+  root.append(header, page, footer);
 }

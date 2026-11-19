@@ -1,41 +1,29 @@
-import { BOOK_LABELS, BOOKS, UNIT_IDS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
+import { BOOK_LABELS, BOOKS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
 import { buildBookSwitcher, buildUnitSwitcher, currentUnit } from './unit-switch';
 import { computeStreak, goalCompletion } from '../store/daily';
 import { defaultHomeDeps, type HomeDeps } from './deps';
+import { buildSiteFooter, buildSiteHeader } from './site-chrome';
 
 /** 首页：全局「册 + 单元」两级切换器（localStorage + ?book=&unit= 双向同步）+ 模块入口 */
-
 
 /** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
 const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
 
 export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()): void {
-  const header = document.createElement('header');
-  header.className = 'site-header';
-  header.innerHTML = `
-    <div class="site-header__inner">
-      <span class="site-header__brand">高中英语学习系统</span>
-      <nav class="site-header__nav">
-        <a class="btn btn--ghost" href="/vocabulary" data-link>词汇</a>
-        <a class="btn btn--ghost" href="/grammar" data-link>语法</a>
-        <a class="btn btn--ghost" href="/reading" data-link>阅读</a>
-        <a class="btn btn--ghost" href="/listening" data-link>听力</a>
-        <a class="btn btn--ghost" href="/writing" data-link>写作</a>
-        <a class="btn btn--ghost" href="/mistakes" data-link>错题本</a>
-        <a class="btn btn--ghost" href="/report" data-link>学习报告</a>
-      </nav>
-    </div>`;
+  const header = buildSiteHeader('/');
+  const footer = buildSiteFooter();
 
   const page = document.createElement('main');
   page.className = 'page';
+  /* 首屏 hero：站名（h1）+ 覆盖范围一句话（视觉层级第一层；样式走 .hero* 类，无内联） */
   page.innerHTML = `
-    <h1 style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);margin:var(--space-5) 0 var(--space-2);">
-      高中英语学习系统 · 人教2019
-    </h1>
-    <p style="color:var(--color-text-secondary);margin:0 0 var(--space-3);">
-      覆盖整个高中阶段：人教2019 必修一 ~ 必修三 + 选择性必修一 ~ 四共 7 册 35 单元。
-      词汇 / 语法 / 阅读 / 听力 / 写作五大模块专项练习，错题自动沉淀、报告随时可查，进度保存在本机浏览器。
-    </p>`;
+    <section class="hero">
+      <h1 class="hero__title">高中英语学习系统 · 人教2019</h1>
+      <p class="hero__desc">
+        覆盖整个高中阶段：人教2019 必修一 ~ 必修三 + 选择性必修一 ~ 四共 7 册 35 单元。
+        词汇 / 语法 / 阅读 / 听力 / 写作五大模块专项练习，错题自动沉淀、报告随时可查，进度保存在本机浏览器。
+      </p>
+    </section>`;
 
   /* 两级切换器：第一级选册（七册），第二级选该册单元；选择写入 localStorage 并同步 ?book=&unit= */
   const unitHead = document.createElement('div');
@@ -78,7 +66,7 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   }
 
   const intro = document.createElement('p');
-  intro.style.cssText = 'color:var(--color-text-secondary);margin:0 0 var(--space-4);';
+  intro.className = 'page-intro';
   intro.textContent = `先选册（${BOOK_TEXT}），再选该册单元：词汇 / 语法 / 阅读 / 听力 / 写作将统一跟随当前册 + 单元（选择保存在本机，并同步到地址栏 ?book=&unit=；尚未收录单元的册先显示空态，后续新增数据文件即自动出现）。`;
 
   /* 今日进度 + streak 徽标（数据源：每日活动/目标 localStorage；点徽标去学习报告调整目标） */
@@ -115,7 +103,7 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   grid.innerHTML = `
     <a class="module-card" href="/vocabulary" data-link>
       <h2 class="module-card__title">📚 词汇</h2>
-      <p class="module-card__desc">${BOOKS.length} 册 · ${UNIT_IDS.length} 单元词表学习（翻面卡）与四档间隔复习</p>
+      <p class="module-card__desc">跟随当前单元的词表学习（翻面卡 · 单元内搜索 · 朗读）与四档间隔复习</p>
     </a>
     <a class="module-card" href="/grammar" data-link>
       <h2 class="module-card__title">📖 语法</h2>
@@ -144,6 +132,6 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
 
   page.append(unitHead, intro, today, grid);
   // 模块入口统一由 router 的 <a data-link> 拦截跳转
-  root.append(header, page);
+  root.append(header, page, footer);
   syncUnitHint();
 }
