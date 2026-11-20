@@ -1981,6 +1981,18 @@ a.streak-badge:hover {
     flex-wrap: wrap;
   }
 
+  /* 360px 窄屏修复（只作用于首页页头）：品牌行（衬线 8 字 + 印章标记 ≈ 11.2rem，
+     nowrap 不收缩）与固定右上角的切换器（≈ 11.6rem）同行放不下——两者加留白约
+     24.9rem，超过 360px（22.5rem）也超过 390px（24.4rem）；91rem 档的右侧让位
+     会把品牌行挤进切换器正下方造成遮挡。改为垂直错开：取消右侧让位、页头内容
+     整体下移，从切换器横带（top 0.5rem + 高约 2.33rem → 底缘约 2.83rem）之下
+     排起；行宽恢复整栏 → 无重叠也无横向溢出。其他页面页头不命中本规则，维持
+     91rem 让位行为不动。 */
+  .site-header--home .site-header__inner {
+    padding-top: calc(var(--space-7) + var(--space-2));
+    padding-right: var(--space-4);
+  }
+
   /* 首页 390px：Hero 收紧留白、统计折行；今日进度环形换到首行；模块卡单列 */
   .home-hero {
     padding: var(--space-5) var(--space-4);
