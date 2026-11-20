@@ -217,10 +217,32 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   const todayTitle = document.createElement('h2');
   todayTitle.className = 'home-today__title';
   todayTitle.textContent = '今日进度';
+
+  /* 状态行：今天还没有学习记录时给出「去词汇模块开始」引导（站内链接），
+   * 有进度则按完成度正向反馈（完成度与上方 chip 同口径，保留一位小数） */
+  const todayTotal = completion.vocab + completion.exercises;
   const todaySub = document.createElement('p');
   todaySub.className = 'home-today__sub';
-  todaySub.textContent = '每日目标可在学习报告页调整；点下方近 7 天节点查看当天完成数，点火焰徽标看连续天数。';
-  todayMain.append(todayTitle, progressChip, todaySub, streakBadge);
+  todaySub.setAttribute('data-testid', 'home-today-status');
+  if (todayTotal === 0) {
+    todaySub.append('今天还没有学习记录，');
+    const startLink = document.createElement('a');
+    startLink.className = 'home-today__start';
+    startLink.href = '/vocabulary';
+    startLink.setAttribute('data-link', '');
+    startLink.textContent = '去词汇模块开始吧';
+    todaySub.append(startLink, '。');
+  } else {
+    const pct = `${Math.round(completion.overall * 1000) / 10}%`;
+    todaySub.textContent = completion.done
+      ? `今日目标已达成（${pct}），保持节奏，继续加油！`
+      : `今日已完成 ${pct}，继续加油！`;
+  }
+
+  const todayHint = document.createElement('p');
+  todayHint.className = 'home-today__sub';
+  todayHint.textContent = '每日目标可在学习报告页调整；点下方近 7 天节点查看当天完成数，点火焰徽标看连续天数。';
+  todayMain.append(todayTitle, progressChip, todaySub, todayHint, streakBadge);
 
   today.append(todayRing, todayMain);
 

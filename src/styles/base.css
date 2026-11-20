@@ -1912,6 +1912,14 @@ a.streak-badge:hover {
   color: var(--color-text-secondary);
 }
 
+/* 空态引导链接：今日尚无学习记录时「去词汇模块开始吧」（站内跳转，主色可点） */
+.home-today__sub .home-today__start {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .home-today__main .stat-chip {
   flex-wrap: wrap;
   max-width: 100%;
