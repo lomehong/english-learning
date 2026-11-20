@@ -1,6 +1,6 @@
 import { BOOK_LABELS, BOOKS, UNIT_IDS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
 import { buildBookSwitcher, buildUnitSwitcher, currentUnit } from './unit-switch';
-import { computeStreak, goalCompletion } from '../store/daily';
+import { buildLast7Days, computeStreak, goalCompletion, type DayActivity } from '../store/daily';
 import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：Hero 品牌区（中文衬线标题 + 教材统计）+ 全局「册 + 单元」两级切换器
@@ -218,10 +218,95 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   todayTitle.textContent = '今日进度';
   const todaySub = document.createElement('p');
   todaySub.className = 'home-today__sub';
-  todaySub.textContent = '每日目标可在学习报告页调整；点火焰徽标查看连续学习天数与近 7 天活动。';
+  todaySub.textContent = '每日目标可在学习报告页调整；点下方近 7 天节点查看当天完成数，点火焰徽标看连续天数。';
   todayMain.append(todayTitle, progressChip, todaySub, streakBadge);
 
   today.append(todayRing, todayMain);
+
+  /* ---- 近 7 天活动（今日进度卡内）：7 天是否有学习记录一屏可见，
+   *      点击某天就地（卡内）显示该天词汇/练习完成数，今天节点带「今」标记 ---- */
+  const week = buildLast7Days(daily, now);
+
+  const weekWrap = document.createElement('div');
+  weekWrap.className = 'home-week';
+  weekWrap.setAttribute('data-testid', 'home-week');
+
+  const weekHead = document.createElement('div');
+  weekHead.className = 'home-week__head';
+  const weekTitle = document.createElement('h3');
+  weekTitle.className = 'home-week__title';
+  weekTitle.textContent = '近 7 天活动';
+  const weekHint = document.createElement('span');
+  weekHint.className = 'home-week__hint';
+  weekHint.textContent = '点某天查看当天完成数';
+  weekHead.append(weekTitle, weekHint);
+
+  const weekDays = document.createElement('div');
+  weekDays.className = 'home-week__days';
+
+  const weekDetail = document.createElement('p');
+  weekDetail.className = 'home-week__detail';
+  weekDetail.setAttribute('data-testid', 'home-week-detail');
+
+  /** 日期短文案：1月18日（今天前缀「今天 · 」） */
+  function dayText(day: DayActivity): string {
+    const [, month, date] = day.key.split('-');
+    return `${day.isToday ? '今天 · ' : ''}${Number(month)}月${Number(date)}日`;
+  }
+
+  /** 卡内详情：该天词汇/练习完成数（无记录显示 0） */
+  function renderWeekDetail(day: DayActivity): void {
+    weekDetail.dataset.day = day.key;
+    weekDetail.textContent = `${dayText(day)}：词汇 ${day.vocab} · 练习 ${day.exercises}${day.total > 0 ? '' : '（无学习记录）'}`;
+  }
+
+  const dayButtons: HTMLButtonElement[] = [];
+  let selected = week[week.length - 1]!; // 升序末位 = 今天，默认选中
+
+  function syncSelected(): void {
+    for (const button of dayButtons) {
+      button.setAttribute('aria-pressed', String(button.dataset.day === selected.key));
+    }
+  }
+
+  for (const day of week) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'home-week__day';
+    button.setAttribute('data-testid', 'home-week-day');
+    button.dataset.day = day.key;
+    button.dataset.count = String(day.total);
+    button.dataset.today = String(day.isToday);
+    button.dataset.active = String(day.total > 0);
+    button.title = `${day.key} · 词汇 ${day.vocab} · 练习 ${day.exercises}`;
+    button.setAttribute(
+      'aria-label',
+      `${dayText(day)}：词汇 ${day.vocab}，练习 ${day.exercises}${day.total > 0 ? '' : '，无学习记录'}`,
+    );
+
+    const dot = document.createElement('span');
+    dot.className = 'home-week__dot';
+    dot.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.className = 'home-week__label';
+    label.textContent = day.isToday ? '今' : day.label;
+    button.append(dot, label);
+
+    button.addEventListener('click', () => {
+      selected = day;
+      renderWeekDetail(day);
+      syncSelected();
+    });
+
+    dayButtons.push(button);
+    weekDays.append(button);
+  }
+
+  renderWeekDetail(selected);
+  syncSelected();
+  weekWrap.append(weekHead, weekDays, weekDetail);
+
+  today.append(weekWrap);
 
   /* ---- 七大模块入口：编号 + 图标 + 描述 + 入口箭头 ---- */
   const modulesSection = document.createElement('section');

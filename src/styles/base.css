@@ -1893,6 +1893,113 @@ a.streak-badge:hover {
   max-width: 100%;
 }
 
+/* ---- 首页 · 今日进度卡内「近 7 天活动」（7 节点点阵：有无记录一眼可辨，
+        点击某天卡内显示当天完成数；今天节点带「今」标记） ---- */
+.home-week {
+  grid-column: 1 / -1; /* 今日进度卡两列网格中跨满整行 */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0; /* 允许收缩，不撑破卡片 */
+  width: 100%; /* 小屏档 justify-items:start 下仍贴满卡宽 */
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-border);
+}
+
+.home-week__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+.home-week__title {
+  margin: 0;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.home-week__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* 7 轨等分：minmax(0,1fr) 轨道最小宽为 0 → 390px 窄屏不横向溢出 */
+.home-week__days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.home-week__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-1) 0 var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.home-week__day:hover {
+  background: var(--color-primary-soft);
+}
+
+.home-week__day:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.home-week__day[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+/* 活动指示点：有记录实心，无记录空心底 */
+.home-week__dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: var(--radius-full);
+  background: var(--color-chart-track);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.home-week__day[data-active='true'] .home-week__dot {
+  background: var(--color-module-vocab);
+  box-shadow: none;
+}
+
+/* 今天标记：实心点描边 + 「今」字加重（streak 同款高亮色） */
+.home-week__day[data-today='true'] .home-week__dot {
+  box-shadow: 0 0 0 2px var(--color-streak-soft), 0 0 0 4px var(--color-streak);
+}
+
+.home-week__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.home-week__day[data-today='true'] .home-week__label {
+  color: var(--color-streak);
+  font-weight: var(--font-weight-bold);
+}
+
+.home-week__detail {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
 /* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
 .theme-switcher {
   position: fixed;
@@ -1994,6 +2101,20 @@ a.streak-badge:hover {
     grid-template-columns: 1fr;
     justify-items: start;
     padding: var(--space-4);
+  }
+
+  /* 近 7 天活动（今日进度卡单列 + justify-items:start 下仍跨满整行贴卡宽） */
+  .home-week {
+    justify-self: stretch;
+  }
+
+  .home-week__days {
+    gap: var(--space-1);
+  }
+
+  .home-week__day {
+    padding-top: 0;
+    padding-bottom: var(--space-1);
   }
 
   .home-section {
