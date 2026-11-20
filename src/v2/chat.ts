@@ -26,6 +26,7 @@ import {
   renderComponent,
   type RenderContext,
 } from './components/dsl';
+import { loadDemoMessages } from './seed';
 import type { Agent, ChatMessage } from './types';
 import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
 import type { StorageLike } from '../store/progress';
@@ -428,6 +429,18 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   syncConfigPanel();
   syncWelcome(loadV2Config(storage));
   stream.append(welcome);
+
+  /* ---------- 演示消息注入（T3 验收通道）：localStorage 预置剧本 ----------
+   * 与模型回复同一渲染管线：正文走围栏提取，dsl 逐节点走白名单渲染器；
+   * 坏种子 / 非法节点静默降级，页面零脚本异常。仅作展示，不进对话历史。 */
+  const demoMessages = loadDemoMessages(storage);
+  for (const msg of demoMessages) {
+    const handle = makeMessage(stream, msg.role);
+    renderFinal(handle, msg.content, renderCtx);
+    for (const node of msg.dsl) handle.components.append(renderComponent(node, renderCtx));
+  }
+  if (demoMessages.length > 0) scrollStream(stream);
+
   input.focus();
 
   return () => {

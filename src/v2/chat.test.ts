@@ -175,9 +175,9 @@ describe('/v2 对话壳（T1）', () => {
     const body = env.root.querySelector('.v2-msg--assistant .v2-msg__body')!;
     expect(body.textContent).toContain('今日目标');
     expect(body.textContent).toContain('今天的计划');
-    // 计划进度组件（今日完成度）与首组词汇卡渲染
-    const track = env.root.querySelector('.v2-msg--assistant .v2-progress__track')!;
-    expect(track.getAttribute('aria-valuenow')).toBe('0');
+    // 计划进度组件（今日完成度，进度环）与首组词汇卡渲染
+    const ring = env.root.querySelector('.v2-msg--assistant [data-testid="v2-progress-ring"]')!;
+    expect(ring.getAttribute('aria-valuenow')).toBe('0');
     expect(env.root.querySelector('.v2-msg--assistant .v2-card__word-en')!.textContent).toMatch(/^[a-zA-Z]+$/);
     // 正文无围栏 JSON 原文
     expect(body.textContent).not.toContain('```');
@@ -365,5 +365,73 @@ describe('/v2 对话壳（T1）', () => {
     expect(chatSource).not.toMatch(/from '\.\.\/pages\//);
     expect(chatSource).not.toMatch(/\.innerHTML/); // 壳层同样禁用 innerHTML（注释不算）
     expect(chatSource).not.toMatch(/\beval\s*\(/);
+  });
+});
+
+describe('/v2 演示消息注入（T3 验收场景：v2_demo_messages）', () => {
+  let env: ReturnType<typeof setup> | null = null;
+
+  afterEach(() => {
+    env?.cleanup();
+    env = null;
+    history.pushState(null, '', '/');
+  });
+
+  it('验收种子：assistant 消息 dsl 数组渲染词汇卡 + 进度环（60%）', () => {
+    env = setup({
+      v2_demo_messages: JSON.stringify([
+        {
+          role: 'assistant',
+          dsl: [
+            { type: 'card', title: '词汇卡', items: ['apple 苹果'] },
+            { type: 'progress', value: 60, label: '今日进度' },
+          ],
+        },
+      ]),
+    });
+    // 欢迎卡仍在，种子消息按 assistant 气泡渲染在其后
+    expect(env.root.querySelector('[data-testid="v2-welcome"]')).toBeTruthy();
+    const msg = env.root.querySelector('.v2-msg--assistant')!;
+    const card = msg.querySelector('.v2-card')!;
+    expect(card.getAttribute('data-comp-type')).toBe('card');
+    expect(card.textContent).toContain('词汇卡');
+    expect(card.textContent).toContain('apple 苹果');
+    const ring = msg.querySelector('[data-testid="v2-progress-ring"]')!;
+    expect(ring.getAttribute('aria-valuenow')).toBe('60');
+    expect(msg.querySelector('[data-testid="v2-progress-ring-value"]')!.textContent).toBe('60%');
+    expect(msg.textContent).toContain('今日进度');
+  });
+
+  it('非法 dsl 节点降级占位：坏种子不炸页面，合法节点照常渲染', () => {
+    env = setup({
+      v2_demo_messages: JSON.stringify([
+        {
+          role: 'assistant',
+          content: '演示一条混合消息',
+          dsl: [
+            { type: 'card', title: '词汇卡', items: ['apple 苹果'] },
+            { type: 'script', code: 'alert(1)' }, // 白名单外
+            'not-even-an-object', // 形状非法
+            { type: 'progress' }, // 缺 value
+          ],
+        },
+        { role: 'system', content: 'role 非法整条丢弃' },
+      ]),
+    });
+    const msgs = env.root.querySelectorAll('.v2-msg--assistant');
+    expect(msgs).toHaveLength(1); // system 条目被丢弃
+    const body = msgs[0]!.querySelector('.v2-msg__body')!;
+    expect(body.textContent).toContain('演示一条混合消息');
+    // 合法节点 + 3 个降级占位，全部出现在组件渲染区
+    expect(msgs[0]!.querySelectorAll('.v2-comp')).toHaveLength(4);
+    expect(msgs[0]!.querySelectorAll('.v2-comp--invalid')).toHaveLength(3);
+    expect(msgs[0]!.querySelectorAll('.v2-card__items li')[0]!.textContent).toBe('apple 苹果');
+    expect(env.root.querySelector('[data-testid="v2-root"]')).toBeTruthy(); // 页面未被破坏
+  });
+
+  it('无种子 / 坏 JSON 种子：不产生任何消息，行为与 T1 壳层一致', () => {
+    env = setup({ v2_demo_messages: '{ broken' });
+    expect(env.root.querySelectorAll('.v2-msg')).toHaveLength(0);
+    expect(env.root.querySelector('[data-testid="v2-welcome"]')).toBeTruthy();
   });
 });

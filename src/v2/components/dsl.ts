@@ -6,6 +6,8 @@
  * - 白名单注册表：只有 card / quiz / progress / list / audio / timer 六个原语可渲染；
  * - 全部走 document.createElement + textContent / dataset 构造节点，
  *   禁用 eval / new Function / innerHTML——不受信文本只进文本节点，不进 HTML；
+ * - progress 原语渲染为 SVG 进度环（createElementNS 构造，颜色取主题令牌）；
+ *   card 支持 items 列表行（词汇卡/要点卡形态）；
  * - render* 均为纯函数：只依赖入参与 ctx 回调，不改全局状态；
  * - 非法 spec（未知 type / 缺字段 / 越界值）不抛异常，渲染成一条
  *   「降级占位」节点，保证对话流不因模型输出坏数据而崩溃。
@@ -25,6 +27,8 @@ export interface CardSpec {
   example?: string;
   exampleZh?: string;
   lines?: string[];
+  /** 列表型内容行（如一组「单词 释义」词条，词汇卡/要点卡形态） */
+  items?: string[];
   badge?: string;
 }
 
@@ -127,6 +131,9 @@ export function parseComponentSpec(raw: unknown): ComponentSpec | null {
         example: optStr(v.example),
         exampleZh: optStr(v.exampleZh),
         lines: Array.isArray(v.lines) ? v.lines.filter(isStr).slice(0, 12) : undefined,
+        items: Array.isArray(v.items)
+          ? v.items.filter((x): x is string => isStr(x) && x.trim() !== '').slice(0, 20)
+          : undefined,
         badge: optStr(v.badge),
       };
     }
@@ -199,6 +206,13 @@ function text(tag: keyof HTMLElementTagNameMap, className: string | undefined, c
   return node;
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function svgEl(tag: 'svg' | 'circle'): SVGElement {
+  // SVG 节点必须走 createElementNS；属性/样式逐个 set，不拼接标记文本
+  return document.createElementNS(SVG_NS, tag);
+}
+
 /** 秒数 → m:ss 展示 */
 export function formatClock(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds));
@@ -230,6 +244,12 @@ function renderCard(spec: CardSpec): HTMLElement {
     const lines = el('ul', 'v2-card__lines');
     for (const line of spec.lines) lines.append(text('li', undefined, line));
     body.append(lines);
+  }
+  // 列表型内容行（词汇卡/要点卡形态）：与 lines 同一视觉，便于「标题 + 若干行」的卡
+  if (spec.items && spec.items.length > 0) {
+    const items = el('ul', 'v2-card__lines v2-card__items');
+    for (const item of spec.items) items.append(text('li', undefined, item));
+    body.append(items);
   }
   box.append(body);
   return box;
@@ -283,23 +303,84 @@ function renderQuiz(spec: QuizSpec, ctx: RenderContext): HTMLElement {
   return box;
 }
 
+/** 进度环几何常量：viewBox 84×84，半径 34，描边 10（周长 2πr ≈ 213.63） */
+const RING_SIZE = 84;
+const RING_R = 34;
+const RING_C = 2 * Math.PI * RING_R;
+
 function renderProgress(spec: ProgressSpec): HTMLElement {
   const box = el('div', 'v2-progress');
+
+  // 环 + 中心百分比：尺寸/定位走内联样式（几何属于组件自身），
+  // 颜色引用主题令牌（--color-chart-*），浅色/深色主题均生效
+  const ringBox = el('div', 'v2-progress__ringbox');
+  ringBox.style.position = 'relative';
+  ringBox.style.width = `${RING_SIZE}px`;
+  ringBox.style.height = `${RING_SIZE}px`;
+  ringBox.style.flex = 'none';
+
+  const svg = svgEl('svg');
+  svg.classList.add('v2-progress__ring');
+  svg.setAttribute('data-testid', 'v2-progress-ring');
+  svg.setAttribute('viewBox', `0 0 ${RING_SIZE} ${RING_SIZE}`);
+  svg.setAttribute('role', 'progressbar');
+  svg.setAttribute('aria-label', spec.label ?? '进度');
+  svg.setAttribute('aria-valuenow', String(spec.value));
+  svg.setAttribute('aria-valuemin', '0');
+  svg.setAttribute('aria-valuemax', '100');
+  svg.style.display = 'block';
+  svg.style.width = '100%';
+  svg.style.height = '100%';
+
+  const half = RING_SIZE / 2;
+  const track = svgEl('circle');
+  track.classList.add('v2-progress__ring-track');
+  track.setAttribute('cx', String(half));
+  track.setAttribute('cy', String(half));
+  track.setAttribute('r', String(RING_R));
+  track.setAttribute('fill', 'none');
+  track.setAttribute('stroke-width', '10');
+  track.style.stroke = 'var(--color-chart-track)';
+
+  const fill = svgEl('circle');
+  fill.classList.add('v2-progress__ring-fill');
+  fill.setAttribute('cx', String(half));
+  fill.setAttribute('cy', String(half));
+  fill.setAttribute('r', String(RING_R));
+  fill.setAttribute('fill', 'none');
+  fill.setAttribute('stroke-width', '10');
+  fill.setAttribute('stroke-linecap', 'round');
+  // 周长入 dasharray，按比例收缩 dashoffset；-90° 起笔让环从正上方顺时针填充
+  fill.setAttribute('stroke-dasharray', String(RING_C));
+  fill.setAttribute('stroke-dashoffset', String(RING_C * (1 - spec.value / 100)));
+  fill.setAttribute('transform', `rotate(-90 ${half} ${half})`);
+  fill.style.stroke = 'var(--color-chart-overall)';
+  svg.append(track, fill);
+
+  const center = el('span', 'v2-progress__ring-value');
+  center.setAttribute('data-testid', 'v2-progress-ring-value');
+  center.style.position = 'absolute';
+  center.style.left = '0';
+  center.style.right = '0';
+  center.style.top = '0';
+  center.style.bottom = '0';
+  center.style.display = 'flex';
+  center.style.alignItems = 'center';
+  center.style.justifyContent = 'center';
+  center.style.fontWeight = '700';
+  center.style.fontSize = 'var(--font-size-md)';
+  center.style.color = 'var(--color-text)';
+  center.textContent = `${spec.value}%`;
+  ringBox.append(svg, center);
+
+  // 标题行在环上方（无 label/hint 时整行省略，只留环）
   if (spec.label || spec.hint) {
     const head = el('div', 'v2-progress__head');
     if (spec.label) head.append(text('span', 'v2-progress__label', spec.label));
     if (spec.hint) head.append(text('span', 'v2-progress__hint', spec.hint));
     box.append(head);
   }
-  const track = el('div', 'v2-progress__track');
-  track.setAttribute('role', 'progressbar');
-  track.setAttribute('aria-valuenow', String(spec.value));
-  track.setAttribute('aria-valuemin', '0');
-  track.setAttribute('aria-valuemax', '100');
-  const fill = el('div', 'v2-progress__fill');
-  fill.style.width = `${spec.value}%`;
-  track.append(fill);
-  box.append(track, text('span', 'v2-progress__value', `${spec.value}%`));
+  box.append(ringBox);
   return box;
 }
 

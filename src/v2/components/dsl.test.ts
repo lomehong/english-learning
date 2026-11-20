@@ -82,6 +82,18 @@ describe('DSL 原语渲染（T3）', () => {
     expect(node.querySelectorAll('.v2-card__lines li')).toHaveLength(2);
   });
 
+  it('card：items 列表行形态（词汇卡：标题 + 若干「单词 释义」行）', () => {
+    const node = renderComponent({
+      type: 'card',
+      title: '词汇卡',
+      items: ['apple 苹果', 'banana 香蕉', 42, ''],
+    });
+    expect(node.getAttribute('data-comp-type')).toBe('card');
+    const rows = [...node.querySelectorAll('.v2-card__items li')].map((n) => n.textContent);
+    expect(rows).toEqual(['apple 苹果', 'banana 香蕉']); // 非字符串行被过滤
+    expect(node.textContent).toContain('词汇卡');
+  });
+
   it('quiz：作答判分 + 回调 + 选项锁定', () => {
     const onQuizAnswer = vi.fn();
     const node = renderComponent(
@@ -114,14 +126,35 @@ describe('DSL 原语渲染（T3）', () => {
     expect(onQuizAnswer).toHaveBeenCalledWith({ id: 'q2', correct: true, choiceIndex: 1, choice: '2' });
   });
 
-  it('progress：value 越界收敛到 0~100，aria 与宽度同步', () => {
+  it('progress：value 越界收敛到 0~100，环上 aria 与弧长同步', () => {
     const node = renderComponent({ type: 'progress', label: '今日完成度', value: 146, hint: 'x/y' });
-    const track = node.querySelector('.v2-progress__track')!;
-    expect(track.getAttribute('aria-valuenow')).toBe('100');
-    expect((node.querySelector('.v2-progress__fill') as HTMLElement).style.width).toBe('100%');
+    const ring = node.querySelector('[data-testid="v2-progress-ring"]')!;
+    expect(ring.getAttribute('aria-valuenow')).toBe('100');
+    expect(ring.getAttribute('aria-valuemin')).toBe('0');
+    expect(ring.getAttribute('aria-valuemax')).toBe('100');
+    expect(ring.getAttribute('aria-label')).toBe('今日完成度');
     expect(node.textContent).toContain('100%');
+    // 弧长：满值时 dashoffset 归零（整圈填满）
+    const full = node.querySelector('.v2-progress__ring-fill')!;
+    expect(parseFloat(full.getAttribute('stroke-dashoffset')!)).toBeCloseTo(0, 5);
+
     const zero = renderComponent({ type: 'progress', value: -8 });
-    expect(zero.getAttribute('aria-valuenow') ?? zero.querySelector('.v2-progress__track')!.getAttribute('aria-valuenow')).toBe('0');
+    const zeroRing = zero.querySelector('[data-testid="v2-progress-ring"]')!;
+    expect(zeroRing.getAttribute('aria-valuenow')).toBe('0');
+    // 零值时 dashoffset = 周长（整圈留空）
+    const empty = zero.querySelector('.v2-progress__ring-fill')!;
+    expect(parseFloat(empty.getAttribute('stroke-dashoffset')!)).toBeCloseTo(2 * Math.PI * 34, 5);
+  });
+
+  it('progress：进度环是 SVG 原生节点（createElementNS 通道，无标记拼接）', () => {
+    const node = renderComponent({ type: 'progress', value: 60, label: '今日进度' });
+    const ring = node.querySelector('[data-testid="v2-progress-ring"]')!;
+    expect(ring.namespaceURI).toBe('http://www.w3.org/2000/svg');
+    const fill = node.querySelector('.v2-progress__ring-fill')!;
+    // 60%：dashoffset = 周长 × (1 - 0.6)
+    expect(parseFloat(fill.getAttribute('stroke-dashoffset')!)).toBeCloseTo(2 * Math.PI * 34 * 0.4, 5);
+    expect(node.textContent).toContain('60%');
+    expect(node.textContent).toContain('今日进度');
   });
 
   it('list：ordered / tone 变体', () => {
