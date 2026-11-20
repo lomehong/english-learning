@@ -1041,6 +1041,30 @@ textarea:focus-visible {
   color: var(--color-text-secondary);
 }
 
+/* 清空错题本二次确认条（错题本页） */
+.clear-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-grade-again);
+  border-radius: var(--radius-md);
+  background: var(--color-grade-again-soft);
+}
+
+.clear-confirm__text {
+  flex: 1;
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+/* display:flex 会覆盖 UA 的 [hidden]，此处显式守卫（同 wrongbook__list） */
+.clear-confirm[hidden] {
+  display: none;
+}
+
 /* ---- 阅读模块 ---- */
 .page-intro {
   margin: 0 0 var(--space-4);
