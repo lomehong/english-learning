@@ -1,0 +1,17 @@
+PASS URL 为 /v2（非 v1 页面） — /v2
+PASS v2 对话壳根节点在场
+PASS 顶栏标题为「对话式陪学」 — 对话式陪学
+PASS v1 页头不在场
+PASS 输入「复习错题」已发送（用户气泡可见） — 复习错题
+PASS 结果卡在视口内占位（宽>200px 高>40px） — 622x88 @y339
+PASS query_wrongbook 工具调用结果卡在场且可见
+PASS 结果卡摘要：错题共 1 条 — 🔧query_wrongbook{}✓ 完成错题共 1 条apple 的中文 → 苹果（错 1 次）
+PASS 结果卡摘要：apple 的中文 → 苹果（错 1 次）
+PASS 结果卡常驻于正文之前（先调用后作答）
+PASS 助手正文回读「错题本共 1 条」 — 错题本共 1 条，最近的有：
+
+逐条消灭它们：读一遍题干，遮住答案再想一次；需要的话我也可以「来一组小测」随机抽查。
+PASS 错题列表组件含预置条目
+PASS 无脚本报错
+shot: D:/Develop/Coder/Rust/supper-agent/worktrees/ticket-8-1795177417022410/shots/t4-wrongbook-preview/t4-wrongbook-toolcard.png
+{"total":13,"failed":0}

@@ -435,3 +435,56 @@ describe('/v2 演示消息注入（T3 验收场景：v2_demo_messages）', () =>
     expect(env.root.querySelector('[data-testid="v2-welcome"]')).toBeTruthy();
   });
 });
+
+describe('/v2 工具调用结果卡（T4 验收：预置 v1_wrongbook →「复习错题」）', () => {
+  let env: ReturnType<typeof setup> | null = null;
+
+  afterEach(() => {
+    env?.cleanup();
+    env = null;
+    history.pushState(null, '', '/');
+  });
+
+  it('验收链路：旧键预置错题 → 发送「复习错题」→ query_wrongbook 结果卡常驻可见', async () => {
+    // 与工单 evidence.preview.seedLocalStorage 完全一致：键 v1_wrongbook + 简版数组
+    env = setup({
+      v1_wrongbook: JSON.stringify([{ id: 'demo-1', question: 'apple 的中文', answer: '苹果', wrongCount: 1 }]),
+    });
+    const input = env.root.querySelector('[data-testid="v2-input"]') as HTMLTextAreaElement;
+    const send = env.root.querySelector('[data-testid="v2-send"]') as HTMLButtonElement;
+    input.value = '复习错题';
+    send.click();
+
+    // 终态条件：错题列表组件上屏（回复渲染完成；结果卡先于此就位）
+    await waitFor(() => env!.root.querySelector('.v2-list--wrong') !== null);
+    const card = env.root.querySelector('.v2-msg--assistant [data-tool-name="query_wrongbook"]')!;
+    expect(card.getAttribute('data-testid')).toBe('v2-toolcard');
+    // 结果摘要：预置数据上卡（总数 + 题干 → 正确答案）
+    expect(card.textContent).toContain('错题共 1 条');
+    expect(card.textContent).toContain('apple 的中文 → 苹果（错 1 次）');
+    // 正文与错题列表组件同样回读预置数据（同一数据源）
+    expect(env.root.querySelector('.v2-msg--assistant .v2-msg__body')!.textContent).toContain('错题本共 1 条');
+    expect(env.root.querySelector('.v2-list--wrong')!.textContent).toContain('apple 的中文');
+    // 卡片常驻且先于正文（工具调用发生在回答之前）
+    const main = env.root.querySelector('.v2-msg--assistant .v2-msg__main')!;
+    expect(main.firstElementChild!.querySelector('[data-testid="v2-toolcard"]')).toBeTruthy();
+  });
+
+  it('学习计划链路同样出卡：get_learning_state 与 query_vocab 各一张结果卡', async () => {
+    env = setup();
+    const input = env.root.querySelector('[data-testid="v2-input"]') as HTMLTextAreaElement;
+    const send = env.root.querySelector('[data-testid="v2-send"]') as HTMLButtonElement;
+    input.value = '开始今天的学习';
+    send.click();
+
+    await waitFor(() => env!.root.querySelectorAll('.v2-msg--assistant .v2-toolcard--ok').length >= 2);
+    const names = [...env.root.querySelectorAll('.v2-msg--assistant [data-tool-name]')].map((n) =>
+      n.getAttribute('data-tool-name'),
+    );
+    expect(names).toContain('get_learning_state');
+    expect(names).toContain('query_vocab');
+    // 状态卡内容与工具结果一致（词表命中摘要非空）
+    const stateCard = env.root.querySelector('[data-tool-name="get_learning_state"]')!;
+    expect(stateCard.textContent).toMatch(/已学词汇 \d+ \/ \d+/);
+  });
+});

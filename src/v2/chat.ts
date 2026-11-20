@@ -3,6 +3,8 @@
  *
  * - 消息流（v2-stream）+ 输入框（Enter 发送 / Shift+Enter 换行）+ 快捷指令 chips；
  * - 组件渲染区：assistant 回复中的 ```component 围栏经 DSL 渲染器变成交互组件；
+ * - 工具调用结果卡（T4）：远程 function calling 与离线剧本的工具事件
+ *   渲染成消息流常驻卡片（工具名 / 入参 / 结果摘要），状态行仅作过渡提示；
  * - 模型配置面板：OpenAI 兼容 baseUrl / apiKey / model 持久化 localStorage；
  *   无 key 自动降级「离线陪学」剧本，页面永远可用；
  * - 三档主题：复用全局 <html data-theme> 令牌体系（浅色 / 深色 / 跟随系统）；
@@ -26,6 +28,7 @@ import {
   renderComponent,
   type RenderContext,
 } from './components/dsl';
+import { createToolCard, type ToolCard } from './components/toolcard';
 import { loadDemoMessages } from './seed';
 import type { Agent, ChatMessage } from './types';
 import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
@@ -84,6 +87,8 @@ function text(tag: keyof HTMLElementTagNameMap, className: string | undefined, c
 
 interface MessageHandle {
   root: HTMLElement;
+  /** 工具调用结果卡容器（常驻，置于正文前：工具调用发生在回答之前） */
+  tools: HTMLElement;
   body: HTMLElement;
   components: HTMLElement;
   status: HTMLElement;
@@ -94,16 +99,17 @@ function makeMessage(stream: HTMLElement, role: 'user' | 'assistant' | 'note'): 
   const avatar = el('span', 'v2-msg__avatar');
   avatar.textContent = role === 'user' ? '我' : role === 'note' ? '✦' : '师';
   const main = el('div', 'v2-msg__main');
+  const tools = el('div', 'v2-msg__tools');
   const body = el('div', 'v2-msg__body');
   body.textContent = '';
   const status = el('div', 'v2-msg__status');
   status.hidden = true;
   const components = el('div', 'v2-msg__components');
-  main.append(body, status, components);
+  main.append(tools, body, status, components);
   root.append(avatar, main);
   stream.append(root);
   scrollStream(stream);
-  return { root, body, components, status };
+  return { root, tools, body, components, status };
 }
 
 /** 最终渲染一条 assistant/note 文本：正文 + 组件（同一管线，含降级占位） */
@@ -361,6 +367,8 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
       const agent = pickAgent();
       const agentHandle = makeMessage(stream, 'assistant');
       agentHandle.root.classList.add('v2-msg--pending');
+      /* 工具调用结果卡（T4）：按工具名配对 start/end，常驻消息流 */
+      const runningCards = new Map<string, ToolCard>();
       let acc = '';
       const assistantMsg = await agent.run(history, (event) => {
         if (event.type === 'text-delta') {
@@ -368,9 +376,15 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
           agentHandle.body.textContent = maskPartialFence(acc);
           scrollStream(stream);
         } else if (event.type === 'tool-start') {
+          const card = createToolCard(event.name, event.args);
+          agentHandle.tools.append(card.root);
+          runningCards.set(event.name, card);
           agentHandle.status.hidden = false;
           agentHandle.status.textContent = `🔧 调用工具 ${event.name}…`;
+          scrollStream(stream);
         } else if (event.type === 'tool-end') {
+          runningCards.get(event.name)?.finish(event.ok, event.result);
+          runningCards.delete(event.name);
           agentHandle.status.textContent = event.ok ? `✓ ${event.name} 完成` : `⚠ ${event.name} 失败`;
         } else if (event.type === 'error') {
           agentHandle.status.hidden = false;

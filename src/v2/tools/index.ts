@@ -9,9 +9,12 @@
  * 全部为纯数据函数：storage 接缝可注入（复用 v1 StorageLike），
  * 返回 JSON 可序列化对象（远程 Agent 作为 tool result 回传给模型；
  * 离线剧本直接消费同一批函数，保证两条路径记账一致）。
+ *
+ * 另含旧版错题种子（v1_wrongbook 键）的只读归并适配：验收 / 演示
+ * 预置的简版错题数组在查询侧并入结果，正式 store 优先且不被回写。
  */
 
-import type { PracticeModule, Grade } from '../../types';
+import type { PracticeModule, Grade, WrongEntry } from '../../types';
 import type { ToolDef } from '../types';
 import {
   loadProgress,
@@ -19,7 +22,15 @@ import {
   type StorageLike,
   defaultStorage,
 } from '../../store/progress';
-import { loadWrongBook, saveWrongBook, recordWrong, removeEntry } from '../../store/wrongbook';
+import {
+  loadWrongBook,
+  saveWrongBook,
+  recordWrong,
+  removeEntry,
+  inferModule,
+  STORAGE_VERSION as WRONGBOOK_VERSION,
+  type WrongBook,
+} from '../../store/wrongbook';
 import { loadStats, saveStats, recordAnswer as statsRecordAnswer, type StatsBook } from '../../store/stats';
 import {
   loadDaily,
@@ -61,6 +72,87 @@ function strField(v: unknown): string | undefined {
   return typeof v === 'string' && v.trim() !== '' ? v : undefined;
 }
 
+/* -------------------- 旧版错题种子（只读适配） --------------------
+ * 验收 / 演示通道会把简版错题数组直接预置到 localStorage：
+ *   v1_wrongbook = [{ id, question, answer, wrongCount }, ...]
+ * v1 store 的正式键是 english-learning.wrongbook.v1（形状不同，互不干扰）。
+ * 此处只在 v2 工具读取侧做宽容归并：正式 store 优先，旧键条目按 id 去重补充，
+ * 让「预置错题 → 复习错题」的演示闭环拿到真实数据；不回写、不改 v1 行为。 */
+
+/** 旧版（验收预置）错题键名 */
+export const LEGACY_WRONGBOOK_KEY = 'v1_wrongbook';
+
+/** 旧键条目数上限（防坏种子撑爆结果） */
+const LEGACY_MAX_ITEMS = 50;
+
+function numField(v: unknown): number | undefined {
+  return typeof v === 'number' && Number.isFinite(v) ? v : undefined;
+}
+
+/**
+ * 旧版种子归一化（纯函数）：
+ * 接受数组或 { entries: [...] }；条目字段按别名宽容映射
+ * （id/exerciseId、question/stem、answer/correctAnswer、yourAnswer/userAnswer），
+ * 形状非法的条目跳过，整体坏 JSON 抛给调用方兜底为空。
+ */
+export function parseLegacyWrongbook(raw: unknown): WrongEntry[] {
+  const list = Array.isArray(raw)
+    ? raw
+    : raw !== null && typeof raw === 'object' && Array.isArray((raw as { entries?: unknown }).entries)
+      ? ((raw as { entries: unknown[] }).entries)
+      : null;
+  if (list === null) return [];
+  const out: WrongEntry[] = [];
+  for (const node of list) {
+    if (out.length >= LEGACY_MAX_ITEMS) break;
+    if (typeof node !== 'object' || node === null) continue;
+    const e = node as Record<string, unknown>;
+    const exerciseId = strField(e.id) ?? strField(e.exerciseId);
+    if (exerciseId === undefined) continue;
+    const stem = strField(e.question) ?? strField(e.stem);
+    const correctAnswer = strField(e.answer) ?? strField(e.correctAnswer);
+    if (stem === undefined || correctAnswer === undefined) continue;
+    const wrongCount = numField(e.wrongCount);
+    out.push({
+      exerciseId,
+      module: isModule(e.module) ? e.module : inferModule(exerciseId),
+      stem,
+      yourAnswer: strField(e.yourAnswer) ?? strField(e.userAnswer) ?? '—',
+      correctAnswer,
+      explanation: strField(e.explanation) ?? '（旧版预置错题，无解析）',
+      wrongCount: wrongCount === undefined ? 1 : Math.max(1, Math.floor(wrongCount)),
+      lastWrongAt: numField(e.lastWrongAt) ?? 0,
+    });
+  }
+  return out;
+}
+
+/**
+ * 工具侧错题读取 = 正式 store + 旧版种子归并（只读）：
+ * 正式条目优先；旧键条目按 exerciseId 去重补充；读失败 / 坏 JSON 回退正式数据。
+ */
+export function loadWrongbookForTools(storage: StorageLike): WrongBook {
+  const book = loadWrongBook(storage);
+  let raw: string | null = null;
+  try {
+    raw = storage.getItem(LEGACY_WRONGBOOK_KEY);
+  } catch {
+    return book;
+  }
+  if (raw === null || raw.trim() === '') return book;
+  try {
+    const legacy = parseLegacyWrongbook(JSON.parse(raw));
+    if (legacy.length === 0) return book;
+    const entries = { ...book.entries };
+    for (const entry of legacy) {
+      if (!(entry.exerciseId in entries)) entries[entry.exerciseId] = entry;
+    }
+    return { version: WRONGBOOK_VERSION, entries };
+  } catch {
+    return book;
+  }
+}
+
 /* -------------------- get_learning_state -------------------- */
 
 export interface LearningState {
@@ -90,7 +182,7 @@ export function getLearningState(ctx: ToolContext = {}): LearningState {
   const progress = loadProgress(storage);
   const daily = loadDaily(storage);
   const goal = loadGoal(storage);
-  const wrong = loadWrongBook(storage);
+  const wrong = loadWrongbookForTools(storage);
   const stats: StatsBook = loadStats(storage);
 
   const cards = Object.values(progress.cards);
@@ -208,7 +300,7 @@ export function queryWrongbook(
     lastWrongAt: number;
   }>;
 } {
-  const wrong = loadWrongBook(storageOf(ctx));
+  const wrong = loadWrongbookForTools(storageOf(ctx));
   const limit = Math.min(20, Math.max(1, Math.floor(args.limit ?? 10)));
   const module = isModule(args.module) ? args.module : null;
   const entries = Object.values(wrong.entries)
@@ -463,9 +555,28 @@ export const V2_TOOL_DEFS: readonly ToolDef[] = [
   },
 ] as const;
 
-/** 工具名 → 执行器（壳层 / 运行时按名分发；JSON 参数已解析为对象） */
+/**
+ * 工具名 → 执行器（壳层 / 运行时按名分发；JSON 参数已解析为对象）。
+ * 入参先做形状收敛（非对象 / 非法字段 → 缺省），执行期任何异常都转成
+ * 结构化错误对象（{ error, message }）返回——离线剧本与远程 runtime
+ * 拿到的是同一份错误形状，绝不把异常抛穿到壳层。
+ */
 export function executeTool(name: string, args: unknown, ctx: ToolContext = {}): unknown {
-  const a = (args ?? {}) as Record<string, unknown>;
+  if (typeof args !== 'object' || args === null || Array.isArray(args)) {
+    return { error: 'invalid_arguments', message: `工具 ${name} 的参数应为 JSON 对象` };
+  }
+  const a = args as Record<string, unknown>;
+  try {
+    return dispatchTool(name, a, ctx);
+  } catch (error) {
+    return {
+      error: 'tool_failed',
+      message: `工具 ${name} 执行失败：${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+function dispatchTool(name: string, a: Record<string, unknown>, ctx: ToolContext): unknown {
   switch (name) {
     case 'get_learning_state':
       return getLearningState(ctx);

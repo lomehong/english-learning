@@ -288,6 +288,94 @@
   display: none;
 }
 
+/* ---- 工具调用结果卡（T4）：常驻展示一次 function calling 的名字 / 入参 / 结果摘要 ---- */
+.v2-msg__tools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.v2-msg__tools:empty {
+  display: none;
+}
+
+.v2-toolcard {
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-text-muted);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  padding: var(--space-2) var(--space-3);
+  overflow-wrap: anywhere;
+}
+
+.v2-toolcard__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+}
+
+.v2-toolcard__icon {
+  flex: none;
+}
+
+.v2-toolcard__name {
+  font-family: var(--font-family-phonetic);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.v2-toolcard__args {
+  min-width: 0;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-toolcard__state {
+  margin-left: auto;
+  flex: none;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.v2-toolcard__lines {
+  margin: var(--space-2) 0 0;
+  padding: 0 0 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.v2-toolcard__lines[hidden] {
+  display: none;
+}
+
+.v2-toolcard--ok {
+  border-left-color: var(--color-grade-easy);
+}
+
+.v2-toolcard--ok .v2-toolcard__state {
+  color: var(--color-grade-easy);
+}
+
+.v2-toolcard--fail {
+  border-left-color: var(--color-grade-again);
+  background: var(--color-grade-again-soft);
+}
+
+.v2-toolcard--fail .v2-toolcard__state,
+.v2-toolcard--fail .v2-toolcard__lines {
+  color: var(--color-grade-again);
+}
+
 /* ---- 组件渲染区 ---- */
 .v2-msg__components {
   display: flex;

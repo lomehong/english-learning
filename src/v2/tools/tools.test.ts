@@ -6,6 +6,9 @@ import {
   recordAnswer,
   executeTool,
   V2_TOOL_DEFS,
+  LEGACY_WRONGBOOK_KEY,
+  parseLegacyWrongbook,
+  loadWrongbookForTools,
 } from './index';
 import type { StorageLike } from '../../store/progress';
 import { saveProgress, STORAGE_KEY as PROGRESS_KEY } from '../../store/progress';
@@ -196,5 +199,101 @@ describe('数据工具 · record_answer（T4：学习闭环记账）', () => {
       'query_wrongbook',
       'record_answer',
     ]);
+  });
+
+  it('executeTool 入参校验：非对象参数 → 结构化错误（不抛异常）', () => {
+    expect(executeTool('query_wrongbook', [1, 2])).toEqual({
+      error: 'invalid_arguments',
+      message: '工具 query_wrongbook 的参数应为 JSON 对象',
+    });
+    expect(executeTool('query_wrongbook', 'x')).toMatchObject({ error: 'invalid_arguments' });
+    expect(executeTool('query_wrongbook', null)).toMatchObject({ error: 'invalid_arguments' });
+  });
+});
+
+describe('数据工具 · 旧版错题种子 v1_wrongbook（T4 只读适配）', () => {
+  /** 与工单 evidence.seedLocalStorage 完全一致的验收种子 */
+  const PREVIEW_SEED = JSON.stringify([
+    { id: 'demo-1', question: 'apple 的中文', answer: '苹果', wrongCount: 1 },
+  ]);
+
+  it('parseLegacyWrongbook：验收种子形状归一化为 WrongEntry（模块按 id 推断）', () => {
+    const items = parseLegacyWrongbook(JSON.parse(PREVIEW_SEED));
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({
+      exerciseId: 'demo-1',
+      stem: 'apple 的中文',
+      correctAnswer: '苹果',
+      wrongCount: 1,
+      module: 'grammar', // demo-1 首字母非 w/g/r/l → 历史默认语法
+    });
+  });
+
+  it('parseLegacyWrongbook：字段别名兼容 + 非法节点跳过 + 非数组安全为空', () => {
+    const items = parseLegacyWrongbook([
+      { exerciseId: 'w:adapt', stem: '适应', correctAnswer: 'adapt', yourAnswer: 'adopt', wrongCount: 3, lastWrongAt: 42 },
+      { id: 7 }, // 缺 id 字符串 → 跳过
+      'not-an-object', // 非对象 → 跳过
+      null,
+      { id: 'g2', question: '题干', answer: '答案' }, // 最小形状：wrongCount 缺省 1
+    ]);
+    expect(items).toHaveLength(2);
+    expect(items[0]).toMatchObject({ exerciseId: 'w:adapt', module: 'vocab', wrongCount: 3, lastWrongAt: 42 });
+    expect(items[1]).toMatchObject({ exerciseId: 'g2', wrongCount: 1, module: 'grammar' });
+    expect(parseLegacyWrongbook('nope' as unknown)).toEqual([]);
+    expect(parseLegacyWrongbook({ foo: 1 })).toEqual([]);
+    // { entries: [...] } 形状也接受
+    expect(parseLegacyWrongbook({ entries: [{ id: 'r1', question: 'q', answer: 'a' }] })).toHaveLength(1);
+  });
+
+  it('query_wrongbook：仅预置旧键种子 → 查询可见预置条目（验收场景）', () => {
+    const storage = memory({ [LEGACY_WRONGBOOK_KEY]: PREVIEW_SEED });
+    const r = queryWrongbook({}, { storage, now: () => NOW });
+    expect(r.total).toBe(1);
+    expect(r.items[0]).toMatchObject({ exerciseId: 'demo-1', stem: 'apple 的中文', correctAnswer: '苹果' });
+  });
+
+  it('正式 store 优先：同 id 冲突以正式条目为准，旧键仅补充', () => {
+    const storage = memory({
+      [LEGACY_WRONGBOOK_KEY]: JSON.stringify([
+        { id: 'w:x', question: '旧题干', answer: '旧答案', wrongCount: 9 },
+        { id: 'extra', question: '补充题', answer: '补答', wrongCount: 1 },
+      ]),
+      [WRONG_KEY]: JSON.stringify({
+        version: 1,
+        entries: {
+          'w:x': { exerciseId: 'w:x', module: 'vocab', stem: '正式题干', yourAnswer: 'a', correctAnswer: 'b', explanation: 'e', wrongCount: 1, lastWrongAt: 5 },
+        },
+      }),
+    });
+    const merged = loadWrongbookForTools(storage);
+    expect(merged.entries['w:x']!.stem).toBe('正式题干');
+    expect(merged.entries['extra']!.stem).toBe('补充题');
+    const r = queryWrongbook({}, { storage, now: () => NOW });
+    expect(r.total).toBe(2);
+  });
+
+  it('坏 JSON / 非法形状旧键：安全回退正式 store 数据', () => {
+    const bad = memory({ [LEGACY_WRONGBOOK_KEY]: '{ broken' });
+    expect(queryWrongbook({}, { storage: bad, now: () => NOW }).total).toBe(0);
+    const nonArray = memory({ [LEGACY_WRONGBOOK_KEY]: JSON.stringify({ nope: true }) });
+    expect(queryWrongbook({}, { storage: nonArray, now: () => NOW }).total).toBe(0);
+  });
+
+  it('get_learning_state：错题总览含旧键条目；record_answer 不回写旧键', () => {
+    const storage = memory({ [LEGACY_WRONGBOOK_KEY]: PREVIEW_SEED });
+    const state = getLearningState({ storage, now: () => NOW });
+    expect(state.wrongbook.total).toBe(1);
+    expect(state.wrongbook.byModule.grammar).toBe(1);
+
+    // 记一笔答错：入的是正式 store，旧键原样不动（只读适配）
+    const result = recordAnswer(
+      { module: 'grammar', correct: false, exerciseId: 'g-new', stem: 's', yourAnswer: 'a', correctAnswer: 'b', explanation: 'e' },
+      { storage, now: () => NOW },
+    );
+    expect(result.ok).toBe(true);
+    expect(storage.getItem(LEGACY_WRONGBOOK_KEY)).toBe(PREVIEW_SEED);
+    const r = queryWrongbook({}, { storage, now: () => NOW });
+    expect(r.total).toBe(2);
   });
 });
