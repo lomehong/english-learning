@@ -1,11 +1,17 @@
 /* T2 Agent 运行时 · 预览场景 DOM 自证：fill「今天学什么」→ 点发送 →
-   断言助手占位回复上屏（正文 + 组件）且无控制台异常，并留存截图。 */
+   断言助手占位回复上屏（正文 + 组件）且无控制台异常，并留存截图。
+
+   版本身份护栏（防「截图是 v1 版本」回归）：每个场景截图前都断言
+   —— URL 是 /v2、v2 对话壳根节点存在、顶栏标题是「对话式陪学」、
+      v1 侧边导航 / v1 首页元素不在场 —— 全部通过才允许落盘截图。 */
 import { createRequire } from 'node:module';
 import { mkdirSync } from 'node:fs';
 const require = createRequire('D:/Develop/Coder/Rust/supper-agent/frontend/app/node_modules/playwright/index.mjs');
 const { chromium } = require('playwright');
 
-const BASE = 'http://127.0.0.1:4175';
+// 默认对准 vite.config.ts 固定的预览端口 4174（strictPort，被占即失败）；
+// 可用 V2_BASE 覆盖（如指到 dev 服务器）
+const BASE = process.env.V2_BASE ?? 'http://127.0.0.1:4174';
 const OUT = new URL('../shots/t2-agent-preview/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 mkdirSync(OUT, { recursive: true });
 
@@ -46,7 +52,16 @@ async function scene({ label, shot, viewport, seed, fill, click, waitMs, asserts
     const q = (s) => document.querySelector(s);
     const t = (s) => q(s)?.textContent ?? '';
     return {
+      path: location.pathname,
+      hasV2Root: !!q('[data-testid="v2-root"]'),
+      topbarTitle: t('.v2-topbar__name'),
+      // v1 全部页面（home/vocabulary/grammar/…）都带 site-header 页头：
+      // 它在场即说明截到的是 v1 版本
+      v1Sidebar: !!q('.site-header, .site-header__nav'),
+      v1HomeEntry: !!q('[data-testid="home-v2-entry"], .home-hero, .module-card'),
       mode: t('[data-testid="v2-mode"]'),
+      welcome: !!q('[data-testid="v2-welcome"]'),
+      chips: document.querySelectorAll('.v2-chip').length,
       userMsgs: document.querySelectorAll('.v2-msg--user').length,
       asstText: t('.v2-msg--assistant .v2-msg__body'),
       status: t('.v2-msg--assistant .v2-msg__status'),
@@ -58,10 +73,35 @@ async function scene({ label, shot, viewport, seed, fill, click, waitMs, asserts
       bodyHasFence: t('.v2-msg--assistant .v2-msg__body').includes('```'),
     };
   });
+
+  // 版本身份护栏：截图必须是 v2 对话壳，绝不允许截到 v1 页面
+  check(label, 'URL 为 /v2（非 v1 页面）', snap.path === '/v2', snap.path);
+  check(label, 'v2 对话壳根节点在场', snap.hasV2Root);
+  check(label, '顶栏标题为「对话式陪学」', snap.topbarTitle.includes('对话式陪学'), snap.topbarTitle);
+  check(label, 'v1 侧边导航不在场', !snap.v1Sidebar);
+  check(label, 'v1 首页元素不在场', !snap.v1HomeEntry);
+
   await asserts(snap, consoleErrors);
-  await page.screenshot({ path: OUT + shot, fullPage: false });
+  // 护栏或断言失败时不落盘截图（避免旧版截图混入验收材料）
+  if (results.some((r) => !r.pass && r.scene === label)) {
+    console.log(`SKIP 截图 ${shot}（存在失败断言，拒绝写入可能误导的截图）`);
+  } else {
+    await page.screenshot({ path: OUT + shot, fullPage: false });
+  }
   await ctx.close();
 }
+
+await scene({
+  label: 'T2 初始欢迎',
+  shot: 't2-welcome.png',
+  waitMs: 400,
+  asserts: (s, errors) => {
+    check('T2 初始欢迎', '离线陪学模式徽标', s.mode.includes('离线陪学'), s.mode);
+    check('T2 初始欢迎', '欢迎卡在场', s.welcome);
+    check('T2 初始欢迎', '快捷指令 chips ≥1', s.chips >= 1, `chips=${s.chips}`);
+    check('T2 初始欢迎', '无控制台异常', errors.length === 0, errors.join(' | ').slice(0, 200));
+  },
+});
 
 await scene({
   label: 'T2 对话发送与回复',
@@ -70,29 +110,29 @@ await scene({
   click: '[data-testid="v2-send"]',
   waitMs: 2000,
   asserts: (s, errors) => {
-    check('T2', '离线占位模式徽标', s.mode.includes('离线陪学'), s.mode);
-    check('T2', '用户消息已上屏', s.userMsgs === 1);
-    check('T2', '助手占位回复含今日目标', s.asstText.includes('今日目标'), s.asstText.slice(0, 40));
-    check('T2', '助手占位回复含今日计划正文', s.asstText.includes('今天的计划'));
-    check('T2', '正文无围栏 JSON 原文', !s.bodyHasFence);
-    check('T2', '首组词汇卡 ≥1', s.cards.length >= 1, `cards=${s.cards.length}`);
-    check('T2', '进度组件出现（track）', s.trackNow !== null, `aria=${s.trackNow}`);
-    check('T2', '无控制台异常', errors.length === 0, errors.join(' | ').slice(0, 200));
+    check('T2 对话发送与回复', '离线占位模式徽标', s.mode.includes('离线陪学'), s.mode);
+    check('T2 对话发送与回复', '用户消息已上屏', s.userMsgs === 1);
+    check('T2 对话发送与回复', '助手占位回复含今日目标', s.asstText.includes('今日目标'), s.asstText.slice(0, 40));
+    check('T2 对话发送与回复', '助手占位回复含今日计划正文', s.asstText.includes('今天的计划'));
+    check('T2 对话发送与回复', '正文无围栏 JSON 原文', !s.bodyHasFence);
+    check('T2 对话发送与回复', '首组词汇卡 ≥1', s.cards.length >= 1, `cards=${s.cards.length}`);
+    check('T2 对话发送与回复', '进度组件出现（track）', s.trackNow !== null, `aria=${s.trackNow}`);
+    check('T2 对话发送与回复', '无控制台异常', errors.length === 0, errors.join(' | ').slice(0, 200));
   },
 });
 
 await scene({
-  label: 'T2 工具调用证据（预置错题 → 复习错题）',
+  label: 'T2 工具调用证据',
   shot: 't2-tool-call.png',
   seed: { 'english-learning.wrongbook.v1': SEED_WRONG },
   fill: { selector: '[data-testid="v2-input"]', text: '复习错题' },
   click: '[data-testid="v2-send"]',
   waitMs: 1400,
   asserts: (s, errors) => {
-    check('T2-tool', '工具调用状态可见', !s.statusHidden && s.status.includes('✓ query_wrongbook 完成'), s.status);
-    check('T2-tool', '结果卡正文回读预置错题', s.asstText.includes('错题本共 1 条'), s.asstText.slice(0, 40));
-    check('T2-tool', '错题列表卡（list wrong）', s.wrongList.includes('adapt') && s.wrongList.includes('adopt'));
-    check('T2-tool', '无控制台异常', errors.length === 0, errors.join(' | ').slice(0, 200));
+    check('T2 工具调用证据', '工具调用状态可见', !s.statusHidden && s.status.includes('✓ query_wrongbook 完成'), s.status);
+    check('T2 工具调用证据', '结果卡正文回读预置错题', s.asstText.includes('错题本共 1 条'), s.asstText.slice(0, 40));
+    check('T2 工具调用证据', '错题列表卡（list wrong）', s.wrongList.includes('adapt') && s.wrongList.includes('adopt'));
+    check('T2 工具调用证据', '无控制台异常', errors.length === 0, errors.join(' | ').slice(0, 200));
   },
 });
 
