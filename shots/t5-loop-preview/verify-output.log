@@ -1,0 +1,33 @@
+PASS URL 为 /v2（非 v1 页面） — /v2
+PASS v2 对话壳根节点在场
+PASS 顶栏标题为「对话式陪学」 — 对话式陪学
+PASS v1 页头不在场
+PASS 输入「今天学什么」已发送（用户气泡可见） — 今天学什么
+PASS 计划卡在场：今日学习计划（含错题/进度闭环条目） — 今日学习计划unit1词汇 · unit1 新词 20 个，本组先学 4 个小测 · 学完即测 5 题以内，即时判分错题
+PASS 计划卡带单元徽标 unit1 — unit1
+PASS 词汇卡 ≥ 4 张（英文拼写正面） — ["teenage","teenager","ballet","volunteer"]
+PASS 每词一张跟读卡 — audio=4
+PASS 进度环组件在场（今日完成度）
+PASS 进度条：计划 done — done
+PASS 进度条：词汇 active 带计数（4/N 词） — ▶词汇4/20 词
+PASS 进度条：小测 pending — pending
+PASS 计划卡在视口内占位（宽>200px 高>60px 且 0≤y<900） — 672x167 @y110
+PASS 词汇卡在视口内占位（宽>40px 高>12px 且 0≤y<900） — 106x45 @y559
+PASS 第一幕无脚本报错
+shot: D:\Develop\Coder\Rust\supper-agent\worktrees\ticket-4-1795179094594965\shots\t5-loop-preview\t5-loop-plan-and-cards.png
+PASS 小测组件上屏（≥2 题） — count=4
+PASS 进度条：小测 active 带题数
+PASS 每题一条作答回执（消息流无中断） — notes=4 quizzes=4
+PASS 首条回执提示错题入本 — ✦快对了，再看一眼释义。（还剩 3 题） · 已记录：vocab 模块答错；当前单元 unit1；已加入错题本；下次复习
+PASS 收尾回执：本轮小测成绩 — ✦太棒了，继续冲！ 本轮小测 3/4 答对。已记录：vocab 模块答对；当前单元 unit1；下次复习约 1440 分钟后
+
+错题已入本（本轮 +1 条），随
+PASS 收尾回执：错题已入本
+PASS 收尾回执：今日进度已更新
+PASS 错题入本落盘：wrongbook 1 条 vocab — total=1 module=vocab
+PASS 确定性构造的第 1 题答错（题干非空） — 「志愿者」对应的单词是？
+PASS 进度条五步全部 done — {"plan":"done","cards":"done","quiz":"done","wrongbook":"done","progress":"done"}
+PASS 「本轮闭环完成」徽标可见 — 本轮闭环完成 ✓
+PASS 全程无脚本报错
+shot: D:\Develop\Coder\Rust\supper-agent\worktrees\ticket-4-1795179094594965\shots\t5-loop-preview\t5-loop-complete.png
+{"total":28,"failed":0}

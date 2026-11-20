@@ -56,7 +56,8 @@ describe('T2 验收场景钉子（/v2「对话发送与回复」）', () => {
     const tutor = makeTutor(memory());
     const content = await reply(tutor, '今天学什么');
     const { specs } = extractComponents(content);
-    const cards = specs.filter((s) => s.type === 'card').length;
+    // 词卡（正面为英文拼写）逐词配 audio；T5 起另有一张「今日学习计划」卡不计入
+    const cards = specs.filter((s) => s.type === 'card' && s.word !== undefined).length;
     const audios = specs.filter((s) => s.type === 'audio').length;
     expect(cards).toBeGreaterThan(0);
     expect(audios).toBe(cards);

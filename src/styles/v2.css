@@ -698,6 +698,107 @@
   color: var(--color-streak);
 }
 
+/* ---- 学习闭环进度条（T5：计划 → 词汇 → 小测 → 错题 → 进度）---- */
+.v2-loop {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-muted);
+  overflow-x: auto;
+}
+
+.v2-loop__caption {
+  flex: none;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.v2-loop__steps {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v2-loop__step {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: border-color var(--transition-fast), color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.v2-loop__dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  line-height: 1;
+}
+
+/* 待办 → 进行（品牌色呼吸点）→ 完成（绿色对勾） */
+.v2-loop__step[data-status='active'] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.v2-loop__step[data-status='active'] .v2-loop__dot {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.v2-loop__step[data-status='done'] {
+  border-color: var(--color-grade-easy);
+  color: var(--color-grade-easy);
+  background: var(--color-grade-easy-soft);
+}
+
+.v2-loop__step[data-status='done'] .v2-loop__dot {
+  background: var(--color-grade-easy);
+  color: var(--color-surface);
+}
+
+.v2-loop__meta {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.v2-loop__done {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-grade-easy-soft);
+  color: var(--color-grade-easy);
+  white-space: nowrap;
+}
+
+.v2-loop__done[hidden] {
+  display: none;
+}
+
 /* ---- 快捷指令 chips ---- */
 .v2-chips {
   flex: none;
@@ -800,6 +901,15 @@
 
   .v2-config {
     padding: var(--space-3);
+  }
+
+  .v2-loop {
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .v2-loop__caption {
+    display: none;
   }
 
   .v2-chips {

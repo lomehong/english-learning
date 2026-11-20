@@ -1,0 +1,19 @@
+
+> gaokao-english@0.1.0 build
+> tsc --noEmit && vite build && node scripts/check-dist.mjs
+
+vite v7.3.8 building client environment for production...
+transforming...
+✓ 260 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.74 kB │ gzip:   0.99 kB
+dist/assets/index-Bui1T7pH.css   57.46 kB │ gzip:   8.44 kB
+dist/assets/index-qDUmbxZZ.js   980.90 kB │ gzip: 328.70 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 572ms
+✓ 构建产物资源路径校验通过（根绝对路径 /assets/*）：/assets/index-qDUmbxZZ.js, /assets/index-Bui1T7pH.css

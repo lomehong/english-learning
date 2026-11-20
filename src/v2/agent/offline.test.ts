@@ -61,7 +61,12 @@ describe('离线陪学剧本（T5：学习闭环）', () => {
     const types = specs.map((s) => s.type);
     expect(types).toContain('progress');
     expect(types).toContain('timer');
-    expect(types.filter((t) => t === 'card')).toHaveLength(4); // 首组 4 词
+    // 计划卡（T5）：闭环四步写进一张卡；首组 4 词另有 4 张词卡
+    const cardSpecs = specs.filter((s) => s.type === 'card');
+    const planCard = cardSpecs.find((s) => s.word === undefined)!;
+    expect(planCard.title).toBe('今日学习计划');
+    expect(planCard.items?.join(' ')).toContain('错题');
+    expect(cardSpecs.filter((s) => s.word !== undefined)).toHaveLength(4);
     expect(types.filter((t) => t === 'audio').length).toBeGreaterThanOrEqual(4); // 每词可跟读
     expect(tutor.stage).toBe('cards');
 
@@ -123,6 +128,20 @@ describe('离线陪学剧本（T5：学习闭环）', () => {
     }
     expect(tutor.stage).toBe('idle');
 
+    // 闭环状态（T5 tracker）：五步全部 done，本轮完成时间已盖戳
+    // （词汇步在开测时收口——正常流「学完才测」，见 loop.ts quiz-started）
+    const loopSnap = tutor.loop.get();
+    expect(loopSnap.steps).toEqual({
+      plan: 'done',
+      cards: 'done',
+      quiz: 'done',
+      wrongbook: 'done',
+      progress: 'done',
+    });
+    expect(loopSnap.quiz).toEqual({ answered: quizSpecs.length, total: quizSpecs.length, correct: quizSpecs.length - 1 });
+    expect(loopSnap.wrongAdded).toBe(1);
+    expect(loopSnap.finishedAt).not.toBeNull();
+
     // ---- store 侧断言：记账真实落盘 ----
     const wrong = loadWrongBook(storage);
     expect(Object.keys(wrong.entries)).toHaveLength(1); // 第一题答错入本
@@ -139,6 +158,55 @@ describe('离线陪学剧本（T5：学习闭环）', () => {
     const state = getLearningState({ storage, now: () => NOW });
     expect(state.learnedWords).toBe(quizSpecs.length);
     expect(state.wrongbook.total).toBe(1);
+  });
+
+  it('闭环跟踪（T5 tracker）：出卡累计 → 出题 → 零错题收尾 → 错题复盘 → 新计划重置', async () => {
+    const storage = memory();
+    const tutor = makeTutor(storage);
+
+    await turn(tutor, withUser('开始今天的学习'));
+    let snap = tutor.loop.get();
+    expect(snap.steps.plan).toBe('done');
+    expect(snap.steps.cards).toBe('active');
+    expect(snap.cards).toEqual({ shown: 4, total: snap.cards.total });
+    expect(snap.cards.total).toBeGreaterThan(4);
+
+    await turn(tutor, withUser('继续'));
+    expect(tutor.loop.get().cards.shown).toBe(8); // 累计出卡
+
+    const quizTurn = await turn(tutor, withUser('来一组小测'));
+    expect(tutor.loop.get().quiz.total).toBeGreaterThanOrEqual(2);
+    expect(tutor.loop.get().steps.quiz).toBe('active');
+
+    // 全部答对（零错题）：quiz-finished 把错题步按「无需入本」完成，progress 收尾盖戳
+    const quizSpecs = extractComponents(quizTurn.message!.content).specs.filter((s) => s.type === 'quiz');
+    for (const q of quizSpecs) {
+      const quiz = q as { id: string; answerIndex: number; options: string[] };
+      tutor.handleQuizAnswer({
+        id: quiz.id,
+        correct: true,
+        choiceIndex: quiz.answerIndex,
+        choice: quiz.options[quiz.answerIndex]!,
+      });
+    }
+    snap = tutor.loop.get();
+    // 开测即收口词汇步（loop.ts quiz-started 语义），其余四步随后完成
+    expect(snap.steps).toEqual({ plan: 'done', cards: 'done', quiz: 'done', wrongbook: 'done', progress: 'done' });
+    expect(snap.wrongAdded).toBe(0);
+    expect(snap.finishedAt).not.toBeNull();
+
+    // 错题复盘完成错题步（新一轮闭环从 pending 开始）
+    await turn(tutor, withUser('开始今天的学习'));
+    expect(tutor.loop.get().steps.wrongbook).toBe('pending');
+    await turn(tutor, withUser('看看错题本'));
+    expect(tutor.loop.get().steps.wrongbook).toBe('done');
+
+    // 新计划是唯一重置点
+    await turn(tutor, withUser('开始今天的学习'));
+    const reset = tutor.loop.get();
+    expect(reset.steps.quiz).toBe('pending');
+    expect(reset.steps.progress).toBe('pending');
+    expect(reset.finishedAt).toBeNull();
   });
 
   it('剧本数据读取发工具事件：tool-start / tool-end 成对且成功（壳层可见工具调用）', async () => {

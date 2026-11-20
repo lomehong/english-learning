@@ -29,6 +29,8 @@ import {
   type RenderContext,
 } from './components/dsl';
 import { createToolCard, type ToolCard } from './components/toolcard';
+import { createLoopTicker } from './components/loopticker';
+import { createLoopTracker } from './loop';
 import { loadDemoMessages } from './seed';
 import type { Agent, ChatMessage } from './types';
 import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
@@ -128,6 +130,27 @@ function scrollStream(stream: HTMLElement): void {
   }
 }
 
+/**
+ * 终态滚动（T5 界面判据）：回复比可视区高不少时，滚到底部会把
+ * 开头的计划卡挤出屏幕（截图只见词汇卡不见计划卡）——改为把组件区
+ * 开头对齐到可视区顶部，计划卡与后续词汇卡同屏可见；
+ * 短回复 / jsdom（无布局，scrollHeight 恒 0）仍走滚底逻辑。
+ */
+function scrollFinal(handle: MessageHandle, stream: HTMLElement): void {
+  try {
+    if (handle.root.scrollHeight > stream.clientHeight + 64) {
+      const anchor = handle.components.firstElementChild ?? handle.root;
+      if (typeof anchor.scrollIntoView === 'function') {
+        anchor.scrollIntoView({ block: 'start', inline: 'nearest' });
+        return;
+      }
+    }
+  } catch {
+    /* 布局不可用时退回滚底 */
+  }
+  scrollStream(stream);
+}
+
 /* -------------------- 页面 -------------------- */
 
 export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
@@ -136,6 +159,14 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   const speech = deps.createSpeech ? deps.createSpeech() : defaultSpeech();
   const history: ChatMessage[] = [];
   let busy = false;
+
+  /* ---------- 学习闭环（T5）：唯一状态源 + 常驻进度条 ----------
+   * 离线剧本直接往这个 tracker 发事件（deps 注入）；
+   * 远程模式由壳层从组件渲染与 record_answer 工具结果发同一批事件。 */
+  const loop = createLoopTracker(now);
+  const loopTicker = createLoopTicker();
+  loopTicker.update(loop.get());
+  loop.subscribe((snapshot) => loopTicker.update(snapshot));
 
   /* ---------- 骨架 ---------- */
 
@@ -237,7 +268,7 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   send.textContent = '发送';
   inputbar.append(input, send);
 
-  shell.append(topbar, configPanel, stream, chips, inputbar);
+  shell.append(topbar, configPanel, loopTicker.root, stream, chips, inputbar);
   root.append(shell);
 
   /* ---------- 渲染上下文（quiz 作答回路） ---------- */
@@ -275,6 +306,7 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
       }
       // 远程模式：作答同步进对话历史，下一轮模型可见（可调 record_answer 记账）
       history.push({ role: 'user', content: `[quiz 作答] ${info.id} ${info.correct ? '答对' : '答错'}：${info.choice}` });
+      loop.dispatch({ type: 'quiz-answered', correct: info.correct });
       const handle = makeMessage(stream, 'note');
       handle.body.textContent = '已把本次作答同步给模型，继续对话即可记账讲解。';
     },
@@ -348,8 +380,9 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
       const registry = createDefaultToolRegistry({ storage, now });
       return createRemoteAgent(config, { registry, toolContext: { storage, now } });
     }
-    // 离线剧本跨轮复用同一实例（保持 计划→背词→小测 的阶段状态）
-    offlineTutor ??= createOfflineTutor({ storage, now, delay: deps.delay });
+    // 离线剧本跨轮复用同一实例（保持 计划→背词→小测 的阶段状态）；
+    // 闭环 tracker 由壳层注入：剧本事件直接驱动常驻进度条
+    offlineTutor ??= createOfflineTutor({ storage, now, delay: deps.delay, loop });
     return offlineTutor;
   }
 
@@ -386,6 +419,12 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
           runningCards.get(event.name)?.finish(event.ok, event.result);
           runningCards.delete(event.name);
           agentHandle.status.textContent = event.ok ? `✓ ${event.name} 完成` : `⚠ ${event.name} 失败`;
+          // 远程模式闭环兜底：record_answer 记账成功 → 错题入本 / 进度更新事件
+          if (event.ok && event.name === 'record_answer' && offlineTutor === null) {
+            const recorded = (event.result as { recorded?: { wrongbookAdded?: boolean } }).recorded;
+            if (recorded?.wrongbookAdded) loop.dispatch({ type: 'wrong-added' });
+            loop.dispatch({ type: 'progress-updated' });
+          }
         } else if (event.type === 'error') {
           agentHandle.status.hidden = false;
           agentHandle.status.textContent = `⚠ ${event.message}`;
@@ -403,7 +442,7 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
       if (assistantMsg === null) {
         // 远程失败：降级到离线剧本补一轮回复（无 key 精神：永远给答案）
         agentHandle.body.textContent = '远程模型不可用，我先切回离线陪学为你作答 👇';
-        const fallback = createOfflineTutor({ storage, now, delay: deps.delay });
+        const fallback = createOfflineTutor({ storage, now, delay: deps.delay, loop });
         const fbHandle = makeMessage(stream, 'note');
         acc = '';
         const reply = await fallback.run(history, (event) => {
@@ -415,11 +454,24 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
         });
         offlineTutor = fallback;
         if (reply) renderFinal(fbHandle, reply.content, renderCtx);
+        scrollFinal(fbHandle, stream);
       } else {
         history.push(assistantMsg);
         renderFinal(agentHandle, assistantMsg.content, renderCtx);
+        // 远程模式闭环兜底：回复里的组件即闭环证据
+        // （词汇卡 → 词汇/计划步；quiz 组件 → 小测步开始）
+        if (offlineTutor === null) {
+          const { specs } = extractComponents(assistantMsg.content);
+          const cards = specs.filter((s) => s.type === 'card').length;
+          if (cards > 0) {
+            if (loop.get().steps.plan === 'pending') loop.dispatch({ type: 'plan-created', cardsTotal: cards });
+            loop.dispatch({ type: 'cards-shown', shown: cards, total: cards });
+          }
+          const quizzes = specs.filter((s) => s.type === 'quiz').length;
+          if (quizzes > 0) loop.dispatch({ type: 'quiz-started', total: quizzes });
+        }
+        scrollFinal(agentHandle, stream);
       }
-      scrollStream(stream);
     } finally {
       busy = false;
       send.disabled = false;
