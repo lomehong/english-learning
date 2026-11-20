@@ -1,0 +1,434 @@
+/* ============================================================
+   /v2 对话式学习 · 页面样式（只引用 tokens.css 设计令牌）
+   布局：桌面 = 页头 + 左消息流/输入框 + 右动态组件区（视口高锁定）；
+   ≤56rem 上下堆叠放开高度随页滚动；390px 窄屏沿首页让位横带方案
+   避开固定右上角的主题切换器，全部轨道 minmax(0,…) 防横向溢出。
+   ============================================================ */
+
+.v2-page {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---- 页头（右上设置入口 + 配置状态徽标） ---- */
+.v2-header {
+  flex: none;
+  border-top: 3px solid var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.v2-header__inner {
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.v2-header__back {
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.v2-header__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.v2-header__name {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.v2-header__ver {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.v2-status {
+  margin-left: auto;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- 主体两栏：消息流 + 动态组件区 ---- */
+.v2-main {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 21rem);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.v2-chat {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.v2-msgs {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.v2-msg {
+  display: flex;
+  min-width: 0;
+}
+
+.v2-msg--user {
+  justify-content: flex-end;
+}
+
+.v2-msg--assistant {
+  justify-content: flex-start;
+}
+
+.v2-msg__bubble {
+  max-width: min(85%, 38rem);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  overflow-wrap: anywhere;
+}
+
+.v2-msg--user .v2-msg__bubble {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.v2-msg--assistant .v2-msg__bubble {
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.v2-msg__text {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.v2-msg__hint {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.v2-msg__action {
+  margin-top: var(--space-2);
+}
+
+/* ---- 底部输入框与发送 ---- */
+.v2-composer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.v2-composer__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.v2-composer__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.v2-composer__send {
+  flex: none;
+}
+
+/* ---- 右侧动态组件渲染区 ---- */
+.v2-panel {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.v2-panel__head {
+  flex: none;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.v2-panel__title {
+  margin: 0;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.v2-panel__desc {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.v2-panel__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* 内置占位卡：标题 + 正文 + 按钮 */
+.v2-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.v2-card__title {
+  margin: 0;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.v2-card__body {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.v2-card__action {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+}
+
+/* ---- 设置弹窗 ---- */
+.v2-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+/* display:flex 会覆盖 UA 的 [hidden]，显式守卫（同 base.css 惯例） */
+.v2-modal[hidden] {
+  display: none;
+}
+
+.v2-modal__scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+.v2-modal__dialog {
+  position: relative;
+  width: min(28rem, 100%);
+  max-height: calc(100vh - 2 * var(--space-4));
+  overflow-y: auto;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.v2-modal__title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.v2-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.v2-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.v2-field__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.v2-field__control {
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.v2-field__control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.v2-form__note {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.v2-form__cleared {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-grade-hard);
+}
+
+.v2-form__cleared[hidden] {
+  display: none;
+}
+
+.v2-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.v2-form__spacer {
+  flex: 1;
+}
+
+/* ---- 响应式 ---- */
+/* 与 v1 页头同规则：固定右上角主题切换器在 <91rem 时占据右侧横带，
+   页头内容右侧让位，避免设置按钮被覆盖 */
+@media (max-width: 91rem) {
+  .v2-header__inner {
+    padding-right: 13.5rem;
+  }
+}
+
+/* ≤56rem：两栏改单列堆叠（消息流在上、组件区在下），放开视口高度
+   锁定随页面滚动；组件区改为上边框分隔 */
+@media (max-width: 56rem) {
+  .v2-page {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .v2-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .v2-msgs {
+    overflow-y: visible;
+    min-height: 14rem;
+  }
+
+  .v2-panel__body {
+    overflow-y: visible;
+  }
+}
+
+/* ≤40rem（390px 级窄屏）：沿首页 site-header--home 的「让位横带」方案——
+   页头内容下移到固定切换器横带之下，设置按钮独占第二行；
+   所有容器 min-width:0 + minmax(0,…) 轨道 → 无横向滚动 */
+@media (max-width: 40rem) {
+  .v2-header__inner {
+    padding-top: calc(var(--space-7) + var(--space-2));
+    padding-right: var(--space-4);
+  }
+
+  .v2-header__settings {
+    width: 100%;
+  }
+
+  .v2-main {
+    padding: var(--space-3);
+  }
+
+  .v2-msgs {
+    padding: var(--space-3);
+  }
+
+  .v2-msg__bubble {
+    max-width: 100%;
+  }
+
+  .v2-composer {
+    padding: var(--space-2);
+  }
+}

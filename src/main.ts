@@ -1,5 +1,6 @@
 import './styles/tokens.css';
 import './styles/base.css';
+import './styles/v2.css';
 import { initTheme, mountThemeSwitcher } from './theme/switcher';
 import { createRouter } from './router';
 import { renderHome } from './pages/home';
@@ -10,6 +11,7 @@ import { renderListening } from './pages/listening';
 import { renderWriting } from './pages/writing';
 import { renderMistakes } from './pages/mistakes';
 import { renderReport } from './pages/report';
+import { renderChat } from './v2/chat';
 
 const app = document.getElementById('app');
 if (!app) throw new Error('未找到 #app 挂载点');
@@ -28,4 +30,6 @@ createRouter(app, [
   { path: '/writing', render: renderWriting },
   { path: '/mistakes', render: renderMistakes },
   { path: '/report', render: renderReport },
+  // v2 对话式学习入口（骨架）：与 v1 页面/路由完全隔离，仅在此注册
+  { path: '/v2', render: renderChat },
 ]);
