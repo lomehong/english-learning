@@ -20,7 +20,7 @@ import {
 } from './config';
 import { createOfflineTutor, type OfflineTutor } from './agent/offline';
 import { createRemoteAgent } from './agent/runtime';
-import { executeTool, V2_TOOL_DEFS } from './tools';
+import { createDefaultToolRegistry } from './agent/tools';
 import {
   extractComponents,
   renderComponent,
@@ -337,10 +337,9 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
     if (hasRemoteAgent(config)) {
       offlineTutor = null; // 远程模式：quiz 作答走历史同步回路
       if (deps.createRemote) return deps.createRemote(config);
-      return createRemoteAgent(config, {
-        executeTool: (name, args) => executeTool(name, args, { storage, now }),
-        tools: V2_TOOL_DEFS,
-      });
+      // 工具走注册表：schema 参数校验 + 按名分发（错误对象回喂模型自纠）
+      const registry = createDefaultToolRegistry({ storage, now });
+      return createRemoteAgent(config, { registry, toolContext: { storage, now } });
     }
     // 离线剧本跨轮复用同一实例（保持 计划→背词→小测 的阶段状态）
     offlineTutor ??= createOfflineTutor({ storage, now, delay: deps.delay });

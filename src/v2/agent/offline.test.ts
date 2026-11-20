@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createOfflineTutor } from './offline';
 import { extractComponents } from '../components/dsl';
-import type { ChatMessage } from '../types';
+import type { AgentEvent, ChatMessage } from '../types';
 import type { StorageLike } from '../../store/progress';
 import { loadWrongBook } from '../../store/wrongbook';
 import { loadProgress } from '../../store/progress';
@@ -139,6 +139,29 @@ describe('离线陪学剧本（T5：学习闭环）', () => {
     const state = getLearningState({ storage, now: () => NOW });
     expect(state.learnedWords).toBe(quizSpecs.length);
     expect(state.wrongbook.total).toBe(1);
+  });
+
+  it('剧本数据读取发工具事件：tool-start / tool-end 成对且成功（壳层可见工具调用）', async () => {
+    const storage = memory();
+    const tutor = makeTutor(storage);
+    const events: AgentEvent[] = [];
+    await tutor.run(withUser('看看错题本'), (event) => events.push(event));
+
+    const names = (type: 'tool-start' | 'tool-end') =>
+      events.filter((e) => e.type === type).map((e) => (e as { name: string }).name);
+    expect(names('tool-start')).toContain('query_wrongbook');
+    expect(names('tool-start')).toEqual(names('tool-end')); // 成对收口
+    expect(events.filter((e) => e.type === 'tool-end').every((e) => e.type === 'tool-end' && e.ok)).toBe(true);
+
+    const planEvents: AgentEvent[] = [];
+    await tutor.run(withUser('开始今天的学习'), (event) => planEvents.push(event));
+    const planNames = planEvents.filter((e) => e.type === 'tool-start').map((e) => (e as { name: string }).name);
+    expect(planNames).toContain('get_learning_state');
+    expect(planNames).toContain('query_vocab');
+    // 工具事件先于正文流式输出（状态行先出现，再打字机输出）
+    const firstDelta = planEvents.findIndex((e) => e.type === 'text-delta');
+    const lastToolEnd = planEvents.map((e) => e.type).lastIndexOf('tool-end');
+    expect(lastToolEnd).toBeLessThan(firstDelta);
   });
 
   it('错题复盘：查错题本（有错题时渲染 list wrong 组件）', async () => {

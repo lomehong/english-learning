@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { createSSEParser } from './sse';
 import { createAccumulator, feedDelta, createRemoteAgent, MAX_TOOL_ROUNDS } from './runtime';
 import type { FetchLike } from './runtime';
+import { createToolRegistry } from './tools';
 import type { AgentEvent } from '../types';
 
 /* -------------------- SSE 解析 -------------------- */
@@ -224,5 +225,66 @@ describe('远程 Agent 运行时（T2：OpenAI 兼容 + 流式 + tool calling）
     expect(await agent.run(HISTORY, (e) => events.push(e))).toBeNull();
     expect(fetchMock.mock.calls).toHaveLength(2);
     expect(events.at(-1)).toMatchObject({ type: 'error', message: expect.stringContaining('上限') });
+  });
+
+  it('注册表接缝（registry）：工具清单取自 defs()，执行走 校验→分发，错误回喂模型', async () => {
+    const fetchMock = vi.fn(async () =>
+      okResponse(sseBody([
+        toolCallEvent('call_r', 'record_answer', '{"module":"pe","correct":true}'),
+        'data: [DONE]\n\n',
+      ])),
+    );
+    const touched: string[] = [];
+    const registry = createToolRegistry([
+      {
+        schema: {
+          type: 'function',
+          function: {
+            name: 'record_answer',
+            description: '作答记账',
+            parameters: {
+              type: 'object',
+              properties: {
+                module: { type: 'string', enum: ['vocab', 'grammar', 'reading', 'listening'] },
+                correct: { type: 'boolean' },
+              },
+              required: ['module', 'correct'],
+            },
+          },
+        },
+        handler: (args) => {
+          touched.push(JSON.stringify(args));
+          return { ok: true };
+        },
+      },
+    ]);
+    const agent = createRemoteAgent(CONFIG, {
+      fetchImpl: fetchMock as unknown as FetchLike,
+      registry,
+      maxRounds: 2,
+      systemPrompt: 't',
+    });
+    const events: AgentEvent[] = [];
+    await agent.run(HISTORY, (e) => events.push(e));
+
+    // 请求体工具清单来自注册表 defs()
+    const init = (fetchMock.mock.calls[0] as unknown[])[1] as RequestInit;
+    const body = JSON.parse(init.body as string) as { tools: Array<{ function: { name: string } }> };
+    expect(body.tools).toHaveLength(1);
+    expect(body.tools[0]!.function.name).toBe('record_answer');
+
+    // enum 越界被 schema 校验拦下：handler 不触达，错误对象作为 tool 结果
+    expect(touched).toEqual([]);
+    const toolEnd = events.find((e) => e.type === 'tool-end') as unknown as {
+      ok: boolean;
+      result: { error: string; message: string };
+    };
+    expect(toolEnd.ok).toBe(false);
+    expect(toolEnd.result.error).toBe('invalid_arguments');
+    expect(toolEnd.result.message).toContain('module');
+    // 校验错误以 role:'tool' 消息回喂（下一轮请求可见）
+    const secondInit = (fetchMock.mock.calls[1] as unknown[])[1] as RequestInit;
+    const secondBody = JSON.parse(secondInit.body as string) as { messages: Array<Record<string, unknown>> };
+    expect(secondBody.messages[3]).toMatchObject({ role: 'tool', tool_call_id: 'call_r' });
   });
 });

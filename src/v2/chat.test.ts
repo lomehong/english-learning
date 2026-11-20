@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { renderChat, type ChatDeps } from './chat';
 import { createRouter } from '../router';
 import { V2_CONFIG_STORAGE_KEY } from './config';
+import { STORAGE_KEY as WRONGBOOK_STORAGE_KEY } from '../store/wrongbook';
 import type { StorageLike } from '../store/progress';
 import { loadProgress } from '../store/progress';
 import { loadWrongBook } from '../store/wrongbook';
@@ -160,6 +161,59 @@ describe('/v2 对话壳（T1）', () => {
       }),
     });
     expect(env.root.querySelector('[data-testid="v2-mode"]')!.textContent).toContain('已连接 seeded-model');
+  });
+
+  it('T2 验收链路：「今天学什么」→ 助手占位回复（计划正文 + 进度 + 首组词汇卡），全程无异常', async () => {
+    env = setup();
+    const input = env.root.querySelector('[data-testid="v2-input"]') as HTMLTextAreaElement;
+    const send = env.root.querySelector('[data-testid="v2-send"]') as HTMLButtonElement;
+    input.value = '今天学什么';
+    send.click();
+
+    await waitFor(() => env!.root.querySelector('.v2-msg--assistant .v2-card__word-en') !== null);
+    // 无 key 占位回复：离线剧本给出今日计划（正文含目标与先攻计划）
+    const body = env.root.querySelector('.v2-msg--assistant .v2-msg__body')!;
+    expect(body.textContent).toContain('今日目标');
+    expect(body.textContent).toContain('今天的计划');
+    // 计划进度组件（今日完成度）与首组词汇卡渲染
+    const track = env.root.querySelector('.v2-msg--assistant .v2-progress__track')!;
+    expect(track.getAttribute('aria-valuenow')).toBe('0');
+    expect(env.root.querySelector('.v2-msg--assistant .v2-card__word-en')!.textContent).toMatch(/^[a-zA-Z]+$/);
+    // 正文无围栏 JSON 原文
+    expect(body.textContent).not.toContain('```');
+  });
+
+  it('预置错题（seedLocalStorage）→「复习错题」→ 工具调用状态行 + 错题结果卡', async () => {
+    env = setup({
+      [WRONGBOOK_STORAGE_KEY]: JSON.stringify({
+        version: 1,
+        entries: {
+          'w:demo-adapt': {
+            exerciseId: 'w:demo-adapt',
+            module: 'vocab',
+            stem: '「适应；改编」对应的单词是？',
+            yourAnswer: 'adopt',
+            correctAnswer: 'adapt',
+            explanation: 'adapt vt. 适应；改编',
+            wrongCount: 2,
+            lastWrongAt: 1732080000000,
+          },
+        },
+      }),
+    });
+    const input = env.root.querySelector('[data-testid="v2-input"]') as HTMLTextAreaElement;
+    const send = env.root.querySelector('[data-testid="v2-send"]') as HTMLButtonElement;
+    input.value = '复习错题';
+    send.click();
+
+    await waitFor(() => env!.root.querySelector('.v2-list--wrong') !== null);
+    // 结果卡：错题列表（list wrong 组件）+ 正文回读预置数据
+    expect(env.root.querySelector('.v2-msg--assistant .v2-msg__body')!.textContent).toContain('错题本共 1 条');
+    expect(env.root.querySelector('.v2-list--wrong')!.textContent).toContain('adapt');
+    // 工具调用状态行：离线剧本同样走 tool-start / tool-end（工具调用证据）
+    const status = env.root.querySelector('.v2-msg--assistant .v2-msg__status') as HTMLElement;
+    expect(status.hidden).toBe(false);
+    expect(status.textContent).toContain('✓ query_wrongbook 完成');
   });
 
   it('剧本阶段跨轮保持：「开始学习」后发「继续」拿到下一组词卡', async () => {

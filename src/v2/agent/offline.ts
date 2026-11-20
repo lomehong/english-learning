@@ -18,6 +18,7 @@ import {
   queryVocab,
   queryWrongbook,
   recordAnswer,
+  type LearningState,
   type ToolContext,
   type VocabItem,
 } from '../tools';
@@ -107,12 +108,47 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
     return unit;
   }
 
+  /**
+   * 把一次 store 读取包装成工具事件：离线剧本与远程 tool calling
+   * 同一语义（tool-start → 执行 → tool-end），壳层状态行可见「调用了什么」。
+   */
+  function withTool<T>(name: string, args: Record<string, unknown>, emit: EmitFn, fn: () => T): T {
+    emit({ type: 'tool-start', name, args });
+    try {
+      const result = fn();
+      emit({ type: 'tool-end', name, ok: true, result });
+      return result;
+    } catch (error) {
+      emit({
+        type: 'tool-end',
+        name,
+        ok: false,
+        result: { error: error instanceof Error ? error.message : String(error) },
+      });
+      throw error;
+    }
+  }
+
+  /** 学习状态总览（带工具事件） */
+  const stateTool = (emit: EmitFn): LearningState =>
+    withTool('get_learning_state', {}, emit, () => getLearningState(ctx));
+
+  /** 查词（带工具事件） */
+  const vocabTool = (
+    args: { keyword?: string; unit?: string; limit?: number },
+    emit: EmitFn,
+  ): { items: VocabItem[]; total: number } => withTool('query_vocab', args, emit, () => queryVocab(args, ctx));
+
+  /** 查错题本（带工具事件） */
+  const wrongbookTool = (args: { module?: string; limit?: number }, emit: EmitFn) =>
+    withTool('query_wrongbook', args, emit, () => queryWrongbook(args, ctx));
+
   /* ---------- 各场景回复 ---------- */
 
-  function planReply(userText: string): string {
+  function planReply(userText: string, emit: EmitFn): string {
     unit = pickUnit(userText);
-    const state = getLearningState(ctx);
-    const { items } = queryVocab({ unit, limit: 200 }, ctx);
+    const state = stateTool(emit);
+    const { items } = vocabTool({ unit, limit: 200 }, emit);
     const fresh = items.filter((w) => !w.learned);
     currentBatch = fresh.slice(0, BATCH);
     queue = fresh.slice(BATCH);
@@ -164,8 +200,9 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
     return parts.join('\n\n');
   }
 
-  function buildQuiz(): void {
-    const pool = currentBatch.length > 0 ? currentBatch : queryVocab({ unit, limit: 12 }, ctx).items.filter((w) => w.learned);
+  function buildQuiz(emit: EmitFn): void {
+    const pool =
+      currentBatch.length > 0 ? currentBatch : vocabTool({ unit, limit: 12 }, emit).items.filter((w) => w.learned);
     const candidates = shuffle(pool, rng).slice(0, 5);
     const unitWords = getWordsByUnit(unit);
     quiz = candidates.map((w, i) => {
@@ -207,20 +244,20 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
     stage = 'quiz';
   }
 
-  function quizReply(userText: string): string {
+  function quizReply(userText: string, emit: EmitFn): string {
     unit = pickUnit(userText);
     if (currentBatch.length === 0) {
-      const { items } = queryVocab({ unit, limit: 12 }, ctx);
+      const { items } = vocabTool({ unit, limit: 12 }, emit);
       currentBatch = items.filter((w) => w.learned).slice(0, 5);
       if (currentBatch.length === 0) currentBatch = items.slice(0, 5);
     }
-    buildQuiz();
+    buildQuiz(emit);
     if (quiz.length === 0) return '这个词表暂时出不了题，换个单元试试（如「测 unit2」）。';
     return `好，${quiz.length} 道小测开始！点选项作答，我会逐一记账：答对进复习计划、答错进错题本。`;
   }
 
-  function wrongbookReply(): string {
-    const { total, items } = queryWrongbook({}, ctx);
+  function wrongbookReply(emit: EmitFn): string {
+    const { total, items } = wrongbookTool({}, emit);
     if (total === 0) return `错题本是空的，很干净！先来「开始今天的学习」，答错的题我会自动收进来。`;
     const lines = items.slice(0, 5).map(
       (e) => `${e.stem} → 你答「${e.yourAnswer}」，正确：${e.correctAnswer}（错 ${e.wrongCount} 次）`,
@@ -232,8 +269,8 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
     ].join('\n\n');
   }
 
-  function stateReply(): string {
-    const s = getLearningState(ctx);
+  function stateReply(emit: EmitFn): string {
+    const s = stateTool(emit);
     const value = Math.round(s.overall * 100);
     return [
       `目前进度：已学 ${s.learnedWords}/${s.totalWords} 词，到期待复习 ${s.dueReviews} 个；今日 ${s.today.vocab}/${s.today.vocabGoal} 词、${s.today.exercises}/${s.today.exercisesGoal} 题；连续学习 ${s.streak} 天。`,
@@ -313,10 +350,10 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
       let reply: string;
       let components = '';
       if (/计划|开始|今日|今天|学习|背/.test(userText) && !/测|考/.test(userText)) {
-        reply = planReply(userText);
+        reply = planReply(userText, emit);
         components = currentBatch.length > 0 ? cardsBody() : '';
       } else if (/测|考|quiz/i.test(userText)) {
-        reply = quizReply(userText);
+        reply = quizReply(userText, emit);
         components = quiz.map((q) => toComponentFence(q)).join('\n\n');
       } else if (/继续|下一|next/i.test(userText)) {
         if (stage === 'cards' && queue.length > 0) {
@@ -329,9 +366,9 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
           reply = '我们从头来：先「开始今天的学习」制定计划。';
         }
       } else if (/错题/.test(userText)) {
-        reply = wrongbookReply();
+        reply = wrongbookReply(emit);
       } else if (/状态|进度|报告/.test(userText)) {
-        reply = stateReply();
+        reply = stateReply(emit);
       } else if (userText.trim() === '') {
         reply = '想学点什么？可以说「开始今天的学习」，或让我「看看错题本」。';
       } else {
@@ -339,7 +376,7 @@ export function createOfflineTutor(deps: OfflineDeps = {}): OfflineTutor {
           '我在呢！可以试试：\n「开始今天的学习」制定今日计划 ·「继续」背下一组 ·「来一组小测」检验成果 ·「看看错题本」复盘错题。也可以直接问单词，比如「查一下 adapt 什么意思」。';
         const m = /([a-zA-Z]{2,})/.exec(userText);
         if (m && /意思|什么|翻译|查询|查一下/.test(userText)) {
-          const { items, total } = queryVocab({ keyword: m[1]!, limit: 3 }, ctx);
+          const { items, total } = vocabTool({ keyword: m[1]!, limit: 3 }, emit);
           if (total > 0) {
             reply = `查到了 ${total} 个相关词条：`;
             components = items

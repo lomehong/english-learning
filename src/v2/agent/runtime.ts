@@ -15,6 +15,7 @@ import type { V2Config } from '../config';
 import { chatCompletionsUrl } from '../config';
 import { createSSEParser } from './sse';
 import { buildTutorSystemPrompt } from './prompt';
+import { runToolCall, type ToolContext, type ToolRegistry } from './tools';
 
 /** 默认最大工具循环轮数（一轮 = 一次请求 + 全部工具执行） */
 export const MAX_TOOL_ROUNDS = 6;
@@ -27,6 +28,10 @@ export interface RuntimeDeps {
   executeTool?: (name: string, args: unknown) => unknown;
   /** 工具清单；缺省不给模型提供工具 */
   tools?: readonly ToolDef[];
+  /** 工具注册表（推荐接缝）：注册 / 参数校验 / 执行分发一站式编排；设置后优先于 executeTool */
+  registry?: ToolRegistry;
+  /** 注册表执行上下文（storage / now 注入） */
+  toolContext?: ToolContext;
   /** 循环轮数上限（测试可调小） */
   maxRounds?: number;
   /** 系统提示词（测试可注入短文案） */
@@ -200,7 +205,7 @@ function parseToolArguments(raw: string): unknown {
 export function createRemoteAgent(config: V2Config, deps: RuntimeDeps = {}): Agent {
   const fetchImpl = deps.fetchImpl ?? ((input, init) => fetch(input, init));
   const execute = deps.executeTool;
-  const tools = deps.tools;
+  const tools = deps.tools ?? deps.registry?.defs();
   const maxRounds = deps.maxRounds ?? MAX_TOOL_ROUNDS;
   const systemPrompt = deps.systemPrompt ?? buildTutorSystemPrompt();
 
@@ -239,7 +244,12 @@ export function createRemoteAgent(config: V2Config, deps: RuntimeDeps = {}): Age
             emit({ type: 'tool-start', name: call.function.name, args });
             let result: unknown;
             let ok = true;
-            if (execute === undefined) {
+            if (deps.registry !== undefined) {
+              // 注册表路径：JSON 解析 → schema 参数校验 → 执行分发（错误回喂模型）
+              const outcome = runToolCall(deps.registry, call, deps.toolContext ?? {});
+              ok = outcome.ok;
+              result = outcome.result;
+            } else if (execute === undefined) {
               ok = false;
               result = { error: '运行时未注册工具执行器' };
             } else {
