@@ -159,7 +159,7 @@ describe('错题本页 /mistakes', () => {
     expect(hrefOf('w:teenage')).toBe('/vocabulary?tab=review');
   });
 
-  it('空错题本：显示空状态与引导文案，清空按钮禁用', () => {
+  it('空错题本：显示空状态与引导文案，清空按钮禁用，确认条不出现', () => {
     renderMistakes(container, makeDeps());
 
     expect(container.querySelector('[data-testid="mistake-empty"]')!.textContent).toContain('暂无错题');
@@ -167,17 +167,74 @@ describe('错题本页 /mistakes', () => {
     expect(
       (container.querySelector('[data-testid="mistake-clear"]') as HTMLButtonElement).disabled,
     ).toBe(true);
+    expect(container.querySelector<HTMLElement>('[data-testid="mistake-clear-confirm"]')!.hidden).toBe(
+      true,
+    );
   });
 
-  it('清空全部：移除所有条目并持久化空本', () => {
+  it('清空需二次确认：首次点击只出现确认态并显示将清除的条数，数据未动', () => {
     const deps = makeDeps(sampleBook());
     renderMistakes(container, deps);
 
     click(container.querySelector<HTMLButtonElement>('[data-testid="mistake-clear"]')!);
 
+    const confirm = container.querySelector<HTMLElement>('[data-testid="mistake-clear-confirm"]')!;
+    expect(confirm.hidden).toBe(false);
+    expect(confirm.textContent).toContain('3');
+    // 未确认前不落盘：列表与存储都保持原样
+    expect(container.querySelectorAll('[data-testid="mistake-list"] .wrong-item')).toHaveLength(3);
+    expect(deps.saved).toHaveLength(0);
+    expect(Object.keys(deps.load().entries)).toHaveLength(3);
+  });
+
+  it('取消清空：确认条收起，条目与存储均不变', () => {
+    const deps = makeDeps(sampleBook());
+    renderMistakes(container, deps);
+    click(container.querySelector<HTMLButtonElement>('[data-testid="mistake-clear"]')!);
+
+    click(container.querySelector<HTMLButtonElement>('[data-testid="mistake-clear-cancel"]')!);
+
+    expect(container.querySelector<HTMLElement>('[data-testid="mistake-clear-confirm"]')!.hidden).toBe(
+      true,
+    );
+    expect(container.querySelectorAll('[data-testid="mistake-list"] .wrong-item')).toHaveLength(3);
+    expect(deps.saved).toHaveLength(0);
+    expect(Object.keys(deps.load().entries)).toHaveLength(3);
+  });
+
+  it('确认清空：移除所有条目并持久化空本，确认条收起、按钮回到禁用', () => {
+    const deps = makeDeps(sampleBook());
+    renderMistakes(container, deps);
+    click(container.querySelector<HTMLButtonElement>('[data-testid="mistake-clear"]')!);
+
+    click(container.querySelector<HTMLButtonElement>('[data-testid="mistake-clear-ok"]')!);
+
     expect(container.querySelectorAll('[data-testid="mistake-list"] .wrong-item')).toHaveLength(0);
     expect(container.querySelector<HTMLElement>('[data-testid="mistake-empty"]')!.hidden).toBe(false);
+    expect(deps.saved).toHaveLength(1);
+    expect(deps.saved[0]!.entries).toEqual({});
     expect(deps.load().entries).toEqual({});
+    expect(container.querySelector<HTMLElement>('[data-testid="mistake-clear-confirm"]')!.hidden).toBe(
+      true,
+    );
+    expect(
+      (container.querySelector('[data-testid="mistake-clear"]') as HTMLButtonElement).disabled,
+    ).toBe(true);
+  });
+
+  it('确认期间移除单条：确认条数量同步为最新条数', () => {
+    renderMistakes(container, makeDeps(sampleBook()));
+    click(container.querySelector<HTMLButtonElement>('[data-testid="mistake-clear"]')!);
+    expect(
+      container.querySelector<HTMLElement>('[data-testid="mistake-clear-confirm"]')!.textContent,
+    ).toContain('3');
+
+    const g1 = container.querySelector<HTMLElement>('.wrong-item[data-exercise="g1"]')!;
+    click(g1.querySelector<HTMLButtonElement>('[data-testid="mistake-remove"]')!);
+
+    expect(
+      container.querySelector<HTMLElement>('[data-testid="mistake-clear-confirm"]')!.textContent,
+    ).toContain('2');
   });
 
   it('过滤后清空该模块最后一题：切换为该过滤下的空状态', () => {

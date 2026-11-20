@@ -5,7 +5,8 @@ import { MODULE_LABEL, MODULE_RETRY_ROUTE, type MistakesDeps } from './deps';
 /**
  * /mistakes 错题本页：汇总词汇（复习）/ 语法 / 阅读 / 听力各模块写入
  * localStorage 的错题（按 exerciseId 去重），支持按模块过滤、移除单条、
- * 清空与「去重练」跳回对应模块。
+ * 清空（需二次确认：展示将清除的条数，取消不改动数据）与「去重练」
+ * 跳回对应模块。
  */
 
 type Filter = PracticeModule | 'all';
@@ -61,6 +62,27 @@ export function renderMistakes(root: HTMLElement, deps?: MistakesDeps): void {
   clearBtn.className = 'btn btn--ghost';
   clearBtn.setAttribute('data-testid', 'mistake-clear');
   clearBtn.textContent = '清空错题本';
+
+  /* 清空二次确认条：点击「清空错题本」先出现，展示将清除的条数；取消不改动数据 */
+  const clearConfirm = document.createElement('div');
+  clearConfirm.className = 'clear-confirm';
+  clearConfirm.setAttribute('data-testid', 'mistake-clear-confirm');
+  clearConfirm.setAttribute('role', 'alert');
+  clearConfirm.hidden = true;
+
+  const clearConfirmText = document.createElement('p');
+  clearConfirmText.className = 'clear-confirm__text';
+  const clearConfirmCancel = document.createElement('button');
+  clearConfirmCancel.type = 'button';
+  clearConfirmCancel.className = 'btn btn--ghost btn--sm';
+  clearConfirmCancel.setAttribute('data-testid', 'mistake-clear-cancel');
+  clearConfirmCancel.textContent = '取消';
+  const clearConfirmOk = document.createElement('button');
+  clearConfirmOk.type = 'button';
+  clearConfirmOk.className = 'btn btn--primary btn--sm';
+  clearConfirmOk.setAttribute('data-testid', 'mistake-clear-ok');
+  clearConfirmOk.textContent = '确认清空';
+  clearConfirm.append(clearConfirmText, clearConfirmCancel, clearConfirmOk);
 
   const head = document.createElement('div');
   head.className = 'page-head';
@@ -215,16 +237,41 @@ export function renderMistakes(root: HTMLElement, deps?: MistakesDeps): void {
     }
 
     clearBtn.disabled = all.length === 0;
+    /* 确认期间数据变化（如移除单条）：同步确认条数量；本已被清空则收起确认 */
+    if (!clearConfirm.hidden) {
+      if (all.length === 0) clearConfirm.hidden = true;
+      else syncClearConfirm();
+    }
+  }
+
+  /** 同步确认文案中的将清除条数（清空作用于整本，按全部条目计） */
+  function syncClearConfirm(): void {
+    const total = Object.keys(book.entries).length;
+    clearConfirmText.replaceChildren('将清除错题本中的全部 ');
+    const strong = document.createElement('strong');
+    strong.textContent = String(total);
+    clearConfirmText.append(strong, ' 题错题，清除后无法恢复。');
+    clearConfirmOk.disabled = total === 0;
   }
 
   clearBtn.addEventListener('click', () => {
+    syncClearConfirm();
+    clearConfirm.hidden = false;
+  });
+
+  clearConfirmCancel.addEventListener('click', () => {
+    clearConfirm.hidden = true;
+  });
+
+  clearConfirmOk.addEventListener('click', () => {
     book = emptyWrongBook();
     d.save(book);
+    clearConfirm.hidden = true;
     renderList();
   });
 
   renderList();
 
-  page.append(head, intro, tabBar, list, empty);
+  page.append(head, clearConfirm, intro, tabBar, list, empty);
   root.append(header, page);
 }
