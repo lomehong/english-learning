@@ -1,0 +1,436 @@
+/**
+ * /v2 对话式学习入口（T1 壳层）：
+ *
+ * - 消息流（v2-stream）+ 输入框（Enter 发送 / Shift+Enter 换行）+ 快捷指令 chips；
+ * - 组件渲染区：assistant 回复中的 ```component 围栏经 DSL 渲染器变成交互组件；
+ * - 模型配置面板：OpenAI 兼容 baseUrl / apiKey / model 持久化 localStorage；
+ *   无 key 自动降级「离线陪学」剧本，页面永远可用；
+ * - 三档主题：复用全局 <html data-theme> 令牌体系（浅色 / 深色 / 跟随系统）；
+ * - 390px 自适应：单列流式布局 + 窄屏断点（styles/v2.css）。
+ *
+ * 本文件不使用 innerHTML / eval：所有节点 document.createElement + textContent 构造。
+ */
+
+import {
+  loadV2Config,
+  saveV2Config,
+  hasRemoteAgent,
+  maskApiKey,
+  type V2Config,
+} from './config';
+import { createOfflineTutor, type OfflineTutor } from './agent/offline';
+import { createRemoteAgent } from './agent/runtime';
+import { createDefaultToolRegistry } from './agent/tools';
+import {
+  extractComponents,
+  renderComponent,
+  type RenderContext,
+} from './components/dsl';
+import type { Agent, ChatMessage } from './types';
+import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
+import type { StorageLike } from '../store/progress';
+import { defaultStorage } from '../store/progress';
+
+/* -------------------- 依赖接缝（测试注入） -------------------- */
+
+export interface ChatDeps {
+  storage?: StorageLike;
+  now?: () => number;
+  /** 离线剧本的流式延迟（测试传空函数立即完成） */
+  delay?: (ms: number) => Promise<void>;
+  /** 朗读引擎工厂（默认浏览器 speechSynthesis；jsdom 传假引擎） */
+  createSpeech?: () => SpeechEngine | null;
+  /** 远程 Agent 工厂（默认按配置创建 OpenAI 兼容运行时） */
+  createRemote?: (config: V2Config) => Agent;
+}
+
+function defaultSpeech(): SpeechEngine | null {
+  try {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+    const synth = window.speechSynthesis as unknown as SpeechSynthesisLike;
+    return createSpeechEngine({
+      synth,
+      createUtterance: (text) =>
+        new SpeechSynthesisUtterance(text) as unknown as SpeechSynthesisUtteranceLike,
+    });
+  } catch {
+    return null;
+  }
+}
+
+/** 流式期间隐藏未闭合的组件围栏（避免 JSON 原文闪现） */
+function maskPartialFence(text: string): string {
+  const cleaned = extractComponents(text).cleanText;
+  const idx = cleaned.lastIndexOf('```');
+  return idx === -1 ? cleaned : cleaned.slice(0, idx);
+}
+
+/* -------------------- DOM 小工具 -------------------- */
+
+function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string): HTMLElementTagNameMap[K] {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  return node;
+}
+
+function text(tag: keyof HTMLElementTagNameMap, className: string | undefined, content: string): HTMLElement {
+  const node = el(tag, className);
+  node.textContent = content;
+  return node;
+}
+
+/* -------------------- 消息渲染 -------------------- */
+
+interface MessageHandle {
+  root: HTMLElement;
+  body: HTMLElement;
+  components: HTMLElement;
+  status: HTMLElement;
+}
+
+function makeMessage(stream: HTMLElement, role: 'user' | 'assistant' | 'note'): MessageHandle {
+  const root = el('div', `v2-msg v2-msg--${role}`);
+  const avatar = el('span', 'v2-msg__avatar');
+  avatar.textContent = role === 'user' ? '我' : role === 'note' ? '✦' : '师';
+  const main = el('div', 'v2-msg__main');
+  const body = el('div', 'v2-msg__body');
+  body.textContent = '';
+  const status = el('div', 'v2-msg__status');
+  status.hidden = true;
+  const components = el('div', 'v2-msg__components');
+  main.append(body, status, components);
+  root.append(avatar, main);
+  stream.append(root);
+  scrollStream(stream);
+  return { root, body, components, status };
+}
+
+/** 最终渲染一条 assistant/note 文本：正文 + 组件（同一管线，含降级占位） */
+function renderFinal(handle: MessageHandle, content: string, ctx: RenderContext): void {
+  const { cleanText, specs } = extractComponents(content);
+  handle.body.textContent = cleanText;
+  handle.components.replaceChildren();
+  for (const spec of specs) handle.components.append(renderComponent(spec, ctx));
+}
+
+function scrollStream(stream: HTMLElement): void {
+  try {
+    stream.scrollTop = stream.scrollHeight;
+  } catch {
+    /* jsdom 无布局，忽略 */
+  }
+}
+
+/* -------------------- 页面 -------------------- */
+
+export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
+  const storage = deps.storage ?? defaultStorage();
+  const now = deps.now ?? Date.now;
+  const speech = deps.createSpeech ? deps.createSpeech() : defaultSpeech();
+  const history: ChatMessage[] = [];
+  let busy = false;
+
+  /* ---------- 骨架 ---------- */
+
+  const shell = el('div', 'v2');
+  shell.setAttribute('data-testid', 'v2-root');
+
+  const topbar = el('header', 'v2-topbar');
+  const back = el('a', 'v2-topbar__back');
+  back.href = '/';
+  back.setAttribute('data-link', '');
+  back.textContent = '‹ 返回';
+  const title = el('div', 'v2-topbar__title');
+  title.append(text('span', 'v2-topbar__name', '对话式陪学'), text('span', 'v2-topbar__sub', 'v2 入口'));
+  const modeBadge = el('span', 'v2-mode');
+  modeBadge.setAttribute('data-testid', 'v2-mode');
+  const configToggle = el('button', 'v2-iconbtn');
+  configToggle.type = 'button';
+  configToggle.setAttribute('data-testid', 'v2-config-toggle');
+  configToggle.setAttribute('aria-expanded', 'false');
+  configToggle.setAttribute('aria-label', '模型配置面板');
+  configToggle.textContent = '⚙';
+  topbar.append(back, title, modeBadge, configToggle);
+
+  const configPanel = el('section', 'v2-config');
+  configPanel.setAttribute('data-testid', 'v2-config');
+  configPanel.hidden = true;
+  const configGrid = el('div', 'v2-config__grid');
+
+  const baseUrlInput = el('input', 'v2-config__input');
+  baseUrlInput.setAttribute('data-testid', 'v2-config-baseurl');
+  baseUrlInput.type = 'text';
+  baseUrlInput.placeholder = 'https://api.openai.com/v1';
+  const baseUrlLabel = el('label', 'v2-config__field');
+  baseUrlLabel.append(text('span', undefined, '接口地址（OpenAI 兼容）'), baseUrlInput);
+
+  const apiKeyInput = el('input', 'v2-config__input');
+  apiKeyInput.setAttribute('data-testid', 'v2-config-key');
+  apiKeyInput.type = 'password';
+  apiKeyInput.placeholder = 'sk-…（留空 = 离线陪学）';
+  apiKeyInput.autocomplete = 'off';
+  const apiKeyLabel = el('label', 'v2-config__field');
+  apiKeyLabel.append(text('span', undefined, 'API Key'), apiKeyInput);
+
+  const modelInput = el('input', 'v2-config__input');
+  modelInput.setAttribute('data-testid', 'v2-config-model');
+  modelInput.type = 'text';
+  modelInput.placeholder = 'gpt-4o-mini';
+  const modelLabel = el('label', 'v2-config__field');
+  modelLabel.append(text('span', undefined, '模型'), modelInput);
+  configGrid.append(baseUrlLabel, apiKeyLabel, modelLabel);
+
+  const configActions = el('div', 'v2-config__actions');
+  const saveBtn = el('button', 'btn btn--primary btn--sm');
+  saveBtn.type = 'button';
+  saveBtn.setAttribute('data-testid', 'v2-config-save');
+  saveBtn.textContent = '保存并启用';
+  const clearBtn = el('button', 'btn btn--ghost btn--sm');
+  clearBtn.type = 'button';
+  clearBtn.setAttribute('data-testid', 'v2-config-clear');
+  clearBtn.textContent = '清空 Key（回到离线陪学）';
+  const configHint = el('span', 'v2-config__hint');
+  configActions.append(saveBtn, clearBtn, configHint);
+  configPanel.append(configGrid, configActions);
+
+  const stream = el('main', 'v2-stream');
+  stream.setAttribute('data-testid', 'v2-stream');
+  stream.setAttribute('aria-live', 'polite');
+
+  const chips = el('div', 'v2-chips');
+  chips.setAttribute('data-testid', 'v2-chips');
+  const CHIP_DEFS: Array<{ id: string; label: string; message: string }> = [
+    { id: 'v2-chip-start', label: '📅 开始今天的学习', message: '开始今天的学习' },
+    { id: 'v2-chip-cards', label: '📖 继续背单词', message: '继续' },
+    { id: 'v2-chip-quiz', label: '📝 来一组小测', message: '来一组小测' },
+    { id: 'v2-chip-wrong', label: '📕 看看错题本', message: '看看错题本' },
+  ];
+  for (const chip of CHIP_DEFS) {
+    const btn = el('button', 'v2-chip');
+    btn.type = 'button';
+    btn.setAttribute('data-testid', chip.id);
+    btn.textContent = chip.label;
+    btn.addEventListener('click', () => {
+      if (busy) return;
+      input.value = chip.message;
+      void submit();
+    });
+    chips.append(btn);
+  }
+
+  const inputbar = el('form', 'v2-inputbar');
+  const input = el('textarea', 'v2-inputbar__input');
+  input.setAttribute('data-testid', 'v2-input');
+  input.rows = 1;
+  input.placeholder = '输入消息，Enter 发送（Shift+Enter 换行）';
+  input.setAttribute('aria-label', '对话输入框');
+  const send = el('button', 'btn btn--primary v2-inputbar__send');
+  send.type = 'submit';
+  send.setAttribute('data-testid', 'v2-send');
+  send.textContent = '发送';
+  inputbar.append(input, send);
+
+  shell.append(topbar, configPanel, stream, chips, inputbar);
+  root.append(shell);
+
+  /* ---------- 渲染上下文（quiz 作答回路） ---------- */
+
+  let offlineTutor: OfflineTutor | null = null;
+
+  const renderCtx: RenderContext = {
+    speech: speech
+      ? {
+          supported: speech.supported,
+          play: (id, t, rate) => speech.play(id, t, rate),
+          stop: () => speech.stop(),
+          get state() {
+            return speech.state;
+          },
+          get currentId() {
+            return speech.currentId;
+          },
+          subscribe: (listener) => speech.subscribe(listener),
+        }
+      : undefined,
+    onQuizAnswer: (info) => {
+      if (offlineTutor !== null) {
+        const note = offlineTutor.handleQuizAnswer({
+          id: info.id,
+          correct: info.correct,
+          choiceIndex: info.choiceIndex,
+          choice: info.choice,
+        });
+        if (note !== null) {
+          const handle = makeMessage(stream, 'note');
+          renderFinal(handle, note, renderCtx);
+        }
+        return;
+      }
+      // 远程模式：作答同步进对话历史，下一轮模型可见（可调 record_answer 记账）
+      history.push({ role: 'user', content: `[quiz 作答] ${info.id} ${info.correct ? '答对' : '答错'}：${info.choice}` });
+      const handle = makeMessage(stream, 'note');
+      handle.body.textContent = '已把本次作答同步给模型，继续对话即可记账讲解。';
+    },
+  };
+
+  /* ---------- 欢迎卡 ---------- */
+
+  const welcome = el('div', 'v2-welcome');
+  welcome.setAttribute('data-testid', 'v2-welcome');
+  const syncWelcome = (config: V2Config): void => {
+    welcome.replaceChildren();
+    welcome.append(
+      text('h2', 'v2-welcome__title', '你好，我是你的英语陪学助手 👋'),
+      text(
+        'p',
+        'v2-welcome__text',
+        hasRemoteAgent(config)
+          ? `已连接模型 ${config.model}（${maskApiKey(config.apiKey)}）。我会用真实学习数据带你完成「计划 → 背词 → 小测 → 错题 → 进度」的闭环。`
+          : '当前未配置 API Key，已自动进入「离线陪学」模式：词表、小测与学习记账全部本地可用。配置 Key 后可接入任意 OpenAI 兼容模型。',
+      ),
+      text('p', 'v2-welcome__hint', '试试下面的快捷指令，或直接输入消息。所有数据仍保存在本机浏览器。'),
+    );
+    modeBadge.textContent = hasRemoteAgent(config) ? `已连接 ${config.model}` : '离线陪学模式';
+    modeBadge.classList.toggle('v2-mode--offline', !hasRemoteAgent(config));
+  };
+
+  /* ---------- 配置面板 ---------- */
+
+  const syncConfigPanel = (): void => {
+    const config = loadV2Config(storage);
+    baseUrlInput.value = config.baseUrl;
+    apiKeyInput.value = config.apiKey;
+    modelInput.value = config.model;
+    configHint.textContent = hasRemoteAgent(config)
+      ? `当前 Key：${maskApiKey(config.apiKey)} · 端点 ${config.baseUrl}`
+      : '未配置 Key：使用离线陪学（本地剧本 + 本地数据）。';
+  };
+
+  configToggle.addEventListener('click', () => {
+    const open = configPanel.hidden;
+    configPanel.hidden = !open;
+    configToggle.setAttribute('aria-expanded', String(open));
+    if (open) syncConfigPanel();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    saveV2Config(
+      { version: 1, baseUrl: baseUrlInput.value, apiKey: apiKeyInput.value, model: modelInput.value },
+      storage,
+    );
+    offlineTutor = null; // 换回远程：作答回路切到历史同步
+    syncConfigPanel();
+    syncWelcome(loadV2Config(storage));
+  });
+
+  clearBtn.addEventListener('click', () => {
+    saveV2Config({ version: 1, baseUrl: baseUrlInput.value, apiKey: '', model: modelInput.value }, storage);
+    offlineTutor = null;
+    syncConfigPanel();
+    syncWelcome(loadV2Config(storage));
+  });
+
+  /* ---------- 发送回路 ---------- */
+
+  function pickAgent(): Agent {
+    const config = loadV2Config(storage);
+    if (hasRemoteAgent(config)) {
+      offlineTutor = null; // 远程模式：quiz 作答走历史同步回路
+      if (deps.createRemote) return deps.createRemote(config);
+      // 工具走注册表：schema 参数校验 + 按名分发（错误对象回喂模型自纠）
+      const registry = createDefaultToolRegistry({ storage, now });
+      return createRemoteAgent(config, { registry, toolContext: { storage, now } });
+    }
+    // 离线剧本跨轮复用同一实例（保持 计划→背词→小测 的阶段状态）
+    offlineTutor ??= createOfflineTutor({ storage, now, delay: deps.delay });
+    return offlineTutor;
+  }
+
+  async function submit(): Promise<void> {
+    const content = input.value.trim();
+    if (content === '' || busy) return;
+    busy = true;
+    send.disabled = true;
+    input.value = '';
+    try {
+      history.push({ role: 'user', content });
+      const userHandle = makeMessage(stream, 'user');
+      userHandle.body.textContent = content;
+
+      const agent = pickAgent();
+      const agentHandle = makeMessage(stream, 'assistant');
+      agentHandle.root.classList.add('v2-msg--pending');
+      let acc = '';
+      const assistantMsg = await agent.run(history, (event) => {
+        if (event.type === 'text-delta') {
+          acc += event.text;
+          agentHandle.body.textContent = maskPartialFence(acc);
+          scrollStream(stream);
+        } else if (event.type === 'tool-start') {
+          agentHandle.status.hidden = false;
+          agentHandle.status.textContent = `🔧 调用工具 ${event.name}…`;
+        } else if (event.type === 'tool-end') {
+          agentHandle.status.textContent = event.ok ? `✓ ${event.name} 完成` : `⚠ ${event.name} 失败`;
+        } else if (event.type === 'error') {
+          agentHandle.status.hidden = false;
+          agentHandle.status.textContent = `⚠ ${event.message}`;
+        }
+      });
+
+      agentHandle.root.classList.remove('v2-msg--pending');
+
+      if (agentHandle.status.textContent.startsWith('✓')) {
+        window.setTimeout(() => {
+          agentHandle.status.hidden = true;
+        }, 1600);
+      }
+
+      if (assistantMsg === null) {
+        // 远程失败：降级到离线剧本补一轮回复（无 key 精神：永远给答案）
+        agentHandle.body.textContent = '远程模型不可用，我先切回离线陪学为你作答 👇';
+        const fallback = createOfflineTutor({ storage, now, delay: deps.delay });
+        const fbHandle = makeMessage(stream, 'note');
+        acc = '';
+        const reply = await fallback.run(history, (event) => {
+          if (event.type === 'text-delta') {
+            acc += event.text;
+            fbHandle.body.textContent = maskPartialFence(acc);
+            scrollStream(stream);
+          }
+        });
+        offlineTutor = fallback;
+        if (reply) renderFinal(fbHandle, reply.content, renderCtx);
+      } else {
+        history.push(assistantMsg);
+        renderFinal(agentHandle, assistantMsg.content, renderCtx);
+      }
+      scrollStream(stream);
+    } finally {
+      busy = false;
+      send.disabled = false;
+      input.focus();
+    }
+  }
+
+  inputbar.addEventListener('submit', (event) => {
+    event.preventDefault();
+    void submit();
+  });
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      void submit();
+    }
+  });
+
+  /* ---------- 初始状态 ---------- */
+
+  syncConfigPanel();
+  syncWelcome(loadV2Config(storage));
+  stream.append(welcome);
+  input.focus();
+
+  return () => {
+    speech?.destroy();
+  };
+}

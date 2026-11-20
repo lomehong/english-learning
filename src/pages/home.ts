@@ -4,7 +4,7 @@ import { buildLast7Days, computeStreak, goalCompletion, type DayActivity } from 
 import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：Hero 品牌区（中文衬线标题 + 教材统计）+ 全局「册 + 单元」两级切换器
- *  （localStorage + ?book=&unit= 双向同步）+ 今日进度环形 + 七大模块入口卡 */
+ *  （localStorage + ?book=&unit= 双向同步）+ 今日进度环形 + v2 对话式陪学入口横幅 + 七大模块入口卡 */
 
 /** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
 const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
@@ -309,6 +309,24 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
 
   today.append(weekWrap);
 
+  /* ---- v2 对话式陪学入口（横幅卡）：链到 /v2 对话壳，
+   *      未配置模型自动降级离线陪学，页面永远可用（能力文案与壳层实际行为一致） ---- */
+  const v2Entry = document.createElement('a');
+  v2Entry.className = 'home-v2 card';
+  v2Entry.setAttribute('data-testid', 'home-v2-entry');
+  v2Entry.setAttribute('data-link', '');
+  v2Entry.href = '/v2';
+  v2Entry.innerHTML = `
+    <div class="home-v2__body">
+      <span class="home-v2__badge">v2 尝鲜</span>
+      <h2 class="home-v2__title">对话式陪学</h2>
+      <p class="home-v2__desc">
+        与 AI 老师对话学英语：消息流提问 + 快捷指令一点即练，回复可带交互练习组件；
+        未配置模型自动降级离线陪学（离线也能用），页内随时配置 OpenAI 兼容模型接入远程 AI。
+      </p>
+    </div>
+    <span class="home-v2__go">进入对话<span class="home-v2__arrow" aria-hidden="true">→</span></span>`;
+
   /* ---- 七大模块入口：编号 + 图标 + 描述 + 入口箭头 ---- */
   const modulesSection = document.createElement('section');
   modulesSection.className = 'home-modules';
@@ -329,7 +347,7 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   ).join('');
   modulesSection.append(modulesTitle, grid);
 
-  page.append(hero, unitSection, today, modulesSection);
+  page.append(hero, unitSection, today, v2Entry, modulesSection);
 
   /* 页脚：单行版本标记（静态文案，测试以其为锚点做回归） */
   const footer = document.createElement('footer');
