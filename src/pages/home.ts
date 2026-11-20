@@ -64,7 +64,8 @@ const MODULES = [
 
 export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()): void {
   const header = document.createElement('header');
-  header.className = 'site-header';
+  // site-header--home：360px 窄屏「让位横带」修复只命中首页页头（见 base.css ≤40rem 档）
+  header.className = 'site-header site-header--home';
   header.innerHTML = `
     <div class="site-header__inner">
       <span class="site-header__brand">高中英语学习系统</span>
