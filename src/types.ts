@@ -171,16 +171,6 @@ export interface WrongEntry {
   lastWrongAt: number;
 }
 
-/* -------------------- 学习建议 -------------------- */
-
-/** 学习建议卡（备考策略，title + body 两字段） */
-export interface StudyTip {
-  /** 标题（一句话点明策略） */
-  title: string;
-  /** 正文（具体做法与理由，内容充实） */
-  body: string;
-}
-
 /** SRS 四档评分 */
 export type Grade = 'again' | 'hard' | 'good' | 'easy';
 

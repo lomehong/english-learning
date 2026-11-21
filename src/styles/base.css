@@ -486,11 +486,9 @@ textarea:focus-visible {
 }
 
 /* ---- 首页模块入口 ---- */
-/* 桌面 4+3 两行均衡：12 轨网格，前 4 卡各占 3 轨（4 卡/行）、后 3 卡各占 4 轨（3 卡/行），
-   两行都正好铺满 12 轨 → 7 卡无「末行孤卡」；minmax(0,…) 防长内容把轨道撑出容器 */
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: var(--space-4);
   margin-top: var(--space-4);
 }
@@ -499,7 +497,6 @@ textarea:focus-visible {
   position: relative;
   display: flex;
   flex-direction: column;
-  grid-column: span 3;
   padding: var(--space-5);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
@@ -574,11 +571,6 @@ textarea:focus-visible {
 
 .module-card:hover .module-card__arrow {
   transform: translateX(4px);
-}
-
-/* 第二行 3 卡各占 4 轨（与首行 4×3 轨正好都铺满 12 轨，构成 4+3 布局） */
-.module-card:nth-child(n + 5) {
-  grid-column: span 4;
 }
 
 /* ---- 空状态 ---- */
@@ -1039,30 +1031,6 @@ textarea:focus-visible {
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-}
-
-/* 清空错题本二次确认条（错题本页） */
-.clear-confirm {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  margin: 0 0 var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-grade-again);
-  border-radius: var(--radius-md);
-  background: var(--color-grade-again-soft);
-}
-
-.clear-confirm__text {
-  flex: 1;
-  margin: 0;
-  font-size: var(--font-size-sm);
-}
-
-/* display:flex 会覆盖 UA 的 [hidden]，此处显式守卫（同 wrongbook__list） */
-.clear-confirm[hidden] {
-  display: none;
 }
 
 /* ---- 阅读模块 ---- */
@@ -1925,113 +1893,6 @@ a.streak-badge:hover {
   max-width: 100%;
 }
 
-/* ---- 首页 · 今日进度卡内「近 7 天活动」（7 节点点阵：有无记录一眼可辨，
-        点击某天卡内显示当天完成数；今天节点带「今」标记） ---- */
-.home-week {
-  grid-column: 1 / -1; /* 今日进度卡两列网格中跨满整行 */
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-width: 0; /* 允许收缩，不撑破卡片 */
-  width: 100%; /* 小屏档 justify-items:start 下仍贴满卡宽 */
-  padding-top: var(--space-3);
-  border-top: 1px dashed var(--color-border);
-}
-
-.home-week__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-2);
-  min-width: 0;
-}
-
-.home-week__title {
-  margin: 0;
-  font-family: var(--font-family-serif);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-}
-
-.home-week__hint {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-/* 7 轨等分：minmax(0,1fr) 轨道最小宽为 0 → 390px 窄屏不横向溢出 */
-.home-week__days {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--space-2);
-  min-width: 0;
-}
-
-.home-week__day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  min-width: 0;
-  padding: var(--space-1) 0 var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  background: transparent;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-}
-
-.home-week__day:hover {
-  background: var(--color-primary-soft);
-}
-
-.home-week__day:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
-
-.home-week__day[aria-pressed='true'] {
-  border-color: var(--color-primary);
-  background: var(--color-primary-soft);
-}
-
-/* 活动指示点：有记录实心，无记录空心底 */
-.home-week__dot {
-  width: 0.65rem;
-  height: 0.65rem;
-  border-radius: var(--radius-full);
-  background: var(--color-chart-track);
-  box-shadow: inset 0 0 0 1px var(--color-border);
-}
-
-.home-week__day[data-active='true'] .home-week__dot {
-  background: var(--color-module-vocab);
-  box-shadow: none;
-}
-
-/* 今天标记：实心点描边 + 「今」字加重（streak 同款高亮色） */
-.home-week__day[data-today='true'] .home-week__dot {
-  box-shadow: 0 0 0 2px var(--color-streak-soft), 0 0 0 4px var(--color-streak);
-}
-
-.home-week__label {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-.home-week__day[data-today='true'] .home-week__label {
-  color: var(--color-streak);
-  font-weight: var(--font-weight-bold);
-}
-
-.home-week__detail {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-text);
-}
-
 /* ---- 全局主题切换入口（src/theme/switcher.ts 挂 body 级：路由重渲染不丢失） ---- */
 .theme-switcher {
   position: fixed;
@@ -2078,23 +1939,6 @@ a.streak-badge:hover {
   }
 }
 
-/* 中屏（≤56rem）：模块入口降为两列，末卡跨满整行 → 2+2+2+1(满行)，同样无孤卡；
-   跨列规则需复位桌面档的 span 3 / span 4，再单独放大末卡 */
-@media (max-width: 56rem) {
-  .module-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .module-card,
-  .module-card:nth-child(n + 5) {
-    grid-column: auto;
-  }
-
-  .module-card:last-child {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 40rem) {
   .exercise__options {
     grid-template-columns: 1fr;
@@ -2120,18 +1964,6 @@ a.streak-badge:hover {
     flex-wrap: wrap;
   }
 
-  /* 360px 窄屏修复（只作用于首页页头）：品牌行（衬线 8 字 + 印章标记 ≈ 11.2rem，
-     nowrap 不收缩）与固定右上角的切换器（≈ 11.6rem）同行放不下——两者加留白约
-     24.9rem，超过 360px（22.5rem）也超过 390px（24.4rem）；91rem 档的右侧让位
-     会把品牌行挤进切换器正下方造成遮挡。改为垂直错开：取消右侧让位、页头内容
-     整体下移，从切换器横带（top 0.5rem + 高约 2.33rem → 底缘约 2.83rem）之下
-     排起；行宽恢复整栏 → 无重叠也无横向溢出。其他页面页头不命中本规则，维持
-     91rem 让位行为不动。 */
-  .site-header--home .site-header__inner {
-    padding-top: calc(var(--space-7) + var(--space-2));
-    padding-right: var(--space-4);
-  }
-
   /* 首页 390px：Hero 收紧留白、统计折行；今日进度环形换到首行；模块卡单列 */
   .home-hero {
     padding: var(--space-5) var(--space-4);
@@ -2147,33 +1979,12 @@ a.streak-badge:hover {
     padding: var(--space-4);
   }
 
-  /* 近 7 天活动（今日进度卡单列 + justify-items:start 下仍跨满整行贴卡宽） */
-  .home-week {
-    justify-self: stretch;
-  }
-
-  .home-week__days {
-    gap: var(--space-1);
-  }
-
-  .home-week__day {
-    padding-top: 0;
-    padding-bottom: var(--space-1);
-  }
-
   .home-section {
     padding: var(--space-4);
   }
 
-  /* 小屏（≤40rem）：模块卡单列；跨列全部归位，minmax(0,1fr) 单轨贴容器宽 → 390px 无横向溢出 */
   .module-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .module-card,
-  .module-card:nth-child(n + 5),
-  .module-card:last-child {
-    grid-column: auto;
+    grid-template-columns: 1fr;
   }
 
   .grade-actions {
