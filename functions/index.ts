@@ -7,13 +7,16 @@
  * 本函数把 chat/completions 挪到服务端同源发起：浏览器只与本站通信。
  *
  * 对外挂载点：POST /functions/v1/app/llm（函数内规范路径 /llm，两种写法等价）。
+ * 网关部署形态会把函数名重写成物理名，实际路径形如 /app-xxx/llm，前缀不可
+ * 枚举，因此端点判定只锚定末段：路径最后一段必须是 llm，前缀任意。
  * 客户端侧约定见 src/v2/config.ts 的 LLM_PROXY_PATH。
  *
  * 安全边界（本文件的全部职责）：
- * - 只接受 POST；路径只认 /llm 与 /functions/v1/app/llm，其余一律 404；
+ * - 只接受 POST；路径末段必须是 llm（前缀任意），其余一律 404；
  * - 请求体上限 1MB，且必须是含非空 model + 非空 messages 的合法 JSON；
- * - 上游只允许白名单主机的 chat/completions；目标 URL 完全由白名单表推导
- *   （协议 / 主机 / 路径固定），客户端任何 URL 细节都不被透传；
+ * - 上游只允许白名单主机的 chat/completions；目标 URL 的协议 / 主机固定，
+ *   路径必须精确命中该主机允许的规范 baseUrl 列表（BigModel 双规范：
+ *   /api/paas/v4 与 /api/coding/paas/v4），其余路径一律拒绝；
  * - SSRF 防护：非 https、显式端口、userinfo、query / fragment、主机名
  *   非白名单精确匹配（IP 直连、内网元数据地址、子域伪装一律拒绝）；
  * - Authorization 只原样转发给白名单上游：不落盘、不打日志、不回显。
@@ -23,22 +26,29 @@
  * 框架适配；`default { fetch }` 供 Workers 风格接入。
  */
 
-/** 白名单上游：主机 → 固定的 chat/completions 路径（BigModel 走 /api/paas/v4） */
+/**
+ * 白名单上游：主机 → 允许的规范 baseUrl 路径列表（末尾拼 /chat/completions）。
+ * BigModel 同时支持标准 /api/paas/v4 与 coding 计费 /api/coding/paas/v4 两种
+ * 规范路径；客户端配置的其他路径一律拒绝。
+ */
 export interface UpstreamTarget {
   host: string;
-  chatCompletionsPath: string;
+  allowedBasePaths: readonly string[];
 }
 
 export const UPSTREAM_WHITELIST: Readonly<Record<string, UpstreamTarget>> = {
-  'open.bigmodel.cn': { host: 'open.bigmodel.cn', chatCompletionsPath: '/api/paas/v4/chat/completions' },
-  'api.openai.com': { host: 'api.openai.com', chatCompletionsPath: '/v1/chat/completions' },
+  'open.bigmodel.cn': { host: 'open.bigmodel.cn', allowedBasePaths: ['/api/paas/v4', '/api/coding/paas/v4'] },
+  'api.openai.com': { host: 'api.openai.com', allowedBasePaths: ['/v1'] },
 };
 
-/** 客户端指认上游的请求头：值为用户配置的 OpenAI 兼容 baseUrl，仅取主机名做白名单匹配 */
+/** 客户端指认上游的请求头：值为用户配置的 OpenAI 兼容 baseUrl，仅取主机名 + 规范路径做白名单匹配 */
 export const BASE_URL_HEADER = 'x-llm-base-url';
 
-/** 函数内规范路径与平台挂载路径（同一端点的两种写法） */
-export const FUNCTION_PATHS: ReadonlySet<string> = new Set(['/llm', '/functions/v1/app/llm']);
+/**
+ * 端点末段标识：网关会把函数名替换成物理名（实际路径形如 /app-xxx/llm），
+ * 前缀不可枚举，因此路径判定只锚定最后一段，前缀任意。
+ */
+export const FUNCTION_LAST_SEGMENT = 'llm';
 
 /** 请求体字节上限（防超大载荷打爆函数实例） */
 export const MAX_REQUEST_BYTES = 1_048_576;
@@ -68,7 +78,9 @@ function normalizePath(pathname: string): string {
 /**
  * 由客户端 baseUrl 解析上游目标（SSRF 关卡）：
  * 只认 https、无 userinfo、无显式端口、无 query / fragment、主机名与白名单
- * 精确匹配；命中后目标 URL 由白名单表整体重建（客户端的路径不参与拼装）。
+ * 精确匹配；baseUrl 路径（去尾斜杠）必须精确命中该主机允许的规范路径列表
+ * （BigModel：/api/paas/v4 与 /api/coding/paas/v4），命中后目标 URL 由
+ * 白名单表整体重建，客户端的其余 URL 细节不参与拼装。
  */
 function resolveUpstreamTarget(baseUrl: string | null): URL {
   if (baseUrl === null || baseUrl.trim() === '') {
@@ -89,7 +101,18 @@ function resolveUpstreamTarget(baseUrl: string | null): URL {
     const allowed = Object.keys(UPSTREAM_WHITELIST).join(' / ');
     throw new ProxyError(403, `上游主机不在白名单内：${parsed.hostname}（允许：${allowed}）`);
   }
-  return new URL(`https://${target.host}${target.chatCompletionsPath}`);
+  const basePath = normalizePath(parsed.pathname);
+  if (!target.allowedBasePaths.includes(basePath)) {
+    const allowedPaths = target.allowedBasePaths.join(' / ');
+    throw new ProxyError(403, `上游路径不在白名单内：${basePath}（${target.host} 允许：${allowedPaths}）`);
+  }
+  return new URL(`https://${target.host}${basePath}/chat/completions`);
+}
+
+/** 端点判定：任意前缀（网关重写后的物理名 /app-xxx），最后一段必须是 llm */
+export function isLlmEndpointPath(pathname: string): boolean {
+  const segments = normalizePath(pathname).split('/').filter((segment) => segment !== '');
+  return segments.length > 0 && segments[segments.length - 1] === FUNCTION_LAST_SEGMENT;
 }
 
 /** 读体并限长：边读边累计字节，超限立即中断（不整包进内存后才校验） */
@@ -141,10 +164,10 @@ export interface ProxyDeps {
 export async function handleRequest(request: Request, deps: ProxyDeps = {}): Promise<Response> {
   const doFetch = deps.fetchImpl ?? ((input: string, init?: RequestInit) => fetch(input, init));
   try {
-    // 1) 路径：本函数只提供 /llm 一个端点
+    // 1) 路径：本函数只提供末段为 llm 的一个端点（前缀任意：网关物理名 /app-xxx）
     const pathname = normalizePath(new URL(request.url).pathname);
-    if (!FUNCTION_PATHS.has(pathname)) {
-      return jsonResponse(404, `未知路径：${pathname}（本函数只提供 POST /llm）`);
+    if (!isLlmEndpointPath(pathname)) {
+      return jsonResponse(404, `未知路径：${pathname}（本函数只提供末段为 /${FUNCTION_LAST_SEGMENT} 的 POST）`);
     }
     // 2) 方法：只接受 POST
     if (request.method !== 'POST') {
