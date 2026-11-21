@@ -288,3 +288,114 @@ describe('远程 Agent 运行时（T2：OpenAI 兼容 + 流式 + tool calling）
     expect(secondBody.messages[3]).toMatchObject({ role: 'tool', tool_call_id: 'call_r' });
   });
 });
+
+/* -------------------- 同源代理回退（CORS 规避） -------------------- */
+
+describe('远程 Agent 同源代理回退（浏览器直连 CORS 失败时）', () => {
+  it('直连网络层抛错（浏览器 CORS 拒绝的表现）→ 回退 POST 同源 /functions/v1/app/llm 并成功收流', async () => {
+    const fetchMock = vi.fn(async (input: string | URL) => {
+      const url = String(input);
+      if (url.startsWith('https://llm.example')) throw new TypeError('Failed to fetch');
+      return okResponse(sseBody([contentEvent('经由代理'), contentEvent('的回复'), 'data: [DONE]\n\n']));
+    });
+    const events: AgentEvent[] = [];
+    const agent = createRemoteAgent(CONFIG, {
+      fetchImpl: fetchMock as unknown as FetchLike,
+      proxyUrl: '/functions/v1/app/llm',
+      systemPrompt: 't',
+    });
+    const message = await agent.run(HISTORY, (e) => events.push(e));
+
+    // 先直连、失败后回退同源代理：各恰好一次
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(String((fetchMock.mock.calls[0] as unknown[])[0])).toBe('https://llm.example/v1/chat/completions');
+    expect(String((fetchMock.mock.calls[1] as unknown[])[0])).toBe('/functions/v1/app/llm');
+    // 代理请求带指认上游的 x-llm-base-url 与原样 Authorization
+    const proxyInit = (fetchMock.mock.calls[1] as unknown[])[1] as RequestInit;
+    expect(proxyInit.method).toBe('POST');
+    const headers = proxyInit.headers as Record<string, string>;
+    expect(headers['x-llm-base-url']).toBe('https://llm.example/v1');
+    expect(headers.Authorization).toBe('Bearer sk-test');
+    expect(JSON.parse(proxyInit.body as string).model).toBe('test-model');
+    // 直连请求不带代理专用的指认头
+    const directHeaders = ((fetchMock.mock.calls[0] as unknown[])[1] as RequestInit).headers as Record<string, string>;
+    expect(directHeaders['x-llm-base-url']).toBeUndefined();
+
+    expect(message).toEqual({ role: 'assistant', content: '经由代理的回复' });
+    expect(events.at(-1)).toEqual({ type: 'done' });
+  });
+
+  it('通道记忆：代理成功后，工具循环的下一轮直接走代理（不再先撞注定失败的直连）', async () => {
+    let proxyRounds = 0;
+    const fetchMock = vi.fn(async (input: string | URL) => {
+      const url = String(input);
+      if (url.startsWith('https://llm.example')) throw new TypeError('Failed to fetch');
+      proxyRounds += 1;
+      if (proxyRounds === 1) {
+        return okResponse(sseBody([toolCallEvent('call_p', 'get_learning_state', '{}'), 'data: [DONE]\n\n']));
+      }
+      return okResponse(sseBody([contentEvent('工具结果已收到'), 'data: [DONE]\n\n']));
+    });
+    const agent = createRemoteAgent(CONFIG, {
+      fetchImpl: fetchMock as unknown as FetchLike,
+      proxyUrl: '/functions/v1/app/llm',
+      executeTool: () => ({}),
+      tools: [{ type: 'function', function: { name: 'get_learning_state', description: '', parameters: {} } }],
+      maxRounds: 3,
+      systemPrompt: 't',
+    });
+    const message = await agent.run(HISTORY, () => {});
+
+    expect(message).toEqual({ role: 'assistant', content: '工具结果已收到' });
+    // 第 1 轮：直连失败 + 代理成功（2 次）；第 2 轮：代理直取（1 次），共 3 次
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    const urls = fetchMock.mock.calls.map((c) => String((c as unknown[])[0]));
+    expect(urls).toEqual([
+      'https://llm.example/v1/chat/completions',
+      '/functions/v1/app/llm',
+      '/functions/v1/app/llm',
+    ]);
+  });
+
+  it('直连与同源代理均不可达 → error 事件 + 返回 null（壳层据此降级离线）', async () => {
+    const fetchMock = vi.fn(async () => {
+      throw new TypeError('Failed to fetch');
+    });
+    const events: AgentEvent[] = [];
+    const agent = createRemoteAgent(CONFIG, {
+      fetchImpl: fetchMock as unknown as FetchLike,
+      proxyUrl: '/functions/v1/app/llm',
+      systemPrompt: 't',
+    });
+    expect(await agent.run(HISTORY, (e) => events.push(e))).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(2); // 直连 + 代理各试一次
+    expect(events.at(-1)).toMatchObject({ type: 'error', message: 'Failed to fetch' });
+  });
+
+  it('直连拿到 HTTP 响应（含 4xx）→ 不触发代理回退：错误按状态码处理', async () => {
+    const fetchMock = vi.fn(async () => new Response('{"error":{"message":"Incorrect API key"}}', { status: 401 }));
+    const events: AgentEvent[] = [];
+    const agent = createRemoteAgent(CONFIG, {
+      fetchImpl: fetchMock as unknown as FetchLike,
+      proxyUrl: '/functions/v1/app/llm',
+      systemPrompt: 't',
+    });
+    expect(await agent.run(HISTORY, (e) => events.push(e))).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(events[0]).toMatchObject({ type: 'error', message: expect.stringContaining('401') });
+  });
+
+  it('proxyUrl=null 显式禁用回退：直连失败即终局（保持旧行为）', async () => {
+    const fetchMock = vi.fn(async () => {
+      throw new TypeError('Failed to fetch');
+    });
+    const agent = createRemoteAgent(CONFIG, {
+      fetchImpl: fetchMock as unknown as FetchLike,
+      proxyUrl: null,
+      systemPrompt: 't',
+    });
+    const events: AgentEvent[] = [];
+    expect(await agent.run(HISTORY, (e) => events.push(e))).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+});
