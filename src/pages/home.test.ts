@@ -401,3 +401,43 @@ describe('首页 · 页脚版本标记', () => {
     expect(footer!.textContent).toBe('高中英语学习系统 · v2026.11');
   });
 });
+
+describe('首页 · v2 对话式陪学入口', () => {
+  it('渲染入口横幅卡：链接指向 /v2 且带 data-link（router 拦截站内跳转）', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    const entry = root.querySelector<HTMLAnchorElement>('[data-testid="home-v2-entry"]')!;
+    expect(entry, '首页应有 v2 对话式陪学入口卡').toBeTruthy();
+    expect(entry.tagName).toBe('A');
+    expect(entry.getAttribute('href')).toBe('/v2');
+    expect(entry.hasAttribute('data-link')).toBe(true);
+    expect(entry.querySelector('.home-v2__title')!.textContent).toContain('对话式陪学');
+    expect(entry.querySelector('.home-v2__go')!.textContent).toContain('进入对话');
+  });
+
+  it('入口文案如实描述壳层能力：离线陪学降级 + 页内配置 OpenAI 兼容模型', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    const desc = root.querySelector('.home-v2__desc')!.textContent ?? '';
+    expect(desc).toContain('离线陪学');
+    expect(desc).toContain('OpenAI 兼容');
+  });
+
+  it('入口横幅位于今日进度卡与七大模块入口之间，不挤占模块网格（仍 7 张模块卡）', () => {
+    const root = document.createElement('div');
+    renderHome(root);
+
+    const sections = [...root.querySelectorAll('main > *')];
+    const today = sections.findIndex((n) => (n as HTMLElement).dataset.testid === 'home-today');
+    const v2 = sections.findIndex((n) => (n as HTMLElement).dataset.testid === 'home-v2-entry');
+    const modules = sections.findIndex((n) => (n as HTMLElement).className.includes('home-modules'));
+    expect(today).toBeGreaterThanOrEqual(0);
+    expect(v2).toBe(today + 1);
+    expect(modules).toBe(v2 + 1);
+
+    expect(root.querySelectorAll('.module-grid .module-card')).toHaveLength(7);
+    expect(root.querySelector('.module-grid [data-testid="home-v2-entry"]')).toBeNull();
+  });
+});

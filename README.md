@@ -39,6 +39,11 @@
   - **数据导出 / 导入**：一键导出 JSON 备份（词汇进度 / 错题本 / 写作草稿 / 练习统计四份数据）；导入时与本地数据**合并去重**（词汇卡取复习次数更多者、错题取次数最大且时间最近、草稿取更新时间较新者、统计取更完整一方，不覆盖不双算）
   - 图表全部为纯 CSS（模块/单元正确率条）+ 内联 SVG（总体正确率环），零第三方图表库
   - 依据数据生成学习建议：到期提醒、短板模块、错题消化、模块均衡与正向反馈
+- **对话式陪学（`/v2`，v2 尝鲜）**
+  - 首页「今日进度」与「七大模块入口」之间的横幅卡直达 `/v2` 对话壳（对话流 + 快捷指令 + 交互练习组件）
+  - 页内模型配置面板：OpenAI 兼容 baseUrl / API Key / 模型名，持久化 localStorage（键 `english-learning.v2.config.v1`）；**无 Key 自动降级「离线陪学」剧本，页面永远可用**，不因缺 Key 白屏
+  - **对话内学习闭环（T5）**：发「今天学什么」依次出**计划卡**（词汇 / 小测 / 错题 / 进度四步）与首组**词汇卡**（可跟读），随后对话内完成小测；作答即时记账——答错自动入错题本、词汇走 SM-2 间隔复习、统计与今日活动联动，收尾回执更新今日完成度。消息流上方常驻**五步闭环进度条**（计划 → 词汇 → 小测 → 错题 → 进度，带计数与完成徽标），离线剧本与远程模式（组件渲染 + `record_answer` 工具结果）共用同一事件驱动的状态机（`src/v2/loop.ts`）
+  - 三档主题与 390px 窄屏自适应复用全站令牌体系（`src/v2/`、`src/styles/v2.css`），与 v1 各页面互不影响
 - **三档主题**（全站右上角切换入口，与页头同行）
   - 浅色 / 深色 / 跟随系统三档，选择持久化在 localStorage（键 `english-learning.theme.v1`），默认跟随系统
   - 主题域逻辑为纯函数（`src/theme/theme.ts`，含持久化接缝与单测），DOM 应用与切换入口在 `src/theme/switcher.ts`（挂 body 级，路由重渲染不丢失）；`index.html` 内联脚本在首帧前应用持久化主题，深色用户直链打开不闪白
@@ -57,7 +62,7 @@ npm run build    # 生产构建（tsc 类型检查 + vite build）
 npm run preview  # 预览构建产物（固定 4174 端口，IPv4/IPv6 回环均可访问）
 ```
 
-路由为 SPA：`/vocabulary` `/grammar` `/reading` `/listening` `/writing` `/mistakes` `/report` 均可深链直达（dev / preview 服务器带 SPA fallback 回退 index.html）。**站点按域名根路径部署**：构建 `base` 固定为 `/`（产物引用 `/assets/*` 根绝对路径），因此 `/vocabulary/?unit=unit1`、`/grammar/` 等深链直接打开也能正确加载脚本与样式；若改回相对 `base: './'`，深链会去请求 `/vocabulary/assets/*` 而 404 白屏（`npm run build` 收尾的 `scripts/check-dist.mjs` 与 `src/deploy-base.test.ts` 会拦住该回归）。册 + 单元维度为**全局状态**：首页两级切换器写入 localStorage 并同步 `?book=&unit=`（如 `/grammar?unit=unit3`、`/?book=必修二`，册参数亦可用 slug 写法 `required-1` ~ `elective-4`，单元参数支持 `unit3` 全拼或数字写法 `3`——数字写法为单册时代遗留兼容，跨册同号时**固定解析为默认册（必修一）的对应单元**）；带参深链优先并被记住（`?unit=` 与 `?book=` 冲突时以单元为准、册随单元归属），之后无参地址沿用最近选择，非法值回退必修一 Unit 1，空册沿用最近有效单元不崩溃。
+路由为 SPA：`/vocabulary` `/grammar` `/reading` `/listening` `/writing` `/mistakes` `/report` `/v2`（对话式陪学）均可深链直达（dev / preview 服务器带 SPA fallback 回退 index.html）。**站点按域名根路径部署**：构建 `base` 固定为 `/`（产物引用 `/assets/*` 根绝对路径），因此 `/vocabulary/?unit=unit1`、`/grammar/` 等深链直接打开也能正确加载脚本与样式；若改回相对 `base: './'`，深链会去请求 `/vocabulary/assets/*` 而 404 白屏（`npm run build` 收尾的 `scripts/check-dist.mjs` 与 `src/deploy-base.test.ts` 会拦住该回归）。册 + 单元维度为**全局状态**：首页两级切换器写入 localStorage 并同步 `?book=&unit=`（如 `/grammar?unit=unit3`、`/?book=必修二`，册参数亦可用 slug 写法 `required-1` ~ `elective-4`，单元参数支持 `unit3` 全拼或数字写法 `3`——数字写法为单册时代遗留兼容，跨册同号时**固定解析为默认册（必修一）的对应单元**）；带参深链优先并被记住（`?unit=` 与 `?book=` 冲突时以单元为准、册随单元归属），之后无参地址沿用最近选择，非法值回退必修一 Unit 1，空册沿用最近有效单元不崩溃。
 
 **并行开发测试约定**：共享的 `src/data/units.test.ts` 只保留数据无关的注册表不变式（合成数据 + 全量循环断言），不随册别 / 单元数量变化；**各册 / 单元的专属测试写独立文件 `units-bookN.test.ts`**（必修一 ~ 选必四 = book1 ~ book7，另有 `coverage.test.ts` 固化 7 册 35 单元最终态），新增册别不再修改共享测试文件，避免各册 PR 并行开发时冲突。
 
