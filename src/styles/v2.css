@@ -199,6 +199,23 @@
   color: var(--color-text-muted);
 }
 
+/* 底部一行「学习报告」入口（站内 data-link） */
+.v2-welcome__report {
+  display: block;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.v2-welcome__report:hover,
+.v2-welcome__report:focus-visible {
+  text-decoration: underline;
+}
+
 .v2-msg {
   display: flex;
   gap: var(--space-2);
