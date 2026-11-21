@@ -72,6 +72,39 @@ describe('/v2 对话壳（T1）', () => {
     expect(env.root.querySelector('[data-testid="v2-mode"]')!.textContent).toContain('离线陪学模式');
   });
 
+  it('欢迎卡底部学习报告入口：文案 + href=/report + data-link，点击经 router 站内进入学习报告', () => {
+    const storage = memory();
+    const root = document.createElement('div');
+    document.body.append(root);
+    const destroy = createRouter(root, [
+      { path: '/', render: (mount) => void (mount.textContent = 'v1 home') },
+      { path: '/report', render: (mount) => void (mount.textContent = '学习报告页') },
+      { path: '/v2', render: (mount) => renderChat(mount, deps(storage)) },
+    ]).destroy;
+    try {
+      history.pushState(null, '', '/v2');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+
+      const welcome = root.querySelector('[data-testid="v2-welcome"]')!;
+      const link = root.querySelector('[data-testid="v2-welcome-report"]') as HTMLAnchorElement;
+      expect(link).toBeTruthy();
+      // 底部一行入口：欢迎卡最后一个子节点
+      expect(welcome.lastElementChild).toBe(link);
+      expect(link.textContent).toBe('想先看看学习数据？打开学习报告 →');
+      expect(link.getAttribute('href')).toBe('/report');
+      expect(link.hasAttribute('data-link')).toBe(true);
+
+      // 点击 → router 拦截 data-link → 站内免刷新进入 /report
+      link.click();
+      expect(location.pathname).toBe('/report');
+      expect(root.textContent).toContain('学习报告页');
+    } finally {
+      destroy();
+      root.remove();
+      history.pushState(null, '', '/');
+    }
+  });
+
   it('无 key 降级：输入消息 → 离线剧本流式回复（正文 + 组件渲染区）', async () => {
     env = setup();
     const input = env.root.querySelector('[data-testid="v2-input"]') as HTMLTextAreaElement;

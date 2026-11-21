@@ -2,6 +2,7 @@
  * /v2 对话式学习入口（T1 壳层）：
  *
  * - 消息流（v2-stream）+ 输入框（Enter 发送 / Shift+Enter 换行）+ 快捷指令 chips；
+ * - 欢迎卡底部一行「学习报告」入口：href=/report + data-link 站内免刷新跳转；
  * - 组件渲染区：assistant 回复中的 ```component 围栏经 DSL 渲染器变成交互组件；
  * - 工具调用结果卡（T4）：远程 function calling 与离线剧本的工具事件
  *   渲染成消息流常驻卡片（工具名 / 入参 / 结果摘要），状态行仅作过渡提示；
@@ -318,6 +319,12 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   welcome.setAttribute('data-testid', 'v2-welcome');
   const syncWelcome = (config: V2Config): void => {
     welcome.replaceChildren();
+    // 底部一行入口：跳转学习报告（站内 data-link，router 拦截免刷新跳转）
+    const reportLink = el('a', 'v2-welcome__report');
+    reportLink.href = '/report';
+    reportLink.setAttribute('data-link', '');
+    reportLink.setAttribute('data-testid', 'v2-welcome-report');
+    reportLink.textContent = '想先看看学习数据？打开学习报告 →';
     welcome.append(
       text('h2', 'v2-welcome__title', '你好，我是你的英语陪学助手 👋'),
       text(
@@ -328,6 +335,7 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
           : '当前未配置 API Key，已自动进入「离线陪学」模式：词表、小测与学习记账全部本地可用。配置 Key 后可接入任意 OpenAI 兼容模型。',
       ),
       text('p', 'v2-welcome__hint', '试试下面的快捷指令，或直接输入消息。所有数据仍保存在本机浏览器。'),
+      reportLink,
     );
     modeBadge.textContent = hasRemoteAgent(config) ? `已连接 ${config.model}` : '离线陪学模式';
     modeBadge.classList.toggle('v2-mode--offline', !hasRemoteAgent(config));
