@@ -10,6 +10,10 @@ import {
  * 同源 LLM 代理（functions/index.ts）单测：
  * - 白名单拒绝 / SSRF 防护：任何非白名单上游（含 IP 直连、内网元数据、
  *   子域伪装、http、userinfo、显式端口、query）都在发起上游 fetch 前被拦下；
+ * - BigModel 双规范路径：/api/paas/v4 与 /api/coding/paas/v4 均放行，
+ *   其余路径（错误版本、多级、完整端点当 baseUrl 等）一律拒绝；
+ * - 网关物理路径：函数名被替换成物理名后实际路径形如 /app-xxx/llm，
+ *   任意前缀 + 末段 llm 均放行，末段不是 llm 的一律 404；
  * - 方法 / 路径 / 体积 / 请求体形状校验；
  * - 放行路径：目标 URL 由白名单表整体重建，Authorization 原样转发，
  *   SSE 流式响应透传，Key 全程不落盘（无任何持久化调用点）。
@@ -84,6 +88,24 @@ describe('同源 LLM 代理：放行与转发', () => {
     expect(JSON.parse(init.body as string).model).toBe('glm-4-flash');
   });
 
+  it('BigModel coding baseUrl /api/coding/paas/v4 → 固定转发 /api/coding/paas/v4/chat/completions（双规范路径）', async () => {
+    const fetchMock: FetchMock = vi.fn(async () => okSse());
+    await handleRequest(
+      proxyRequest({ baseUrl: 'https://open.bigmodel.cn/api/coding/paas/v4' }),
+      { fetchImpl: (i, j) => fetchMock(i, j) },
+    );
+    expect(fetchMock.mock.calls[0][0]).toBe('https://open.bigmodel.cn/api/coding/paas/v4/chat/completions');
+  });
+
+  it('coding baseUrl 尾斜杠归一化后同样命中规范路径', async () => {
+    const fetchMock: FetchMock = vi.fn(async () => okSse());
+    await handleRequest(
+      proxyRequest({ baseUrl: 'https://open.bigmodel.cn/api/coding/paas/v4/' }),
+      { fetchImpl: (i, j) => fetchMock(i, j) },
+    );
+    expect(fetchMock.mock.calls[0][0]).toBe('https://open.bigmodel.cn/api/coding/paas/v4/chat/completions');
+  });
+
   it('白名单上游 api.openai.com → 固定转发 /v1/chat/completions（用户配置的路径不参与拼装）', async () => {
     const fetchMock: FetchMock = vi.fn(async () => okSse());
     await handleRequest(
@@ -100,6 +122,19 @@ describe('同源 LLM 代理：放行与转发', () => {
     expect(a.status).toBe(200);
     expect(b.status).toBe(200);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ['/app-a1b2c3d4e5/llm', '网关物理名前缀（无 functions 段）'],
+    ['/functions/v1/app-a1b2c3d4e5/llm', '网关物理名前缀（带 functions/v1 段）'],
+    ['/some/deeply/nested/prefix/llm', '任意深前缀'],
+    ['/app-a1b2c3d4e5/llm/', '物理路径尾斜杠'],
+  ])('网关重写后的物理路径 %s（%s）同样放行', async (path) => {
+    const fetchMock: FetchMock = vi.fn(async () => okSse());
+    const res = await handleRequest(proxyRequest({ path }), { fetchImpl: (i, j) => fetchMock(i, j) });
+    expect(res.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0][0]).toBe('https://open.bigmodel.cn/api/paas/v4/chat/completions');
   });
 
   it('上游 4xx（如 Key 无效）状态码与响应体原样透传，不吞错误', async () => {
@@ -167,8 +202,31 @@ describe('同源 LLM 代理：白名单拒绝与 SSRF 防护（全部在发起�
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ['https://open.bigmodel.cn/api/paas/v5', 'BigModel 错误版本号'],
+    ['https://open.bigmodel.cn/api/paas', 'BigModel 缺版本段'],
+    ['https://open.bigmodel.cn/api/coding/v4', 'coding 路径缺 paas 段'],
+    ['https://open.bigmodel.cn/api/coding/paas/v4/extra', '规范路径后多一级'],
+    ['https://open.bigmodel.cn/api/paas/v4/chat/completions', '把完整端点当 baseUrl'],
+    ['https://open.bigmodel.cn/', '缺路径（裸主机）'],
+    ['https://open.bigmodel.cn//api/paas/v4', '双斜杠非常规路径'],
+    ['https://api.openai.com/v2', 'OpenAI 错误版本号'],
+    ['https://api.openai.com/', 'OpenAI 缺路径'],
+  ])('白名单主机的非法路径 %s（%s）→ 4xx 拒绝，不发起上游请求', async (baseUrl) => {
+    const fetchMock: FetchMock = vi.fn(async () => okSse());
+    const res = await handleRequest(proxyRequest({ baseUrl }), { fetchImpl: (i, j) => fetchMock(i, j) });
+    expect(res.status).toBeGreaterThanOrEqual(400);
+    expect(res.status).toBeLessThan(500);
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(await res.text()).toContain('路径不在白名单内');
+  });
+
   it('白名单表只含约定的两个主机（钉子：新增主机必须改这里）', () => {
     expect(Object.keys(UPSTREAM_WHITELIST).sort()).toEqual(['api.openai.com', 'open.bigmodel.cn']);
+  });
+
+  it('BigModel 只允许 /api/paas/v4 与 /api/coding/paas/v4 两种规范路径（钉子）', () => {
+    expect(UPSTREAM_WHITELIST['open.bigmodel.cn'].allowedBasePaths).toEqual(['/api/paas/v4', '/api/coding/paas/v4']);
   });
 });
 
@@ -183,15 +241,21 @@ describe('同源 LLM 代理：方法 / 路径 / 体积 / 请求体校验', () =>
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it.each(['/llm/embeddings', '/v1/chat/completions', '/functions/v1/app/other', '/'])(
-    '路径 %s 不在端点白名单 → 404，不发起上游请求',
-    async (path) => {
-      const fetchMock: FetchMock = vi.fn(async () => okSse());
-      const res = await handleRequest(proxyRequest({ path }), { fetchImpl: (i, j) => fetchMock(i, j) });
-      expect(res.status).toBe(404);
-      expect(fetchMock).not.toHaveBeenCalled();
-    },
-  );
+  it.each([
+    '/llm/embeddings',
+    '/v1/chat/completions',
+    '/functions/v1/app/other',
+    '/app-a1b2c3d4e5/llm/extra',
+    '/app-a1b2c3d4e5/LLM',
+    '/app-a1b2c3d4e5/llmx',
+    '/app-a1b2c3d4e5',
+    '/',
+  ])('路径 %s 末段不是 llm → 404，不发起上游请求', async (path) => {
+    const fetchMock: FetchMock = vi.fn(async () => okSse());
+    const res = await handleRequest(proxyRequest({ path }), { fetchImpl: (i, j) => fetchMock(i, j) });
+    expect(res.status).toBe(404);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 
   it('请求体超 1MB → 413，不发起上游请求', async () => {
     const fetchMock: FetchMock = vi.fn(async () => okSse());
