@@ -6,6 +6,8 @@ import {
   hasRemoteAgent,
   chatCompletionsUrl,
   maskApiKey,
+  sameOriginLlmProxyUrl,
+  LLM_PROXY_PATH,
   V2_CONFIG_STORAGE_KEY,
   DEFAULT_V2_CONFIG,
 } from './config';
@@ -72,5 +74,13 @@ describe('v2 模型配置（T1）', () => {
     expect(maskApiKey('')).toBe('');
     expect(maskApiKey('sk1')).toBe('••••');
     expect(maskApiKey('sk-1234567890abcdef')).toBe('sk-1…ef');
+  });
+
+  it('同源代理地址：挂载点固定；显式 origin 拼接；缺省取当前站点 origin', () => {
+    expect(LLM_PROXY_PATH).toBe('/functions/v1/app/llm');
+    expect(sameOriginLlmProxyUrl('https://study.example.com')).toBe('https://study.example.com/functions/v1/app/llm');
+    expect(sameOriginLlmProxyUrl('http://localhost:4174')).toBe('http://localhost:4174/functions/v1/app/llm');
+    // jsdom 环境：缺省用 location.origin（同源请求不触发 CORS 预检）
+    expect(sameOriginLlmProxyUrl()).toBe(`${location.origin}/functions/v1/app/llm`);
   });
 });

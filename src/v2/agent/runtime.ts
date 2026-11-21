@@ -12,7 +12,7 @@
 
 import type { Agent, ChatMessage, EmitFn, ToolCall, ToolDef } from '../types';
 import type { V2Config } from '../config';
-import { chatCompletionsUrl } from '../config';
+import { chatCompletionsUrl, sameOriginLlmProxyUrl } from '../config';
 import { createSSEParser } from './sse';
 import { buildTutorSystemPrompt } from './prompt';
 import { runToolCall, type ToolContext, type ToolRegistry } from './tools';
@@ -36,6 +36,11 @@ export interface RuntimeDeps {
   maxRounds?: number;
   /** 系统提示词（测试可注入短文案） */
   systemPrompt?: string;
+  /**
+   * 同源 LLM 代理地址（CORS 回退通道，见 functions/index.ts）：
+   * 缺省取 sameOriginLlmProxyUrl()；null 显式禁用回退（始终直连）。
+   */
+  proxyUrl?: string | null;
 }
 
 /* -------------------- 流式增量累积 -------------------- */
@@ -108,6 +113,58 @@ interface ChatRequestBody {
   temperature?: number;
 }
 
+/**
+ * 一次 run 内的通道状态：直连网络层失败转同源代理成功后，后续轮次
+ * 优先走代理（避免每轮都先撞一次注定失败的 CORS 预检）。
+ */
+interface Transport {
+  /** 同源代理地址（functions/index.ts）；null = 显式禁用回退 */
+  proxyUrl: string | null;
+  /** 代理通道已成功过：本轮请求代理优先 */
+  preferProxy: boolean;
+}
+
+/**
+ * 单轮 POST 的通道编排：先直连；仅当 fetch 在网络层抛错（浏览器把 CORS
+ * 拒绝也表现为 TypeError，拿不到任何 HTTP 响应）才回退同源代理重发。
+ * 已拿到 HTTP 响应（哪怕 4xx/5xx）说明直连可用，交回上层按状态码处理。
+ */
+async function postChat(
+  config: V2Config,
+  fetchImpl: FetchLike,
+  body: string,
+  transport: Transport,
+): Promise<Response> {
+  const baseHeaders: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${config.apiKey}`,
+  };
+  const attempts: Array<{ url: string; headers: Record<string, string>; proxied: boolean }> = [
+    { url: chatCompletionsUrl(config.baseUrl), headers: baseHeaders, proxied: false },
+  ];
+  if (transport.proxyUrl !== null) {
+    attempts.push({
+      url: transport.proxyUrl,
+      // 同源代理靠这个头指认上游（代理侧仅认白名单主机，见 functions/index.ts）
+      headers: { ...baseHeaders, 'x-llm-base-url': config.baseUrl },
+      proxied: true,
+    });
+  }
+  if (transport.preferProxy) attempts.reverse();
+
+  let lastError: unknown = null;
+  for (const attempt of attempts) {
+    try {
+      const response = await fetchImpl(attempt.url, { method: 'POST', headers: attempt.headers, body });
+      transport.preferProxy = attempt.proxied; // 记住本轮成功的通道
+      return response;
+    } catch (error) {
+      lastError = error; // 网络层失败：换下一通道重试
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('模型服务不可达（直连与同源代理均失败）');
+}
+
 function wireMessages(system: string, history: ChatMessage[]): ChatMessage[] {
   const out: ChatMessage[] = [{ role: 'system', content: system }];
   for (const m of history) {
@@ -140,7 +197,7 @@ async function readStreamBody(
   onChunk(decoder.decode()); // 冲刷
 }
 
-/** 单轮请求：POST chat/completions 并把 SSE 事件灌进 accumulator */
+/** 单轮请求：POST chat/completions（直连失败回退同源代理）并把 SSE 事件灌进 accumulator */
 async function requestRound(
   config: V2Config,
   messages: ChatMessage[],
@@ -148,6 +205,7 @@ async function requestRound(
   fetchImpl: FetchLike,
   acc: StreamAccumulator,
   emit: EmitFn,
+  transport: Transport,
 ): Promise<void> {
   const requestBody: ChatRequestBody & { tools?: unknown } = {
     model: config.model,
@@ -157,14 +215,7 @@ async function requestRound(
   if (tools && tools.length > 0) {
     requestBody.tools = tools;
   }
-  const response = await fetchImpl(chatCompletionsUrl(config.baseUrl), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${config.apiKey}`,
-    },
-    body: JSON.stringify(requestBody),
-  });
+  const response = await postChat(config, fetchImpl, JSON.stringify(requestBody), transport);
   if (!response.ok) {
     let detail = `${response.status}`;
     try {
@@ -201,13 +252,17 @@ function parseToolArguments(raw: string): unknown {
 
 /* -------------------- 远程 Agent 组装 -------------------- */
 
-/** 创建 OpenAI 兼容远程 Agent（流式 + tool calling） */
+/** 创建 OpenAI 兼容远程 Agent（流式 + tool calling；直连失败回退同源代理） */
 export function createRemoteAgent(config: V2Config, deps: RuntimeDeps = {}): Agent {
   const fetchImpl = deps.fetchImpl ?? ((input, init) => fetch(input, init));
   const execute = deps.executeTool;
   const tools = deps.tools ?? deps.registry?.defs();
   const maxRounds = deps.maxRounds ?? MAX_TOOL_ROUNDS;
   const systemPrompt = deps.systemPrompt ?? buildTutorSystemPrompt();
+  const transport: Transport = {
+    proxyUrl: deps.proxyUrl === undefined ? sameOriginLlmProxyUrl() : deps.proxyUrl,
+    preferProxy: false,
+  };
 
   return {
     label: config.model,
@@ -224,6 +279,7 @@ export function createRemoteAgent(config: V2Config, deps: RuntimeDeps = {}): Age
             fetchImpl,
             acc,
             emit,
+            transport,
           );
 
           const calls = acc.toolCalls.filter((c) => c.function.name !== '');

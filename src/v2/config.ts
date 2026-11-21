@@ -80,6 +80,25 @@ export function chatCompletionsUrl(baseUrl: string): string {
   return `${baseUrl.replace(/\/+$/, '')}/chat/completions`;
 }
 
+/* -------------------- 同源 LLM 代理（CORS 规避） -------------------- */
+
+/**
+ * 同源 LLM 代理挂载路径（实现见 functions/index.ts）：浏览器直连第三方端点时
+ * CORS 预检（OPTIONS）拿不到响应头（open.bigmodel.cn 等不回 CORS 头），
+ * fetch 必然 TypeError —— 远程运行时在网络层失败后回退到该同源地址，
+ * 由服务端函数转发到白名单主机的 chat/completions。
+ */
+export const LLM_PROXY_PATH = '/functions/v1/app/llm';
+
+/**
+ * 同源代理完整地址：缺省取当前站点 origin（浏览器同源请求不触发预检）；
+ * 非浏览器环境（无 location）回退相对路径，交给注入的 fetchImpl 解释。
+ */
+export function sameOriginLlmProxyUrl(origin?: string): string {
+  const site = origin ?? (typeof location !== 'undefined' ? location.origin : '');
+  return `${site}${LLM_PROXY_PATH}`;
+}
+
 /** 展示用脱敏 Key（首 4 位 + … + 末 2 位；过短则全打码） */
 export function maskApiKey(key: string): string {
   if (key === '') return '';
