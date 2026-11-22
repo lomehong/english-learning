@@ -102,6 +102,62 @@
   background: var(--color-primary-soft);
 }
 
+/* ---- 顶栏「清空对话」（本地历史，二次确认；取消不改动） ---- */
+.v2-topbar__history {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.v2-topbar__clear {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.v2-topbar__clear:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+/* 确认态：危险色提示，再次点击才真正清空 */
+.v2-topbar__clear--confirm,
+.v2-topbar__clear--confirm:hover {
+  border-color: var(--color-grade-again);
+  color: var(--color-grade-again);
+  background: var(--color-grade-again-soft);
+}
+
+.v2-topbar__clear-cancel {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.v2-topbar__clear-cancel:hover {
+  color: var(--color-text);
+}
+
+.v2-topbar__clear-cancel[hidden] {
+  display: none;
+}
+
 /* ---- 配置面板 ---- */
 .v2-config {
   flex: none;
@@ -176,6 +232,11 @@
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+}
+
+/* 有本地历史时欢迎卡让位（恢复的消息占据消息流），清空后恢复显示 */
+.v2-welcome[hidden] {
+  display: none;
 }
 
 .v2-welcome__title {
@@ -941,6 +1002,10 @@
 @media (max-width: 24.375rem) {
   .v2-topbar__back {
     font-size: var(--font-size-xs);
+    padding: var(--space-1);
+  }
+
+  .v2-topbar__clear {
     padding: var(--space-1);
   }
 

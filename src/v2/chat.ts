@@ -8,6 +8,9 @@
  *   渲染成消息流常驻卡片（工具名 / 入参 / 结果摘要），状态行仅作过渡提示；
  * - 模型配置面板：OpenAI 兼容 baseUrl / apiKey / model 持久化 localStorage；
  *   无 key 自动降级「离线陪学」剧本，页面永远可用；
+ * - 对话历史本地持久化（history.ts）：用户 / 助手消息存
+ *   english-learning.v2.history.v1，刷新恢复最近 50 条（时间顺序，坏数据
+ *   安全降级）；顶栏「清空对话」二次确认后清空并回到欢迎卡，取消不改动；
  * - 三档主题：复用全局 <html data-theme> 令牌体系（浅色 / 深色 / 跟随系统）；
  * - 390px 自适应：单列流式布局 + 窄屏断点（styles/v2.css）。
  *
@@ -32,6 +35,12 @@ import {
 import { createToolCard, type ToolCard } from './components/toolcard';
 import { createLoopTicker } from './components/loopticker';
 import { createLoopTracker } from './loop';
+import {
+  loadChatHistory,
+  saveChatHistory,
+  clearChatHistory,
+  type HistoryEntry,
+} from './history';
 import { loadDemoMessages } from './seed';
 import type { Agent, ChatMessage } from './types';
 import { createSpeechEngine, type SpeechEngine, type SpeechSynthesisLike, type SpeechSynthesisUtteranceLike } from '../speech/tts';
@@ -159,6 +168,9 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   const now = deps.now ?? Date.now;
   const speech = deps.createSpeech ? deps.createSpeech() : defaultSpeech();
   const history: ChatMessage[] = [];
+  /** 本地持久化副本（仅 user / assistant 文本轮；saveChatHistory 负责上限收敛） */
+  const savedHistory: HistoryEntry[] = [];
+  const persistHistory = (): void => saveChatHistory(savedHistory, storage);
   let busy = false;
 
   /* ---------- 学习闭环（T5）：唯一状态源 + 常驻进度条 ----------
@@ -183,13 +195,25 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   title.append(text('span', 'v2-topbar__name', '对话式陪学'), text('span', 'v2-topbar__sub', 'v2 入口'));
   const modeBadge = el('span', 'v2-mode');
   modeBadge.setAttribute('data-testid', 'v2-mode');
+  /* 「清空对话」（本地历史）：二次确认内联在顶栏，取消不改动 */
+  const historyActions = el('div', 'v2-topbar__history');
+  const clearHistoryBtn = el('button', 'v2-topbar__clear');
+  clearHistoryBtn.type = 'button';
+  clearHistoryBtn.setAttribute('data-testid', 'v2-history-clear');
+  clearHistoryBtn.textContent = '清空对话';
+  const clearCancelBtn = el('button', 'v2-topbar__clear-cancel');
+  clearCancelBtn.type = 'button';
+  clearCancelBtn.setAttribute('data-testid', 'v2-history-clear-cancel');
+  clearCancelBtn.textContent = '取消';
+  clearCancelBtn.hidden = true;
+  historyActions.append(clearHistoryBtn, clearCancelBtn);
   const configToggle = el('button', 'v2-iconbtn');
   configToggle.type = 'button';
   configToggle.setAttribute('data-testid', 'v2-config-toggle');
   configToggle.setAttribute('aria-expanded', 'false');
   configToggle.setAttribute('aria-label', '模型配置面板');
   configToggle.textContent = '⚙';
-  topbar.append(back, title, modeBadge, configToggle);
+  topbar.append(back, title, modeBadge, historyActions, configToggle);
 
   const configPanel = el('section', 'v2-config');
   configPanel.setAttribute('data-testid', 'v2-config');
@@ -377,6 +401,38 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
     syncWelcome(loadV2Config(storage));
   });
 
+  /* ---------- 清空对话（本地历史，二次确认） ---------- */
+
+  let confirmingClear = false;
+  const resetClearConfirm = (): void => {
+    confirmingClear = false;
+    clearHistoryBtn.textContent = '清空对话';
+    clearHistoryBtn.classList.remove('v2-topbar__clear--confirm');
+    clearCancelBtn.hidden = true;
+  };
+
+  clearCancelBtn.addEventListener('click', resetClearConfirm);
+
+  clearHistoryBtn.addEventListener('click', () => {
+    if (busy) return;
+    if (!confirmingClear) {
+      // 第一次点击：只进入确认态，不改动任何数据
+      confirmingClear = true;
+      clearHistoryBtn.textContent = '确认清空';
+      clearHistoryBtn.classList.add('v2-topbar__clear--confirm');
+      clearCancelBtn.hidden = false;
+      return;
+    }
+    // 第二次点击（确认）：清空本地历史与消息流，回到欢迎卡
+    savedHistory.length = 0;
+    history.length = 0;
+    clearChatHistory(storage);
+    for (const node of [...stream.querySelectorAll('.v2-msg')]) node.remove();
+    syncWelcome(loadV2Config(storage));
+    welcome.hidden = false;
+    resetClearConfirm();
+  });
+
   /* ---------- 发送回路 ---------- */
 
   function pickAgent(): Agent {
@@ -402,6 +458,8 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
     input.value = '';
     try {
       history.push({ role: 'user', content });
+      savedHistory.push({ role: 'user', text: content, at: now() });
+      persistHistory(); // 发送即落盘：刷新不丢刚发出的提问
       const userHandle = makeMessage(stream, 'user');
       userHandle.body.textContent = content;
 
@@ -461,10 +519,19 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
           }
         });
         offlineTutor = fallback;
-        if (reply) renderFinal(fbHandle, reply.content, renderCtx);
+        if (reply) {
+          renderFinal(fbHandle, reply.content, renderCtx);
+          // 降级补答同样是助手回答：照常持久化
+          savedHistory.push({ role: 'assistant', text: reply.content, at: now() });
+          persistHistory();
+        }
         scrollFinal(fbHandle, stream);
       } else {
         history.push(assistantMsg);
+        if (assistantMsg.content.trim() !== '') {
+          savedHistory.push({ role: 'assistant', text: assistantMsg.content, at: now() });
+          persistHistory();
+        }
         renderFinal(agentHandle, assistantMsg.content, renderCtx);
         // 远程模式闭环兜底：回复里的组件即闭环证据
         // （词汇卡 → 词汇/计划步；quiz 组件 → 小测步开始）
@@ -504,16 +571,36 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   syncWelcome(loadV2Config(storage));
   stream.append(welcome);
 
+  /* ---------- 历史恢复（本地持久化）：坏数据已由 history.ts 安全降级 ----------
+   * 有历史 → 欢迎卡让位，按时间顺序回放最近 50 条；恢复的 assistant 正文
+   * （含组件围栏）与模型回复走同一渲染管线；同时回填 Agent 上下文，
+   * 刷新后继续对话不失忆。无历史时保持原行为（欢迎卡 + 演示种子）。 */
+  const storedHistory = loadChatHistory(storage);
+  if (storedHistory.length > 0) {
+    welcome.hidden = true;
+    for (const msg of storedHistory) {
+      history.push({ role: msg.role, content: msg.text });
+      savedHistory.push(msg);
+      const handle = makeMessage(stream, msg.role);
+      if (msg.role === 'user') handle.body.textContent = msg.text;
+      else renderFinal(handle, msg.text, renderCtx);
+    }
+    scrollStream(stream);
+  }
+
   /* ---------- 演示消息注入（T3 验收通道）：localStorage 预置剧本 ----------
    * 与模型回复同一渲染管线：正文走围栏提取，dsl 逐节点走白名单渲染器；
-   * 坏种子 / 非法节点静默降级，页面零脚本异常。仅作展示，不进对话历史。 */
-  const demoMessages = loadDemoMessages(storage);
-  for (const msg of demoMessages) {
-    const handle = makeMessage(stream, msg.role);
-    renderFinal(handle, msg.content, renderCtx);
-    for (const node of msg.dsl) handle.components.append(renderComponent(node, renderCtx));
+   * 坏种子 / 非法节点静默降级，页面零脚本异常。仅作展示，不进对话历史。
+   * 仅在无本地历史时注入（有真实历史时历史优先）。 */
+  if (storedHistory.length === 0) {
+    const demoMessages = loadDemoMessages(storage);
+    for (const msg of demoMessages) {
+      const handle = makeMessage(stream, msg.role);
+      renderFinal(handle, msg.content, renderCtx);
+      for (const node of msg.dsl) handle.components.append(renderComponent(node, renderCtx));
+    }
+    if (demoMessages.length > 0) scrollStream(stream);
   }
-  if (demoMessages.length > 0) scrollStream(stream);
 
   input.focus();
 
