@@ -10,7 +10,9 @@
  *   无 key 自动降级「离线陪学」剧本，页面永远可用；
  * - 对话历史本地持久化（history.ts）：用户 / 助手消息存
  *   english-learning.v2.history.v1，刷新恢复最近 50 条（时间顺序，坏数据
- *   安全降级）；顶栏「清空对话」二次确认后清空并回到欢迎卡，取消不改动；
+ *   安全降级）；恢复后消息流顶部显示可关闭提示条「已恢复上次对话
+ *   （N 条）」，清空对话后随之消失；顶栏「清空对话」二次确认后清空
+ *   并回到欢迎卡，取消不改动；
  * - 三档主题：复用全局 <html data-theme> 令牌体系（浅色 / 深色 / 跟随系统）；
  * - 390px 自适应：单列流式布局 + 窄屏断点（styles/v2.css）。
  *
@@ -39,6 +41,7 @@ import {
   loadChatHistory,
   saveChatHistory,
   clearChatHistory,
+  restoredBannerText,
   type HistoryEntry,
 } from './history';
 import { loadDemoMessages } from './seed';
@@ -403,6 +406,14 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
 
   /* ---------- 清空对话（本地历史，二次确认） ---------- */
 
+  /* 历史恢复提示条（可关闭）：恢复历史后置顶于消息流，
+   * 点关闭或确认清空对话后移除；仅本组件局部状态，不落盘。 */
+  let restoredBanner: HTMLElement | null = null;
+  const dismissRestoredBanner = (): void => {
+    restoredBanner?.remove();
+    restoredBanner = null;
+  };
+
   let confirmingClear = false;
   const resetClearConfirm = (): void => {
     confirmingClear = false;
@@ -427,6 +438,7 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
     savedHistory.length = 0;
     history.length = 0;
     clearChatHistory(storage);
+    dismissRestoredBanner(); // 恢复提示条随清空消失
     for (const node of [...stream.querySelectorAll('.v2-msg')]) node.remove();
     syncWelcome(loadV2Config(storage));
     welcome.hidden = false;
@@ -574,10 +586,29 @@ export function renderChat(root: HTMLElement, deps: ChatDeps = {}): () => void {
   /* ---------- 历史恢复（本地持久化）：坏数据已由 history.ts 安全降级 ----------
    * 有历史 → 欢迎卡让位，按时间顺序回放最近 50 条；恢复的 assistant 正文
    * （含组件围栏）与模型回复走同一渲染管线；同时回填 Agent 上下文，
-   * 刷新后继续对话不失忆。无历史时保持原行为（欢迎卡 + 演示种子）。 */
+   * 刷新后继续对话不失忆。无历史时保持原行为（欢迎卡 + 演示种子）。
+   * 恢复后在消息流顶部显示可关闭提示条「已恢复上次对话（N 条）」。 */
   const storedHistory = loadChatHistory(storage);
   if (storedHistory.length > 0) {
     welcome.hidden = true;
+    /* 提示条：条数 = 实际恢复条数；「×」关闭后本次挂载不再出现 */
+    const banner = el('div', 'v2-history-restored');
+    banner.setAttribute('data-testid', 'v2-history-restored');
+    banner.setAttribute('role', 'status');
+    const bannerText = text(
+      'span',
+      'v2-history-restored__text',
+      restoredBannerText(storedHistory.length),
+    );
+    const bannerClose = el('button', 'v2-history-restored__close');
+    bannerClose.type = 'button';
+    bannerClose.setAttribute('data-testid', 'v2-history-restored-close');
+    bannerClose.setAttribute('aria-label', '关闭恢复提示');
+    bannerClose.textContent = '×';
+    bannerClose.addEventListener('click', dismissRestoredBanner);
+    banner.append(bannerText, bannerClose);
+    restoredBanner = banner;
+    stream.append(banner);
     for (const msg of storedHistory) {
       history.push({ role: msg.role, content: msg.text });
       savedHistory.push(msg);

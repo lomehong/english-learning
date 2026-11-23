@@ -5,6 +5,8 @@
  * - 条目形状（与验收 evidence.seedLocalStorage 约定一致）：
  *     [{ role: 'user' | 'assistant', text: string, at: number }, ...]
  * - 恢复：按 at 升序（时间顺序）取最近 HISTORY_MAX_MESSAGES = 50 条；
+ * - 恢复提示条文案（restoredBannerText）：「已恢复上次对话（N 条）」，
+ *   N 为实际恢复条数（壳层恢复后置顶显示，可关闭）；
  * - 安全降级：坏 JSON / 顶层非数组 → 空列表；非法条目（非对象 / 非法 role /
  *   非字符串 text / 纯空白 text）逐条丢弃；超长 text 截断到上限；at 非有限
  *   数字回退 0；storage 读 / 写抛异常（隐私模式、配额满）一律吞掉不炸页面。
@@ -92,4 +94,13 @@ export function clearChatHistory(storage: StorageLike = defaultStorage()): void 
   } catch {
     /* 忽略 */
   }
+}
+
+/**
+ * 恢复提示条文案：「已恢复上次对话（N 条）」。
+ * N = 本次实际恢复的条数（loadChatHistory 已按上限收敛，最大 50）；
+ * 纯函数供壳层渲染与单测直接断言。
+ */
+export function restoredBannerText(count: number): string {
+  return `已恢复上次对话（${count} 条）`;
 }

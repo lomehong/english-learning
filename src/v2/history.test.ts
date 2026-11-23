@@ -2,9 +2,11 @@
  * /v2 对话历史本地持久化测试：
  *
  * - 单元（history.ts 纯函数 / storage 接缝）：保存上限（最近 50 条）、
- *   恢复顺序（at 升序）、坏数据降级（坏 JSON / 非法条目 / 超长 / 抛异常）；
- * - 集成（chat.ts 壳层接线）：刷新恢复回放、发送回路落盘、顶栏「清空对话」
- *   二次确认（确认清空回到欢迎卡 / 取消不改动）、不影响模型配置与离线模式。
+ *   恢复顺序（at 升序）、坏数据降级（坏 JSON / 非法条目 / 超长 / 抛异常）、
+ *   恢复提示条文案；
+ * - 集成（chat.ts 壳层接线）：刷新恢复回放、恢复提示条（显示 / 隐藏 /
+ *   关闭 / 清空后消失）、发送回路落盘、顶栏「清空对话」二次确认
+ *   （确认清空回到欢迎卡 / 取消不改动）、不影响模型配置与离线模式。
  */
 
 import { describe, it, expect, afterEach } from 'vitest';
@@ -16,6 +18,7 @@ import {
   loadChatHistory,
   saveChatHistory,
   clearChatHistory,
+  restoredBannerText,
   type HistoryEntry,
 } from './history';
 import { renderChat, type ChatDeps } from './chat';
@@ -166,6 +169,12 @@ describe('/v2 对话历史持久化：storage 读写接缝', () => {
     expect(loadChatHistory(storage)).toEqual([]);
     expect(storage.getItem(V2_CONFIG_STORAGE_KEY)).toBe(configRaw);
   });
+
+  it('restoredBannerText：提示条文案「已恢复上次对话（N 条）」', () => {
+    expect(restoredBannerText(1)).toBe('已恢复上次对话（1 条）');
+    expect(restoredBannerText(2)).toBe('已恢复上次对话（2 条）');
+    expect(restoredBannerText(HISTORY_MAX_MESSAGES)).toBe('已恢复上次对话（50 条）');
+  });
 });
 
 describe('/v2 对话历史持久化：壳层接线（chat.ts）', () => {
@@ -220,6 +229,82 @@ describe('/v2 对话历史持久化：壳层接线（chat.ts）', () => {
     expect(texts).toHaveLength(HISTORY_MAX_MESSAGES);
     expect(texts[0]).toBe('消息 10');
     expect(texts.at(-1)).toBe('消息 59');
+    // 提示条条数 = 实际恢复条数（上限收敛后）
+    expect(root!.querySelector('[data-testid="v2-history-restored"]')!.textContent).toContain(
+      `已恢复上次对话（${HISTORY_MAX_MESSAGES} 条）`,
+    );
+  });
+
+  it('恢复提示条（显示）：预置历史 → 消息流顶部「已恢复上次对话（2 条）」+ 关闭按钮', () => {
+    const storage = memory({
+      [HISTORY_STORAGE_KEY]: JSON.stringify([
+        { role: 'user', text: '历史问题', at: 1 },
+        { role: 'assistant', text: '历史回答', at: 2 },
+      ]),
+    });
+    attach(storage);
+    const banner = root!.querySelector('[data-testid="v2-history-restored"]') as HTMLElement;
+    expect(banner).toBeTruthy();
+    expect(banner.textContent).toContain('已恢复上次对话（2 条）');
+    expect(banner.querySelector('[data-testid="v2-history-restored-close"]')).toBeTruthy();
+    // 顶部：提示条是消息流第一个可见子元素（隐藏的欢迎卡不算），先于第一条消息
+    const stream = root!.querySelector('[data-testid="v2-stream"]')!;
+    const visible = [...stream.children].filter((n) => !(n as HTMLElement).hidden);
+    expect(visible[0]).toBe(banner);
+    expect(visible[1]).toBe(root!.querySelector('.v2-msg--user'));
+    expect(visible[2]).toBe(root!.querySelector('.v2-msg--assistant'));
+  });
+
+  it('恢复提示条（隐藏）：无历史不显示；坏历史（安全降级为空）同样不显示', () => {
+    attach(memory());
+    expect(root!.querySelector('[data-testid="v2-history-restored"]')).toBeNull();
+    expect(root!.querySelectorAll('.v2-msg')).toHaveLength(0);
+    expect((root!.querySelector('[data-testid="v2-welcome"]') as HTMLElement).hidden).toBe(false);
+
+    // 模拟刷新：换坏 JSON 历史重新挂载，降级为空列表 → 仍不显示
+    cleanupFn?.();
+    cleanupFn = null;
+    root!.remove();
+    root = null;
+    attach(memory({ [HISTORY_STORAGE_KEY]: '{ broken json' }));
+    expect(root!.querySelector('[data-testid="v2-history-restored"]')).toBeNull();
+  });
+
+  it('恢复提示条（关闭）：点「×」→ 提示条消失，恢复的消息保留，storage 不受影响', () => {
+    const storage = memory({
+      [HISTORY_STORAGE_KEY]: JSON.stringify([
+        { role: 'user', text: '历史问题', at: 1 },
+        { role: 'assistant', text: '历史回答', at: 2 },
+      ]),
+    });
+    attach(storage);
+    (root!.querySelector('[data-testid="v2-history-restored-close"]') as HTMLButtonElement).click();
+    expect(root!.querySelector('[data-testid="v2-history-restored"]')).toBeNull();
+    expect(bodies()).toEqual(['历史问题', '历史回答']);
+    // 关闭只是视图行为：历史原样保留（下次刷新仍可恢复）
+    expect(loadChatHistory(storage)).toHaveLength(2);
+  });
+
+  it('恢复提示条（清空）：确认清空对话 → 提示条随消息一起消失；确认前保持可见', () => {
+    const storage = memory({
+      [HISTORY_STORAGE_KEY]: JSON.stringify([
+        { role: 'user', text: '历史问题', at: 1 },
+        { role: 'assistant', text: '历史回答', at: 2 },
+      ]),
+    });
+    attach(storage);
+    const clear = root!.querySelector('[data-testid="v2-history-clear"]') as HTMLButtonElement;
+
+    // 第一次点击（进入确认态）：提示条与消息均保持
+    clear.click();
+    expect(root!.querySelector('[data-testid="v2-history-restored"]')).toBeTruthy();
+
+    // 第二次点击（确认清空）：提示条消失、消息清空、回到欢迎卡
+    clear.click();
+    expect(root!.querySelector('[data-testid="v2-history-restored"]')).toBeNull();
+    expect(root!.querySelectorAll('.v2-msg')).toHaveLength(0);
+    expect((root!.querySelector('[data-testid="v2-welcome"]') as HTMLElement).hidden).toBe(false);
+    expect(loadChatHistory(storage)).toEqual([]);
   });
 
   it('恢复的 assistant 围栏正文走同一渲染管线：组件可见、无 ``` 原文', () => {
