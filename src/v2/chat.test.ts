@@ -105,6 +105,27 @@ describe('/v2 对话壳（T1）', () => {
     }
   });
 
+  it('欢迎卡隐私说明：一行「所有对话与学习数据仅保存在本机浏览器」（离线 / 远程模式均在）', () => {
+    env = setup();
+    const welcome = env.root.querySelector('[data-testid="v2-welcome"]')!;
+    const privacy = welcome.querySelector('[data-testid="v2-welcome-privacy"]') as HTMLElement | null;
+    expect(privacy).toBeTruthy();
+    expect(privacy!.tagName).toBe('P');
+    expect(privacy!.textContent).toBe('所有对话与学习数据仅保存在本机浏览器');
+    // 位于学习报告入口之前（报告入口仍是欢迎卡最后一个子节点）
+    expect(privacy!.nextElementSibling?.getAttribute('data-testid')).toBe('v2-welcome-report');
+
+    // 配置 Key 切到远程模式后，syncWelcome 重建欢迎卡，隐私说明仍在
+    const toggle = env.root.querySelector('[data-testid="v2-config-toggle"]') as HTMLButtonElement;
+    toggle.click();
+    const key = env.root.querySelector('[data-testid="v2-config-key"]') as HTMLInputElement;
+    key.value = 'sk-live-key';
+    (env.root.querySelector('[data-testid="v2-config-save"]') as HTMLButtonElement).click();
+    expect(env.root.querySelector('[data-testid="v2-welcome"]')!.textContent).toContain('已连接模型');
+    const privacyRemote = env.root.querySelector('[data-testid="v2-welcome-privacy"]')!;
+    expect(privacyRemote.textContent).toBe('所有对话与学习数据仅保存在本机浏览器');
+  });
+
   it('无 key 降级：输入消息 → 离线剧本流式回复（正文 + 组件渲染区）', async () => {
     env = setup();
     const input = env.root.querySelector('[data-testid="v2-input"]') as HTMLTextAreaElement;
