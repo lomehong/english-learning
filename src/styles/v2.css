@@ -239,6 +239,48 @@
   display: none;
 }
 
+/* ---- 历史恢复提示条（恢复历史后置顶于消息流，可关闭） ---- */
+.v2-history-restored {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-primary-soft);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+}
+
+.v2-history-restored__text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.6;
+}
+
+.v2-history-restored__close {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  font-size: var(--font-size-md);
+  line-height: 1;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.v2-history-restored__close:hover {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
 .v2-welcome__title {
   margin: 0 0 var(--space-2);
   font-family: var(--font-family-serif);
