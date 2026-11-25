@@ -1,6 +1,16 @@
 import { BOOK_LABELS, BOOKS, UNIT_IDS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
 import { buildBookSwitcher, buildUnitSwitcher, currentUnit } from './unit-switch';
-import { buildLast7Days, computeStreak, goalCompletion, type DayActivity } from '../store/daily';
+import {
+  buildLast7Days,
+  computeStreak,
+  goalCompletion,
+  loadDaily,
+  loadGoal,
+  todayCounters,
+  type DailyActivity,
+  type DailyGoal,
+  type DayActivity,
+} from '../store/daily';
 import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：Hero 品牌区（中文衬线标题 + 教材统计）+ 全局「册 + 单元」两级切换器
@@ -61,6 +71,192 @@ const MODULES = [
     desc: '按册 + 单元统计 / 错题 / 复习到期与学习建议，支持数据导出导入',
   },
 ] as const;
+
+/* -------------------- 今日挑战：数据适配与状态计算（纯函数，可单测） --------------------
+ * 数据来源只读现有 store（每日目标 + 每日活动，两份 localStorage 约定键），
+ * 不新增接口 / 网络请求 / 依赖；本层不触碰 DOM，也不改变页面挂载。
+ * 管线：getTodayChallengeSnapshot（读数据，异常 → null）→ normalizeTodayChallenge（归一化）
+ *       → buildTodayChallengeViewModel（空态 / 百分比 / 转义后的文案与 stats）。 */
+
+/** 今日挑战原始数据（来自 store/localStorage 的未信任数据；字段可能缺失或类型错误） */
+export interface TodayChallengeRaw {
+  completedCount?: unknown;
+  totalCount?: unknown;
+  /** 键值统计（对象或键值对数组，类型未信任） */
+  stats?: unknown;
+}
+
+/** 今日挑战单个「键：值」统计项（label / value 均为字符串，展示层负责转义） */
+export interface TodayChallengeStat {
+  label: string;
+  value: string;
+}
+
+/** 归一化后的今日挑战：计数为非负数值，stats 为键值字符串列表 */
+export interface TodayChallenge {
+  completedCount: number;
+  totalCount: number;
+  stats: TodayChallengeStat[];
+}
+
+/** 今日挑战视图模型：空态 / 百分比 / 进度文案 / 已转义的 stats */
+export interface TodayChallengeViewModel {
+  empty: boolean;
+  /** 0 ~ 100 整数；空态为 0 */
+  percent: number;
+  /** 非空态「今日挑战进度 N%」；空态为空串 */
+  progressText: string;
+  completedCount: number;
+  totalCount: number;
+  /** label / value 已做 HTML 转义 */
+  stats: TodayChallengeStat[];
+}
+
+/** 读数接缝（测试可注入假 store；默认走现有 store 的真实 localStorage 读取） */
+export interface TodayChallengeDeps {
+  loadDaily?: () => DailyActivity;
+  loadGoal?: () => DailyGoal;
+  now?: () => number;
+}
+
+/**
+ * 今日挑战原始快照：只读现有 store（每日活动 + 每日目标），异常一律返回 null。
+ * 不发起任何网络请求，也不写入 localStorage。
+ */
+export function getTodayChallengeSnapshot(deps: TodayChallengeDeps = {}): TodayChallengeRaw | null {
+  try {
+    const now = deps.now ? deps.now() : Date.now();
+    const daily = deps.loadDaily ? deps.loadDaily() : loadDaily();
+    const goal = deps.loadGoal ? deps.loadGoal() : loadGoal();
+    const today = todayCounters(daily, now);
+    return {
+      completedCount: today.vocab + today.exercises,
+      totalCount: goal.vocab + goal.exercises,
+      stats: [
+        { label: '词汇', value: `${today.vocab}/${goal.vocab}` },
+        { label: '练习', value: `${today.exercises}/${goal.exercises}` },
+      ],
+    };
+  } catch {
+    // 读取异常（存储不可用 / 注入 loader 抛错）→ 上层按空态处理
+    return null;
+  }
+}
+
+/** 非负数值归一化：负数 / 非数字 / 空串 / NaN / Infinity → 0；数字字符串按数字解析 */
+export function toNonNegativeNumber(value: unknown): number {
+  let n: number;
+  if (typeof value === 'number') n = value;
+  else if (typeof value === 'string' && value.trim() !== '') n = Number(value);
+  else n = Number.NaN;
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return n;
+}
+
+/** HTML 转义（单趟替换，避免二次转义）：& < > " '；null/undefined → 空串 */
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+export function escapeHtml(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  return String(value).replace(/[&<>"']/g, (ch) => HTML_ESCAPES[ch]!);
+}
+
+/** 统计值文本化：数字/字符串/布尔保留，其余（null / 对象 / NaN / Infinity）→ 空串 */
+function statText(value: unknown): string {
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number') return Number.isFinite(value) ? String(value) : '';
+  if (typeof value === 'boolean') return String(value);
+  return '';
+}
+
+/**
+ * stats 归一化：对象 → 逐项 {label: 键, value: 值}；数组支持 [键, 值] 对、
+ * {label/key/name, value} 对象与裸字符串（label 为空）；空项丢弃。
+ */
+function normalizeStats(raw: unknown): TodayChallengeStat[] {
+  const stats: TodayChallengeStat[] = [];
+  if (Array.isArray(raw)) {
+    for (const entry of raw) {
+      if (Array.isArray(entry)) {
+        const label = statText(entry[0]);
+        const value = statText(entry[1]);
+        if (label === '' && value === '') continue;
+        stats.push({ label, value });
+      } else if (typeof entry === 'object' && entry !== null) {
+        const e = entry as Record<string, unknown>;
+        const label = statText(e.label ?? e.key ?? e.name);
+        const value = statText(e.value);
+        if (label === '' && value === '') continue;
+        stats.push({ label, value });
+      } else {
+        const value = statText(entry);
+        if (value === '') continue;
+        stats.push({ label: '', value });
+      }
+    }
+    return stats;
+  }
+  if (typeof raw === 'object' && raw !== null) {
+    for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+      const label = statText(key);
+      if (label === '') continue;
+      stats.push({ label, value: statText(value) });
+    }
+  }
+  return stats;
+}
+
+/**
+ * 今日挑战归一化（纯函数）：raw 为 null/undefined（或非对象）→ null（空态）；
+ * 计数经 toNonNegativeNumber 收敛，stats 归一化为键值字符串列表。
+ */
+export function normalizeTodayChallenge(raw: unknown): TodayChallenge | null {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw !== 'object') return null;
+  const v = raw as TodayChallengeRaw;
+  return {
+    completedCount: toNonNegativeNumber(v.completedCount),
+    totalCount: toNonNegativeNumber(v.totalCount),
+    stats: normalizeStats(v.stats),
+  };
+}
+
+/**
+ * 今日挑战视图模型（纯函数）：
+ * - 空态：raw 为 null/undefined、读取异常（快照返回 null）、completedCount<=0、totalCount<=0；
+ * - 非空：N = clamp(round(completedCount / totalCount * 100), 1, 100)，
+ *   progressText =「今日挑战进度 N%」；
+ * - stats 键与值均做 HTML 转义（空态也返回已归一化并转义的 stats）。
+ */
+export function buildTodayChallengeViewModel(raw: unknown): TodayChallengeViewModel {
+  const normalized = normalizeTodayChallenge(raw);
+  const stats = (normalized?.stats ?? []).map((stat) => ({
+    label: escapeHtml(stat.label),
+    value: escapeHtml(stat.value),
+  }));
+  const completedCount = normalized?.completedCount ?? 0;
+  const totalCount = normalized?.totalCount ?? 0;
+
+  if (normalized === null || completedCount <= 0 || totalCount <= 0) {
+    return { empty: true, percent: 0, progressText: '', completedCount, totalCount, stats };
+  }
+
+  const percent = Math.min(100, Math.max(1, Math.round((completedCount / totalCount) * 100)));
+  return {
+    empty: false,
+    percent,
+    progressText: `今日挑战进度 ${percent}%`,
+    completedCount,
+    totalCount,
+    stats,
+  };
+}
 
 export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()): void {
   const header = document.createElement('header');
