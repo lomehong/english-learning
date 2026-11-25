@@ -14,7 +14,8 @@ import {
 import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：Hero 品牌区（中文衬线标题 + 教材统计）+ 全局「册 + 单元」两级切换器
- *  （localStorage + ?book=&unit= 双向同步）+ 今日进度环形 + v2 对话式陪学入口横幅 + 七大模块入口卡 */
+ *  （localStorage + ?book=&unit= 双向同步）+ 今日挑战卡（空态 / 非空态互斥）
+ *  + 今日进度环形 + v2 对话式陪学入口横幅 + 七大模块入口卡 */
 
 /** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
 const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
@@ -258,6 +259,53 @@ export function buildTodayChallengeViewModel(raw: unknown): TodayChallengeViewMo
   };
 }
 
+/** 空态文案：与需求逐字一致，同时作为整卡链接的可访问名称 */
+export const TODAY_CHALLENGE_EMPTY_TEXT = '今天还没有学习记录，去词汇模块开始吧';
+
+/** 非空态卡片标题 */
+export const TODAY_CHALLENGE_TITLE = '今日挑战';
+
+/**
+ * 渲染「今日挑战」卡的 HTML 字符串（section.today-challenge[data-testid=today-challenge-card]）。
+ * - 空态：整卡唯一子节点为原生 a.today-challenge__empty-link（href=/vocabulary），
+ *   不渲染进度文案与统计；
+ * - 非空态：标题 + 进度文案 + ul.today-challenge__stats 统计列表，不生成整卡链接。
+ * 两态由视图模型的 empty 单一分支互斥；百分比与统计值直接取自计算层，渲染层不重复实现口径。
+ */
+export function renderTodayChallengeCard(view: TodayChallengeViewModel): string {
+  if (view.empty) {
+    // 空态整卡即原生链接：a 以块级铺满卡片（复用 home-section 的留白），
+    // 点击 / Tab 聚焦落在链接上即可去词汇模块开始学习。
+    return `<section class="today-challenge today-challenge--empty card" data-testid="today-challenge-card" data-state="empty" style="margin-bottom:var(--space-5)"><a class="today-challenge__empty-link home-section" href="/vocabulary" data-link data-testid="today-challenge-empty-link" aria-label="${TODAY_CHALLENGE_EMPTY_TEXT}" style="display:block;margin:0;border-radius:inherit;color:inherit;text-decoration:none">${TODAY_CHALLENGE_EMPTY_TEXT}</a></section>`;
+  }
+
+  const stats = view.stats
+    .map(
+      (stat) => `
+        <li class="today-challenge__stat">
+          <span class="today-challenge__stat-label">${stat.label}</span>
+          <span class="today-challenge__stat-value">${stat.value}</span>
+        </li>`,
+    )
+    .join('');
+
+  return `
+    <section class="today-challenge home-section card" data-testid="today-challenge-card" data-state="active">
+      <div class="today-challenge__head">
+        <h2 class="today-challenge__title home-section__title">${TODAY_CHALLENGE_TITLE}</h2>
+        <p class="today-challenge__progress" data-testid="today-challenge-progress">${view.progressText}</p>
+      </div>
+      <ul class="today-challenge__stats" data-testid="today-challenge-stats">${stats}</ul>
+    </section>`;
+}
+
+/** 把渲染字符串挂成 DOM 节点（首页挂载用） */
+export function buildTodayChallengeCard(view: TodayChallengeViewModel): HTMLElement {
+  const host = document.createElement('div');
+  host.innerHTML = renderTodayChallengeCard(view);
+  return host.firstElementChild as HTMLElement;
+}
+
 export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()): void {
   const header = document.createElement('header');
   // site-header--home：360px 窄屏「让位横带」修复只命中首页页头（见 base.css ≤40rem 档）
@@ -368,6 +416,15 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   const goal = deps.loadGoal();
   const daily = deps.loadDaily();
   const now = deps.now();
+
+  /* ---- 今日挑战卡：数据适配 + 视图模型（纯函数）→ 空态 / 非空态互斥渲染 ----
+   * 复用本次已读取的今日活动 / 目标 / 时间，避免同页重复读存储造成口径漂移。 */
+  const challenge = buildTodayChallengeCard(
+    buildTodayChallengeViewModel(
+      getTodayChallengeSnapshot({ loadDaily: () => daily, loadGoal: () => goal, now: () => now }),
+    ),
+  );
+
   const completion = goalCompletion(goal, daily, now);
   const streak = computeStreak(daily, now);
   const goalTotal = goal.vocab + goal.exercises;
@@ -543,7 +600,7 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   ).join('');
   modulesSection.append(modulesTitle, grid);
 
-  page.append(hero, unitSection, today, v2Entry, modulesSection);
+  page.append(hero, unitSection, challenge, today, v2Entry, modulesSection);
 
   /* 页脚：单行版本标记（静态文案，测试以其为锚点做回归） */
   const footer = document.createElement('footer');
