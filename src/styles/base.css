@@ -2274,3 +2274,164 @@ a.streak-badge:hover {
     transition: none;
   }
 }
+
+/* ============================================================
+   首页 · 今日挑战卡片（.today-challenge 命名空间，仅本段追加）
+   - 空态：section.today-challenge--empty 内唯一子节点为整卡链接
+     a.today-challenge__empty-link；hover / focus-visible 给出
+     背景 + 边框 + 阴影 + 箭头位移反馈，整卡都可点击；
+   - 非空态：标题 + 进度 + ul.today-challenge__stats 统计列表；
+     统计列表允许换行（flex-wrap），宽度以 max-width:100% 与
+     min-width:0 收口，桌面与 ≤40rem 移动视口均不重叠、不溢出；
+   - 颜色、间距、圆角、阴影全部复用 tokens.css 变量，不新增全局变量。
+   ============================================================ */
+.today-challenge {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.today-challenge--empty,
+.today-challenge[data-state='empty'] {
+  border-style: dashed;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.today-challenge--empty:hover,
+.today-challenge[data-state='empty']:hover,
+.today-challenge--empty:focus-within,
+.today-challenge[data-state='empty']:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.today-challenge__empty-link {
+  position: relative;
+  min-height: calc(var(--space-7) + var(--space-5));
+  padding-right: calc(var(--space-5) + var(--space-4));
+  overflow-wrap: anywhere;
+  /* 窄屏换行时两行长度均衡，避免末行只剩一两个字的孤行（不支持则自然回退） */
+  text-wrap: balance;
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.today-challenge__empty-link::after {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  right: var(--space-5);
+  transform: translateY(-50%);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+  transition: transform var(--transition-fast);
+}
+
+.today-challenge__empty-link:hover {
+  background: var(--color-primary-soft);
+}
+
+.today-challenge__empty-link:hover::after {
+  transform: translate(var(--space-1), -50%);
+}
+
+/* 焦点环内收：overflow:hidden 下仍完整可见；本类优先级高于全局 a:focus-visible */
+.today-challenge__empty-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -4px;
+  background: var(--color-primary-soft);
+}
+
+/* 非空态：渲染层同时带 data-state="active"，按属性选择器命中（不依赖新增类名） */
+.today-challenge--active,
+.today-challenge[data-state='active'] {
+  box-shadow: inset 3px 0 0 var(--color-primary), var(--shadow-sm);
+}
+
+.today-challenge__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+}
+
+.today-challenge__title {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.today-challenge__progress {
+  margin: 0;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.today-challenge__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 100%;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.today-challenge__stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.today-challenge__stat-label {
+  color: var(--color-text-secondary);
+}
+
+.today-challenge__stat-value {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 40rem) {
+  .today-challenge__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .today-challenge__progress {
+    align-self: flex-start;
+  }
+
+  .today-challenge__empty-link {
+    padding-right: calc(var(--space-4) + var(--space-5));
+  }
+
+  .today-challenge__empty-link::after {
+    right: var(--space-4);
+  }
+}
