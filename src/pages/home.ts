@@ -1,10 +1,21 @@
 import { BOOK_LABELS, BOOKS, UNIT_IDS, UNIT_META, bookOfUnit, unitTitle, type BookId } from '../data/units';
 import { buildBookSwitcher, buildUnitSwitcher, currentUnit } from './unit-switch';
-import { buildLast7Days, computeStreak, goalCompletion, type DayActivity } from '../store/daily';
+import {
+  buildLast7Days,
+  computeStreak,
+  goalCompletion,
+  loadDaily,
+  loadGoal,
+  todayCounters,
+  type DailyActivity,
+  type DailyGoal,
+  type DayActivity,
+} from '../store/daily';
 import { defaultHomeDeps, type HomeDeps } from './deps';
 
 /** 首页：Hero 品牌区（中文衬线标题 + 教材统计）+ 全局「册 + 单元」两级切换器
- *  （localStorage + ?book=&unit= 双向同步）+ 今日进度环形 + v2 对话式陪学入口横幅 + 七大模块入口卡 */
+ *  （localStorage + ?book=&unit= 双向同步）+ 今日挑战卡（空态 / 非空态互斥）
+ *  + 今日进度环形 + v2 对话式陪学入口横幅 + 七大模块入口卡 */
 
 /** 册别列表文案：必修一 / 必修二 / …（七册固定维度） */
 const BOOK_TEXT = BOOKS.map((b) => b.label).join(' / ');
@@ -61,6 +72,239 @@ const MODULES = [
     desc: '按册 + 单元统计 / 错题 / 复习到期与学习建议，支持数据导出导入',
   },
 ] as const;
+
+/* -------------------- 今日挑战：数据适配与状态计算（纯函数，可单测） --------------------
+ * 数据来源只读现有 store（每日目标 + 每日活动，两份 localStorage 约定键），
+ * 不新增接口 / 网络请求 / 依赖；本层不触碰 DOM，也不改变页面挂载。
+ * 管线：getTodayChallengeSnapshot（读数据，异常 → null）→ normalizeTodayChallenge（归一化）
+ *       → buildTodayChallengeViewModel（空态 / 百分比 / 转义后的文案与 stats）。 */
+
+/** 今日挑战原始数据（来自 store/localStorage 的未信任数据；字段可能缺失或类型错误） */
+export interface TodayChallengeRaw {
+  completedCount?: unknown;
+  totalCount?: unknown;
+  /** 键值统计（对象或键值对数组，类型未信任） */
+  stats?: unknown;
+}
+
+/** 今日挑战单个「键：值」统计项（label / value 均为字符串，展示层负责转义） */
+export interface TodayChallengeStat {
+  label: string;
+  value: string;
+}
+
+/** 归一化后的今日挑战：计数为非负数值，stats 为键值字符串列表 */
+export interface TodayChallenge {
+  completedCount: number;
+  totalCount: number;
+  stats: TodayChallengeStat[];
+}
+
+/** 今日挑战视图模型：空态 / 百分比 / 进度文案 / 已转义的 stats */
+export interface TodayChallengeViewModel {
+  empty: boolean;
+  /** 0 ~ 100 整数；空态为 0 */
+  percent: number;
+  /** 非空态「今日挑战进度 N%」；空态为空串 */
+  progressText: string;
+  completedCount: number;
+  totalCount: number;
+  /** label / value 已做 HTML 转义 */
+  stats: TodayChallengeStat[];
+}
+
+/** 读数接缝（测试可注入假 store；默认走现有 store 的真实 localStorage 读取） */
+export interface TodayChallengeDeps {
+  loadDaily?: () => DailyActivity;
+  loadGoal?: () => DailyGoal;
+  now?: () => number;
+}
+
+/**
+ * 今日挑战原始快照：只读现有 store（每日活动 + 每日目标），异常一律返回 null。
+ * 不发起任何网络请求，也不写入 localStorage。
+ */
+export function getTodayChallengeSnapshot(deps: TodayChallengeDeps = {}): TodayChallengeRaw | null {
+  try {
+    const now = deps.now ? deps.now() : Date.now();
+    const daily = deps.loadDaily ? deps.loadDaily() : loadDaily();
+    const goal = deps.loadGoal ? deps.loadGoal() : loadGoal();
+    const today = todayCounters(daily, now);
+    return {
+      completedCount: today.vocab + today.exercises,
+      totalCount: goal.vocab + goal.exercises,
+      stats: [
+        { label: '词汇', value: `${today.vocab}/${goal.vocab}` },
+        { label: '练习', value: `${today.exercises}/${goal.exercises}` },
+      ],
+    };
+  } catch {
+    // 读取异常（存储不可用 / 注入 loader 抛错）→ 上层按空态处理
+    return null;
+  }
+}
+
+/** 非负数值归一化：负数 / 非数字 / 空串 / NaN / Infinity → 0；数字字符串按数字解析 */
+export function toNonNegativeNumber(value: unknown): number {
+  let n: number;
+  if (typeof value === 'number') n = value;
+  else if (typeof value === 'string' && value.trim() !== '') n = Number(value);
+  else n = Number.NaN;
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return n;
+}
+
+/** HTML 转义（单趟替换，避免二次转义）：& < > " '；null/undefined → 空串 */
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+export function escapeHtml(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  return String(value).replace(/[&<>"']/g, (ch) => HTML_ESCAPES[ch]!);
+}
+
+/** 统计值文本化：数字/字符串/布尔保留，其余（null / 对象 / NaN / Infinity）→ 空串 */
+function statText(value: unknown): string {
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number') return Number.isFinite(value) ? String(value) : '';
+  if (typeof value === 'boolean') return String(value);
+  return '';
+}
+
+/**
+ * stats 归一化：对象 → 逐项 {label: 键, value: 值}；数组支持 [键, 值] 对、
+ * {label/key/name, value} 对象与裸字符串（label 为空）；空项丢弃。
+ */
+function normalizeStats(raw: unknown): TodayChallengeStat[] {
+  const stats: TodayChallengeStat[] = [];
+  if (Array.isArray(raw)) {
+    for (const entry of raw) {
+      if (Array.isArray(entry)) {
+        const label = statText(entry[0]);
+        const value = statText(entry[1]);
+        if (label === '' && value === '') continue;
+        stats.push({ label, value });
+      } else if (typeof entry === 'object' && entry !== null) {
+        const e = entry as Record<string, unknown>;
+        const label = statText(e.label ?? e.key ?? e.name);
+        const value = statText(e.value);
+        if (label === '' && value === '') continue;
+        stats.push({ label, value });
+      } else {
+        const value = statText(entry);
+        if (value === '') continue;
+        stats.push({ label: '', value });
+      }
+    }
+    return stats;
+  }
+  if (typeof raw === 'object' && raw !== null) {
+    for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+      const label = statText(key);
+      if (label === '') continue;
+      stats.push({ label, value: statText(value) });
+    }
+  }
+  return stats;
+}
+
+/**
+ * 今日挑战归一化（纯函数）：raw 为 null/undefined（或非对象）→ null（空态）；
+ * 计数经 toNonNegativeNumber 收敛，stats 归一化为键值字符串列表。
+ */
+export function normalizeTodayChallenge(raw: unknown): TodayChallenge | null {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw !== 'object') return null;
+  const v = raw as TodayChallengeRaw;
+  return {
+    completedCount: toNonNegativeNumber(v.completedCount),
+    totalCount: toNonNegativeNumber(v.totalCount),
+    stats: normalizeStats(v.stats),
+  };
+}
+
+/**
+ * 今日挑战视图模型（纯函数）：
+ * - 空态：raw 为 null/undefined、读取异常（快照返回 null）、completedCount<=0、totalCount<=0；
+ * - 非空：N = clamp(round(completedCount / totalCount * 100), 1, 100)，
+ *   progressText =「今日挑战进度 N%」；
+ * - stats 键与值均做 HTML 转义（空态也返回已归一化并转义的 stats）。
+ */
+export function buildTodayChallengeViewModel(raw: unknown): TodayChallengeViewModel {
+  const normalized = normalizeTodayChallenge(raw);
+  const stats = (normalized?.stats ?? []).map((stat) => ({
+    label: escapeHtml(stat.label),
+    value: escapeHtml(stat.value),
+  }));
+  const completedCount = normalized?.completedCount ?? 0;
+  const totalCount = normalized?.totalCount ?? 0;
+
+  if (normalized === null || completedCount <= 0 || totalCount <= 0) {
+    return { empty: true, percent: 0, progressText: '', completedCount, totalCount, stats };
+  }
+
+  const percent = Math.min(100, Math.max(1, Math.round((completedCount / totalCount) * 100)));
+  return {
+    empty: false,
+    percent,
+    progressText: `今日挑战进度 ${percent}%`,
+    completedCount,
+    totalCount,
+    stats,
+  };
+}
+
+/** 空态文案：与需求逐字一致，同时作为整卡链接的可访问名称 */
+export const TODAY_CHALLENGE_EMPTY_TEXT = '今天还没有学习记录，去词汇模块开始吧';
+
+/** 非空态卡片标题 */
+export const TODAY_CHALLENGE_TITLE = '今日挑战';
+
+/**
+ * 渲染「今日挑战」卡的 HTML 字符串（section.today-challenge[data-testid=today-challenge-card]）。
+ * - 空态：整卡唯一子节点为原生 a.today-challenge__empty-link（href=/vocabulary），
+ *   不渲染进度文案与统计；
+ * - 非空态：标题 + 进度文案 + ul.today-challenge__stats 统计列表，不生成整卡链接。
+ * 两态由视图模型的 empty 单一分支互斥；百分比与统计值直接取自计算层，渲染层不重复实现口径。
+ */
+export function renderTodayChallengeCard(view: TodayChallengeViewModel): string {
+  if (view.empty) {
+    // 空态整卡即原生链接：a 以块级铺满卡片（复用 home-section 的留白），
+    // 点击 / Tab 聚焦落在链接上即可去词汇模块开始学习。
+    return `<section class="today-challenge today-challenge--empty card" data-testid="today-challenge-card" data-state="empty" style="margin-bottom:var(--space-5)"><a class="today-challenge__empty-link home-section" href="/vocabulary" data-link data-testid="today-challenge-empty-link" aria-label="${TODAY_CHALLENGE_EMPTY_TEXT}" style="display:block;margin:0;border-radius:inherit;color:inherit;text-decoration:none">${TODAY_CHALLENGE_EMPTY_TEXT}</a></section>`;
+  }
+
+  const stats = view.stats
+    .map(
+      (stat) => `
+        <li class="today-challenge__stat">
+          <span class="today-challenge__stat-label">${stat.label}</span>
+          <span class="today-challenge__stat-value">${stat.value}</span>
+        </li>`,
+    )
+    .join('');
+
+  return `
+    <section class="today-challenge home-section card" data-testid="today-challenge-card" data-state="active">
+      <div class="today-challenge__head">
+        <h2 class="today-challenge__title home-section__title">${TODAY_CHALLENGE_TITLE}</h2>
+        <p class="today-challenge__progress" data-testid="today-challenge-progress">${view.progressText}</p>
+      </div>
+      <ul class="today-challenge__stats" data-testid="today-challenge-stats">${stats}</ul>
+    </section>`;
+}
+
+/** 把渲染字符串挂成 DOM 节点（首页挂载用） */
+export function buildTodayChallengeCard(view: TodayChallengeViewModel): HTMLElement {
+  const host = document.createElement('div');
+  host.innerHTML = renderTodayChallengeCard(view);
+  return host.firstElementChild as HTMLElement;
+}
 
 export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()): void {
   const header = document.createElement('header');
@@ -172,6 +416,15 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   const goal = deps.loadGoal();
   const daily = deps.loadDaily();
   const now = deps.now();
+
+  /* ---- 今日挑战卡：数据适配 + 视图模型（纯函数）→ 空态 / 非空态互斥渲染 ----
+   * 复用本次已读取的今日活动 / 目标 / 时间，避免同页重复读存储造成口径漂移。 */
+  const challenge = buildTodayChallengeCard(
+    buildTodayChallengeViewModel(
+      getTodayChallengeSnapshot({ loadDaily: () => daily, loadGoal: () => goal, now: () => now }),
+    ),
+  );
+
   const completion = goalCompletion(goal, daily, now);
   const streak = computeStreak(daily, now);
   const goalTotal = goal.vocab + goal.exercises;
@@ -347,7 +600,7 @@ export function renderHome(root: HTMLElement, deps: HomeDeps = defaultHomeDeps()
   ).join('');
   modulesSection.append(modulesTitle, grid);
 
-  page.append(hero, unitSection, today, v2Entry, modulesSection);
+  page.append(hero, unitSection, challenge, today, v2Entry, modulesSection);
 
   /* 页脚：单行版本标记（静态文案，测试以其为锚点做回归） */
   const footer = document.createElement('footer');
